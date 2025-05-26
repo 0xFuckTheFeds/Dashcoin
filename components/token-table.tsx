@@ -129,6 +129,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             volume24h: pair.volume?.h24 || 0,
             change24h: pair.priceChange?.h24 || 0,
             changeM5: pair.priceChange?.m5 || 0,
+            marketCap: pair.fdv || 0,
           };
         }
       });
@@ -157,10 +158,11 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const tokensWithDexData = filteredTokens.map(token => {
     const tokenAddress = getTokenProperty(token, "token", "");
     const dexData = tokenAddress && dexscreenerData[tokenAddress] ? dexscreenerData[tokenAddress] : {};
-    
+
     return {
       ...token,
-      ...dexData
+      ...dexData,
+      marketCap: dexData.marketCap !== undefined ? dexData.marketCap : token.marketCap,
     };
   });
 
@@ -209,7 +211,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       setSortDirection("desc");
     }
     
-    setIsSortingLocally(["researchScore", "name", "created_time", "symbol"].includes(field));
+    setIsSortingLocally(["researchScore", "name", "created_time", "symbol", "marketCap"].includes(field));
     setCurrentPage(1);
   }
 
@@ -270,10 +272,17 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         case "changeM5":
           valueA = a.changeM5 || 0;
           valueB = b.changeM5 || 0;
-          return sortDirection === "asc" 
+          return sortDirection === "asc"
             ? valueA - valueB
             : valueB - valueA;
-            
+
+        case "marketCap":
+          valueA = a.marketCap || 0;
+          valueB = b.marketCap || 0;
+          return sortDirection === "asc"
+            ? valueA - valueB
+            : valueB - valueA;
+
         default:
           return 0;
       }
