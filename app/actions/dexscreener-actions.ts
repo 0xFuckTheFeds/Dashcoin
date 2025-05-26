@@ -6,7 +6,7 @@ export interface DexscreenerPair {
   chainId: string
   dexId: string
   url: string
-  pairAddress: string
+  pairAddress: string 
   baseToken: {
     address: string
     name: string
