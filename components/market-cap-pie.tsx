@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import { DashcoinCard, DashcoinCardHeader, DashcoinCardTitle, DashcoinCardContent } from "@/components/ui/dashcoin-card"
 import type { TokenMarketCapData } from "@/types/dune"
-import { formatCurrency } from "@/lib/utils"
+import { formatCurrency, getCssVariable, hexToRgba } from "@/lib/utils"
 import { DuneQueryLink } from "@/components/dune-query-link"
 
 interface MarketCapPieProps {
@@ -54,14 +54,18 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
 
     if (topTokens.length === 0) return
 
+    const dashYellow = getCssVariable("--dashYellow") || "#ffd700"
+    const dashGreen = getCssVariable("--dashGreen-accent") || "#66cc33"
+    const dashYellowLight = getCssVariable("--dashYellow-light") || "#fff0a0"
+
     const colors = [
-      "#ffd700", 
-      "#66cc33", 
-      "#ff6666", 
-      "#0077cc", 
-      "#99dd66", 
-      "#e6b800", 
-      "#339900", 
+      dashYellow,
+      dashGreen,
+      "#ff6666",
+      "#0077cc",
+      "#99dd66",
+      "#e6b800",
+      "#339900",
       "#ff9999", 
       "#00aaff", 
       "#cccccc", 
@@ -89,7 +93,7 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
           legend: {
             position: "right",
             labels: {
-              color: "#fff0a0",
+              color: dashYellowLight,
               font: {
                 size: 12,
               },
