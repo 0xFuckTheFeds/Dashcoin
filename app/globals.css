@@ -36,15 +36,16 @@
 
       --font-inter: 'Inter', sans-serif;
     --font-bangers: 'Bangers', cursive;
-    --dashcoin-yellow: #F6BE00;
-    --dashcoin-yellow-dark: #E9B200;
-    --dashcoin-yellow-light: #F9D44C;
-    --dashcoin-green: #0E1E19;
-    --dashcoin-green-dark: #0A150F;
-    --dashcoin-green-light: #1A2C24;
-    --dashcoin-green-accent: #21BB89;
-    --dashcoin-black: #121212;
-  --dashcoin-red: #F05252;
+    /* Updated palette: grey, black and off-white */
+    --dashcoin-yellow: #f5f5f5; /* off-white */
+    --dashcoin-yellow-dark: #e5e5e5;
+    --dashcoin-yellow-light: #fafafa;
+    --dashcoin-green: #3a3a3a; /* base grey */
+    --dashcoin-green-dark: #1a1a1a; /* near black */
+    --dashcoin-green-light: #4f4f4f;
+    --dashcoin-green-accent: #656565;
+    --dashcoin-black: #000000;
+    --dashcoin-red: #f05252;
   }
 
   @layer base {
