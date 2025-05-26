@@ -83,3 +83,19 @@ export function getTimeAgo(dateString: string): string {
   const yearsAgo = Math.floor(monthsAgo / 12)
   return `${yearsAgo} year${yearsAgo === 1 ? '' : 's'} ago`
 }
+
+export function getCssVariable(name: string): string {
+  if (typeof window === 'undefined') return ''
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim()
+}
+
+export function hexToRgba(hex: string, alpha: number): string {
+  const sanitized = hex.replace('#', '')
+  const bigint = parseInt(sanitized, 16)
+  const r = (bigint >> 16) & 255
+  const g = (bigint >> 8) & 255
+  const b = bigint & 255
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}

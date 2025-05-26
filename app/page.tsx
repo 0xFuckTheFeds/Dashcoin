@@ -256,7 +256,9 @@ export default async function Home() {
               <h1 className="dashcoin-title-hq text-5xl md:text-8xl text-black">
                 DASHCOIN RESEARCH
               </h1>
+b1y8i6-codex/update-frontend-ui-design
               <p className="text-xl">Your research hub for tokens launched on the Believe app</p>
+
             </div>
           </div>
           {/* DASHC Token Stats Row */}
