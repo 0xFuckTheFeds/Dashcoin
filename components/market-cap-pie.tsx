@@ -55,16 +55,16 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
     if (topTokens.length === 0) return
 
     const colors = [
-      "#ffd700", 
-      "#66cc33", 
-      "#ff6666", 
-      "#0077cc", 
-      "#99dd66", 
-      "#e6b800", 
-      "#339900", 
-      "#ff9999", 
-      "#00aaff", 
-      "#cccccc", 
+      "#f5f5f5",
+      "#656565",
+      "#ff6666",
+      "#3a3a3a",
+      "#e5e5e5",
+      "#4f4f4f",
+      "#cc3333",
+      "#fafafa",
+      "#2b2b2b",
+      "#000000",
     ]
 
     const chartData = {
@@ -89,7 +89,7 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
           legend: {
             position: "right",
             labels: {
-              color: "#fff0a0",
+              color: "#3a3a3a",
               font: {
                 size: 12,
               },

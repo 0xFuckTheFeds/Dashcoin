@@ -350,47 +350,47 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-dashGreen-card dark:bg-dashGreen-cardDark border-b-2 border-dashBlack">
-                <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("symbol")}>
+              <tr className="bg-dashYellow border-b-2 border-dashBlack">
+                <th className="text-left py-3 px-4 text-dashBlack cursor-pointer" onClick={() => handleSort("symbol")}> 
                   <div className="flex items-center gap-1">Token {renderSortIndicator("symbol")}</div>
                 </th>
-                <th className="text-left py-3 px-4 text-dashYellow">Actions</th>
-                <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("name")}>
+                <th className="text-left py-3 px-4 text-dashBlack">Actions</th>
+                <th className="text-left py-3 px-4 text-dashBlack cursor-pointer" onClick={() => handleSort("name")}> 
                   <div className="flex items-center gap-1">Name {renderSortIndicator("name")}</div>
                 </th>
                 <th
-                  className="text-left py-3 px-4 text-dashYellow cursor-pointer"
+                  className="text-left py-3 px-4 text-dashBlack cursor-pointer"
                   onClick={() => handleSort("marketCap")}
                 >
                   <div className="flex items-center gap-1">Market Cap {renderSortIndicator("marketCap")}</div>
                 </th>
                 <th
-                  className="text-left py-3 px-4 text-dashYellow cursor-pointer"
+                  className="text-left py-3 px-4 text-dashBlack cursor-pointer"
                   onClick={() => handleSort("num_holders")}
                 >
                   <div className="flex items-center gap-1">Holders {renderSortIndicator("num_holders")}</div>
                 </th>
                 <th
-                  className="text-left py-3 px-4 text-dashYellow cursor-pointer"
+                  className="text-left py-3 px-4 text-dashBlack cursor-pointer"
                   onClick={() => handleSort("created_time")}
                 >
                   <div className="flex items-center gap-1">Created {renderSortIndicator("created_time")}</div>
                 </th>
-                <th 
-                  className="text-left py-3 px-4 text-dashYellow cursor-pointer"
+                <th
+                  className="text-left py-3 px-4 text-dashBlack cursor-pointer"
                   onClick={() => handleSort("researchScore")}
                 >
                   <div className="flex items-center gap-1">
                     Research Score {renderSortIndicator("researchScore")}
                   </div>
                 </th>
-                <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("volume24h")}>
+                <th className="text-left py-3 px-4 text-dashBlack cursor-pointer" onClick={() => handleSort("volume24h")}> 
                   <div className="flex items-center gap-1">24h Volume {renderSortIndicator("volume24h")}</div>
                 </th>
-                <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("change24h")}>
+                <th className="text-left py-3 px-4 text-dashBlack cursor-pointer" onClick={() => handleSort("change24h")}> 
                   <div className="flex items-center gap-1">24h %Gain {renderSortIndicator("change24h")}</div>
                 </th>
-                <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("changeM5")}>
+                <th className="text-left py-3 px-4 text-dashBlack cursor-pointer" onClick={() => handleSort("changeM5")}> 
                   <div className="flex items-center gap-1">5m %Gain {renderSortIndicator("changeM5")}</div>
                 </th>
               </tr>
@@ -414,10 +414,10 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                   return (
                     <tr
                       key={index}
-                      className="border-b border-dashGreen-light hover:bg-dashGreen-card dark:hover:bg-dashGreen-cardDark"
+                      className="border-b border-dashBlack hover:bg-dashYellow-light"
                     >
                       <td className="py-3 px-4">
-                        <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
+                        <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashGreen-accent">
                           <div>
                             <p className="font-bold">{tokenSymbol}</p>
                             {tokenAddress && (
@@ -457,7 +457,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                         ) : researchScore !== null && researchScore !== undefined ? (
                           <div className="flex items-center">
                             <span className="font-medium mr-2">{researchScore.toFixed(1)}</span>
-                            <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
+                            <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashGreen-accent">
                               <FileSearch className="h-4 w-4" />
                             </Link>
                           </div>
