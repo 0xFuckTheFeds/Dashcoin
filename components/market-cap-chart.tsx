@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import { DashcoinCard, DashcoinCardHeader, DashcoinCardTitle, DashcoinCardContent } from "@/components/ui/dashcoin-card"
 import type { MarketCapTimeData } from "@/types/dune"
-import { formatCurrency } from "@/lib/utils"
+import { formatCurrency, getCssVariable, hexToRgba } from "@/lib/utils"
 import { DuneQueryLink } from "@/components/dune-query-link"
 
 declare global {
@@ -34,14 +34,18 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
       return dateA - dateB
     })
 
+    const dashYellow = getCssVariable("--dashYellow") || "#ffd700"
+    const dashYellowLight = getCssVariable("--dashYellow-light") || "#fff0a0"
+    const dashGreen = getCssVariable("--dashGreen-accent") || "#66cc33"
+
     const chartData = {
       labels: sortedData.map((item) => (item.date ? new Date(item.date).toLocaleDateString() : "Unknown")),
       datasets: [
         {
           label: "Market Cap (USD)",
           data: sortedData.map((item) => item.marketcap || 0),
-          borderColor: "#ffd700",
-          backgroundColor: "rgba(255, 215, 0, 0.1)",
+          borderColor: dashYellow,
+          backgroundColor: hexToRgba(dashYellow, 0.1),
           borderWidth: 2,
           fill: true,
           tension: 0.4,
@@ -49,8 +53,8 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         {
           label: "Holders",
           data: sortedData.map((item) => item.num_holders || 0),
-          borderColor: "#66cc33",
-          backgroundColor: "rgba(102, 204, 51, 0.1)",
+          borderColor: dashGreen,
+          backgroundColor: hexToRgba(dashGreen, 0.1),
           borderWidth: 2,
           fill: true,
           tension: 0.4,
@@ -71,7 +75,7 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
               color: "rgba(42, 47, 14, 0.3)",
             },
             ticks: {
-              color: "#fff0a0",
+              color: dashYellowLight,
             },
           },
           y: {
@@ -79,7 +83,7 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
               color: "rgba(42, 47, 14, 0.3)",
             },
             ticks: {
-              color: "#fff0a0",
+              color: dashYellowLight,
               callback: (value: number) => formatCurrency(value),
             },
           },
@@ -89,14 +93,14 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
               display: false,
             },
             ticks: {
-              color: "#66cc33",
+              color: dashGreen,
             },
           },
         },
         plugins: {
           legend: {
             labels: {
-              color: "#fff0a0",
+              color: dashYellowLight,
             },
           },
           tooltip: {
