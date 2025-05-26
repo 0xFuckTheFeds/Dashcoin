@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 
 const DashcoinCard = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("card-with-border p-6 shadow-xl", className)} {...props} />
+    <div ref={ref} className={cn("card-with-border p-6", className)} {...props} />
   ),
 )
 DashcoinCard.displayName = "DashcoinCard"
@@ -15,7 +15,7 @@ DashcoinCardHeader.displayName = "DashcoinCardHeader"
 
 const DashcoinCardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h3 ref={ref} className={cn("dashcoin-text text-xl text-dashYellow", className)} {...props} />
+    <h3 ref={ref} className={cn("dashcoin-text text-xl text-black", className)} {...props} />
   ),
 )
 DashcoinCardTitle.displayName = "DashcoinCardTitle"

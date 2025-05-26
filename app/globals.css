@@ -34,17 +34,18 @@
 
     --radius: 0.75rem;
 
-      --font-inter: 'Inter', sans-serif;
-    --font-bangers: 'Bangers', cursive;
-    --dashcoin-yellow: #F6BE00;
-    --dashcoin-yellow-dark: #E9B200;
-    --dashcoin-yellow-light: #F9D44C;
-    --dashcoin-green: #0E1E19;
-    --dashcoin-green-dark: #0A150F;
-    --dashcoin-green-light: #1A2C24;
-    --dashcoin-green-accent: #21BB89;
-    --dashcoin-black: #121212;
-  --dashcoin-red: #F05252;
+    --font-inter: 'Inter', sans-serif;
+    --font-league-spartan: 'League Spartan', sans-serif;
+    /* Updated palette: grey, black and off-white */
+    --dashcoin-yellow: #f5f5f5; /* off-white */
+    --dashcoin-yellow-dark: #e5e5e5;
+    --dashcoin-yellow-light: #fafafa;
+    --dashcoin-green: #3a3a3a; /* base grey */
+    --dashcoin-green-dark: #1a1a1a; /* near black */
+    --dashcoin-green-light: #4f4f4f;
+    --dashcoin-green-accent: #656565;
+    --dashcoin-black: #000000;
+    --dashcoin-red: #f05252;
   }
 
   @layer base {
@@ -97,14 +98,15 @@
 .card-with-border {
   position: relative;
   border-radius: 1rem;
-  /* overflow: hidden; */ /* Removed to allow suggestion dropdown to be visible */
-  background: rgba(42, 47, 14, 0.98); /* dashGreen-card with high opacity */
-  border: 2px solid #222222;
-  box-shadow: 0 8px 0 0 #222222, 0 0 15px rgba(0, 0, 0, 0.3);
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .dark .card-with-border {
-  background: rgba(26, 29, 8, 0.98); /* dashGreen-cardDark with high opacity */
+  background: #ffffff;
+  color: #000000;
 }
 
 .card-with-border::before {
@@ -114,26 +116,23 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border: 2px solid #ffd700;
+  border: 2px solid #000000;
   border-radius: 0.75rem;
   pointer-events: none;
 }
 
 .dashcoin-title {
-  font-family: "Bangers", system-ui, sans-serif;
-  text-shadow: 3px 3px 0 #222222;
+  font-family: "League Spartan", system-ui, sans-serif;
   letter-spacing: 1px;
 }
 
 .dashcoin-title-hq {
-  font-family: "Bangers", system-ui, sans-serif;
-  text-shadow: 3px 3px 0 #222222;
+  font-family: "League Spartan", system-ui, sans-serif;
   letter-spacing: 5px;
 }
 
 .dashcoin-text {
-  font-family: "Bangers", system-ui, sans-serif;
-  text-shadow: 2px 2px 0 #222222;
+  font-family: "League Spartan", system-ui, sans-serif;
   letter-spacing: 1px;
 }
 

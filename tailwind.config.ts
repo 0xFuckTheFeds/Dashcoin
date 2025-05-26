@@ -22,23 +22,23 @@ const config = {
     extend: {
       colors: {
         dashGreen: {
-          DEFAULT: "#4b5320", 
-          dark: "#2d3214", 
-          light: "#6b7a30", 
-          accent: "#8a9a45",    
-          card: "#2a2f0e",     
-          cardDark: "#1a1d08", 
+          DEFAULT: "#3a3a3a", // base grey
+          dark: "#1a1a1a", // near black
+          light: "#4f4f4f",
+          accent: "#656565",
+          card: "#2b2b2b",
+          cardDark: "#161616",
         },
         dashYellow: {
-          DEFAULT: "#ffd700",     
-          light: "#fff0a0",     
-          dark: "#e6b800",
+          DEFAULT: "#f5f5f5", // off-white
+          light: "#fafafa",
+          dark: "#e5e5e5",
         },
         dashRed: {
-          DEFAULT: "#ff6666",  
+          DEFAULT: "#ff6666",
           dark: "#cc3333",
         },
-        dashBlack: "#222222",     
+        dashBlack: "#000000",
 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -80,8 +80,7 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", ...fontFamily.sans],
-        bangers: ["var(--font-bangers)"],
+        sans: ["var(--font-league-spartan)", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {

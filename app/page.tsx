@@ -244,30 +244,19 @@ export default async function Home() {
           <div className="flex justify-center items-center gap-4 mb-4">
             <div className="w-24 h-24 md:w-32 md:h-32 relative">
               <Image
-                src="/images/frog-soldier.png"
-                alt="Dashcoin Frog Soldier"
+                src="/images/Dashcoin%20Research%20Logo.png"
+                alt="Dashcoin Research Logo"
                 width={128}
                 height={128}
                 className="object-contain rounded-full overflow-hidden"
-                style={{ clipPath: "circle(50%)" }} 
+                style={{ clipPath: "circle(50%)" }}
               />
             </div>
             <div className="flex flex-col">
-              <h1 className="dashcoin-title-hq text-5xl md:text-8xl text-dashYellow">
-                DASHCOIN HQ
+              <h1 className="dashcoin-title-hq text-5xl md:text-8xl text-black">
+                DASHCOIN RESEARCH
               </h1>
-              <p className="text-xl">Your Research hub for tokens launched on the Believe app</p>
-            </div>
-            
-            <div className="w-24 h-24 md:w-32 md:h-32 relative">
-              <Image
-                src="/images/frog-soldier.png"
-                alt="Dashcoin Frog Soldier"
-                width={128}
-                height={128}
-                className="object-contain scale-x-[-1] rounded-full overflow-hidden"
-                style={{ clipPath: "circle(50%)" }}
-              />
+              <p className="text-xl">Your research hub for tokens launched on the Believe app</p>
             </div>
           </div>
           {/* DASHC Token Stats Row */}
@@ -331,7 +320,7 @@ export default async function Home() {
 
         {/* Token Table */}
         <div className="mt-8">
-          <h2 className="dashcoin-text text-3xl text-dashYellow mb-4">
+          <h2 className="dashcoin-text text-3xl text-black mb-4">
             Top Tokens by Market Cap
           </h2>
           <Suspense
@@ -355,7 +344,7 @@ export default async function Home() {
               <DashcoinCardTitle>Total Market Cap</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent className="text-center">
-              <p className="dashcoin-text text-4xl text-dashYellow">{formattedMarketCap}</p>
+              <p className="dashcoin-text text-4xl text-black">{formattedMarketCap}</p>
               <p className="text-sm opacity-80 mt-2">
                 Last updated:{" "}
                 {totalMarketCap && totalMarketCap.latest_data_at
@@ -371,7 +360,7 @@ export default async function Home() {
               <DashcoinCardTitle>Coin Launches</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent className="text-center">
-              <p className="dashcoin-text text-4xl text-dashYellow">{formattedCoinLaunches}</p>
+              <p className="dashcoin-text text-4xl text-black">{formattedCoinLaunches}</p>
               <p className="text-sm opacity-80 mt-2">Total coins tracked</p>
               <DuneQueryLink queryId={5140151} className="mt-2 justify-center" />
             </DashcoinCardContent>
@@ -385,7 +374,7 @@ export default async function Home() {
               <DashcoinCardTitle>Market Cap</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">{formattedMarketCap}</p>
+              <p className="dashcoin-text text-3xl text-black">{formattedMarketCap}</p>
               <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
                 <p className="text-sm">From Dune Analytics</p>
               </div>
@@ -404,7 +393,7 @@ export default async function Home() {
               <DashcoinCardTitle>24h Volume</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">{formattedVolume}</p>
+              <p className="dashcoin-text text-3xl text-black">{formattedVolume}</p>
               <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
                 <p className="text-sm">From Dune Analytics</p>
               </div>
@@ -417,7 +406,7 @@ export default async function Home() {
               <DashcoinCardTitle>Fee Earnings</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">
+              <p className="dashcoin-text text-3xl text-black">
                 {formattedFeeEarnings}
               </p>
               <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
