@@ -5,7 +5,11 @@ interface ResearchScoreData {
 }
 
 export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
-  const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk';
+  const API_KEY = process.env.GOOGLE_API_KEY;
+  if (!API_KEY) {
+    console.error('GOOGLE_API_KEY is not set');
+    return [];
+  }
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
   const SHEET_NAME = 'Dashcoin Scoring';
   const RANGE = `${SHEET_NAME}!A1:K30`;

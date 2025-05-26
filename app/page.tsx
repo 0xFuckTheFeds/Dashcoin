@@ -244,30 +244,19 @@ export default async function Home() {
           <div className="flex justify-center items-center gap-4 mb-4">
             <div className="w-24 h-24 md:w-32 md:h-32 relative">
               <Image
-                src="/images/frog-soldier.png"
-                alt="Dashcoin Frog Soldier"
+                src="/images/Dashcoin%20Research%20Logo.png"
+                alt="Dashcoin Research Logo"
                 width={128}
                 height={128}
                 className="object-contain rounded-full overflow-hidden"
-                style={{ clipPath: "circle(50%)" }} 
+                style={{ clipPath: "circle(50%)" }}
               />
             </div>
             <div className="flex flex-col">
               <h1 className="dashcoin-title-hq text-5xl md:text-8xl text-dashYellow">
-                DASHCOIN HQ
+                DASHCOIN RESEARCH
               </h1>
-              <p className="text-xl">Your Research hub for tokens launched on the Believe app</p>
-            </div>
-            
-            <div className="w-24 h-24 md:w-32 md:h-32 relative">
-              <Image
-                src="/images/frog-soldier.png"
-                alt="Dashcoin Frog Soldier"
-                width={128}
-                height={128}
-                className="object-contain scale-x-[-1] rounded-full overflow-hidden"
-                style={{ clipPath: "circle(50%)" }}
-              />
+              <p className="text-xl">Your research hub for tokens launched on the Believe app</p>
             </div>
           </div>
           {/* DASHC Token Stats Row */}

@@ -40,8 +40,8 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         {
           label: "Market Cap (USD)",
           data: sortedData.map((item) => item.marketcap || 0),
-          borderColor: "#ffd700",
-          backgroundColor: "rgba(255, 215, 0, 0.1)",
+          borderColor: "#f5f5f5",
+          backgroundColor: "rgba(245, 245, 245, 0.1)",
           borderWidth: 2,
           fill: true,
           tension: 0.4,
@@ -49,8 +49,8 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         {
           label: "Holders",
           data: sortedData.map((item) => item.num_holders || 0),
-          borderColor: "#66cc33",
-          backgroundColor: "rgba(102, 204, 51, 0.1)",
+          borderColor: "#656565",
+          backgroundColor: "rgba(101, 101, 101, 0.1)",
           borderWidth: 2,
           fill: true,
           tension: 0.4,
@@ -68,18 +68,18 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         scales: {
           x: {
             grid: {
-              color: "rgba(42, 47, 14, 0.3)",
+              color: "rgba(43, 43, 43, 0.3)",
             },
             ticks: {
-              color: "#fff0a0",
+              color: "#fafafa",
             },
           },
           y: {
             grid: {
-              color: "rgba(42, 47, 14, 0.3)",
+              color: "rgba(43, 43, 43, 0.3)",
             },
             ticks: {
-              color: "#fff0a0",
+              color: "#fafafa",
               callback: (value: number) => formatCurrency(value),
             },
           },
@@ -89,14 +89,14 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
               display: false,
             },
             ticks: {
-              color: "#66cc33",
+              color: "#656565",
             },
           },
         },
         plugins: {
           legend: {
             labels: {
-              color: "#fff0a0",
+              color: "#fafafa",
             },
           },
           tooltip: {
