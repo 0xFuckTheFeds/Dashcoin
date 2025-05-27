@@ -37,7 +37,7 @@ const globalStyles = `
 
 export default function ResearchPage() {
   const dashcoinTradeLink = "https://axiom.trade/t/fRfKGCriduzDwSudCwpL7ySCEiboNuryhZDVJtr1a1C/dashc";
-  const dashcoinXLink = "https://x.com/dune_dashcoin";
+  const dashcoinXLink = "https://x.com/Dashc_Research";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPostId, setSelectedPostId] = useState("");
   const [articles, setArticles] = useState<Article[]>([]);
