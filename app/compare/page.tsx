@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Twitter, BarChart2, Users, ArrowRight, InfoIcon, Loader2, ArrowLeftRight } from "lucide-react";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { GrowthStatCard } from "@/components/ui/growth-stat-card";
+import { batchFetchTokensData } from "@/app/actions/dexscreener-actions";
 
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -175,7 +176,7 @@ export default function ComparePage() {
     };
   };
 
-  const handleCompare = () => {
+  const handleCompare = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -201,6 +202,21 @@ export default function ComparePage() {
         setIsLoading(false);
         return;
       }
+      try {
+        const dexMap = await batchFetchTokensData([token1.token, token2.token]);
+        const dex1 = dexMap.get(token1.token);
+        const dex2 = dexMap.get(token2.token);
+
+        if (dex1 && dex1.pairs && dex1.pairs.length > 0) {
+          token1.marketCap = dex1.pairs[0].fdv ?? token1.marketCap;
+        }
+        if (dex2 && dex2.pairs && dex2.pairs.length > 0) {
+          token2.marketCap = dex2.pairs[0].fdv ?? token2.marketCap;
+        }
+      } catch (err) {
+        console.error('Error fetching Dexscreener data for compare:', err);
+      }
+
       const token1Data = convertTokenData(token1);
       const token2Data = convertTokenData(token2);
 

@@ -26,6 +26,7 @@ import {
   getQueryTimeUntilNextRefresh
 } from "@/lib/redis";
 import { cache } from "react";
+import { batchFetchTokensData } from "@/app/actions/dexscreener-actions";
 
 const IS_PREVIEW =
   process.env.VERCEL_ENV === "preview" ||
@@ -132,29 +133,58 @@ export async function fetchPaginatedTokens(
   try {
     const allTokens = await fetchAllTokensFromDune();
 
-    const filteredTokens = searchTerm.trim() !== "" 
+    const filteredTokens = searchTerm.trim() !== ""
       ? allTokens.filter((token) => {
-          const symbolMatch = token.symbol ? 
-            token.symbol.toLowerCase().includes(searchTerm.toLowerCase()) : false;
-          const nameMatch = token.name ? 
-            token.name.toLowerCase().includes(searchTerm.toLowerCase()) : false;
-          const descriptionMatch = token.description ? 
-            token.description.toLowerCase().includes(searchTerm.toLowerCase()) : false;
-          
+          const symbolMatch = token.symbol
+            ? token.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+            : false;
+          const nameMatch = token.name
+            ? token.name.toLowerCase().includes(searchTerm.toLowerCase())
+            : false;
+          const descriptionMatch = token.description
+            ? token.description.toLowerCase().includes(searchTerm.toLowerCase())
+            : false;
+
           return symbolMatch || nameMatch || descriptionMatch;
         })
       : allTokens;
 
-    const totalTokens = filteredTokens.length;
+    const tokenAddresses = filteredTokens
+      .map((t) => t.token)
+      .filter((addr) => addr && typeof addr === "string") as string[];
+
+    let dexDataMap = new Map<string, any>();
+    try {
+      if (tokenAddresses.length > 0) {
+        dexDataMap = await batchFetchTokensData(tokenAddresses);
+      }
+    } catch (err) {
+      console.error("Error fetching Dexscreener data for tokens:", err);
+    }
+
+    const tokensWithDex = filteredTokens.map((token) => {
+      const dexData = token.token ? dexDataMap.get(token.token) : null;
+      const dexMarketCap = dexData && dexData.pairs && dexData.pairs.length > 0
+        ? dexData.pairs[0].fdv
+        : undefined;
+
+      return {
+        ...token,
+        marketCap: dexMarketCap ?? token.marketCap ?? 0,
+      } as TokenData;
+    });
+
+    const totalTokens = tokensWithDex.length;
     const totalPages = Math.ceil(totalTokens / pageSize) || 1;
-    const sortedTokens = [...filteredTokens].sort((a, b) => {
-      const aValue = a[sortField as keyof typeof a] || 0;
-      const bValue = b[sortField as keyof typeof a] || 0;
+    const sortedTokens = [...tokensWithDex].sort((a, b) => {
+      const aValue = (a as any)[sortField] || 0;
+      const bValue = (b as any)[sortField] || 0;
 
       return sortDirection === "asc"
         ? (aValue as number) - (bValue as number)
         : (bValue as number) - (aValue as number);
     });
+
     const startIndex = (page - 1) * pageSize;
     const endIndex = Math.min(startIndex + pageSize, totalTokens);
     const pageTokens = sortedTokens.slice(startIndex, endIndex);
@@ -251,7 +281,7 @@ export async function fetchTokenMarketCaps(): Promise<TokenMarketCapData[]> {
     // }
 
     // console.log("Token market caps: More than 1 hour since last refresh, fetching from Dune");
-      const result = await fetchDuneQueryResults(5140151);
+    const result = await fetchDuneQueryResults(5140151);
 
     if (result && result.rows && result.rows.length > 0) {
       const currentDate = new Date().toISOString().split("T")[0];
@@ -266,10 +296,26 @@ export async function fetchTokenMarketCaps(): Promise<TokenMarketCapData[]> {
         rn: index + 1,
       }));
 
-      await setInCache(CACHE_KEYS.TOKEN_MARKET_CAPS, data);
+      const addresses = data.map(d => d.token_mint_address).filter(Boolean);
+      let dexMap = new Map<string, any>();
+      try {
+        if (addresses.length > 0) {
+          dexMap = await batchFetchTokensData(addresses);
+        }
+      } catch (err) {
+        console.error("Error fetching Dexscreener data for market caps:", err);
+      }
+
+      const enriched = data.map(d => {
+        const dex = dexMap.get(d.token_mint_address);
+        const mc = dex && dex.pairs && dex.pairs.length > 0 ? dex.pairs[0].fdv : undefined;
+        return { ...d, market_cap_usd: mc ?? d.market_cap_usd };
+      });
+
+      await setInCache(CACHE_KEYS.TOKEN_MARKET_CAPS, enriched);
       await setQueryLastRefreshTime(CACHE_KEYS.TOKEN_MARKET_CAPS_LAST_REFRESH);
-      
-      return data;
+
+      return enriched;
     }
 
     console.warn(

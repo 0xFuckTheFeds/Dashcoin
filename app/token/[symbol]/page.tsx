@@ -121,7 +121,7 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
   const tokenName = tokenData?.name || tokenData?.description || "Unknown Token"
   const tokenAddress = tokenData?.token || ""
   const createdTime = tokenData?.created_time ? new Date(tokenData.created_time).toLocaleDateString() : "Unknown"
-  const marketCap = tokenData?.marketCap || 0
+  const marketCap = dexscreenerData?.fdv || tokenData?.marketCap || 0
 
   return (
     <div className="min-h-screen">
