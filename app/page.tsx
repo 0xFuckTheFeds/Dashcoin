@@ -238,8 +238,8 @@ export default async function Home() {
       {/* Use the new Navbar component */}
       <Navbar dashcoinTradeLink={dashcoinTradeLink} />
 
-      <main className="container mx-auto px-4 py-6 space-y-8">
-        <div className="mt-4 mb-4 py-2 px-4 bg-dashGreen-dark rounded-lg border border-dashBlack flex flex-wrap justify-between items-center gap-2 max-w-4xl mx-auto">
+      <main className="w-full px-4 py-6 space-y-8">
+        <div className="mt-4 mb-4 py-2 px-4 bg-dashGreen-dark rounded-lg border border-dashBlack flex flex-wrap justify-between items-center gap-2 w-full">
           <div className="flex items-center gap-2">
             <span className="font-medium text-dashYellow text-sm">$DASHC:</span>
             <CopyAddress
@@ -420,7 +420,7 @@ export default async function Home() {
         
       </main>
 
-      <footer className="container mx-auto py-8 px-4 mt-12 border-t border-dashGreen-light">
+      <footer className="w-full py-8 px-4 mt-12 border-t border-dashGreen-light">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <DashcoinLogo size={32} />
           <p className="text-sm opacity-80">© 2025 Dashcoin. All rights reserved.</p>
