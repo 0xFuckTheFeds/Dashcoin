@@ -34,9 +34,9 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
       return dateA - dateB
     })
 
-    const dashYellow = getCssVariable("--dashYellow") || "#ffd700"
-    const dashYellowLight = getCssVariable("--dashYellow-light") || "#fff0a0"
-    const dashGreen = getCssVariable("--dashGreen-accent") || "#66cc33"
+    const dashYellow = "#50E3C2"
+    const dashYellowLight = "#A0A0B0"
+    const dashGreen = "#6A8DFF"
 
     const chartData = {
       labels: sortedData.map((item) => (item.date ? new Date(item.date).toLocaleDateString() : "Unknown")),
@@ -151,7 +151,7 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         <DashcoinCardTitle>Market Cap & Holders Over Time</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
-        <div className="h-80">
+        <div className="h-80 bg-[#13131A]">
           <canvas ref={chartRef} />
         </div>
         <DuneQueryLink queryId={5119241} className="mt-2" />

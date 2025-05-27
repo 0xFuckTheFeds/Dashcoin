@@ -91,7 +91,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-dashGreen text-dashYellow-light dark:bg-dashGreen-dark;
+    @apply bg-background text-foreground font-sans;
   }
 }
 
@@ -99,13 +99,13 @@
   position: relative;
   border-radius: 1rem;
   /* overflow: hidden; */ /* Removed to allow suggestion dropdown to be visible */
-  background: rgba(42, 47, 14, 0.98); /* dashGreen-card with high opacity */
-  border: 2px solid #222222;
-  box-shadow: 0 8px 0 0 #222222, 0 0 15px rgba(0, 0, 0, 0.3);
+  background: #1B1B26;
+  border: 1px solid #2A2A35;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .dark .card-with-border {
-  background: rgba(26, 29, 8, 0.98); /* dashGreen-cardDark with high opacity */
+  background: #1B1B26;
 }
 
 .card-with-border::before {
@@ -115,7 +115,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border: 2px solid var(--dashYellow);
+  border: 1px solid var(--dashYellow);
   border-radius: 0.75rem;
   pointer-events: none;
 }
