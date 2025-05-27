@@ -19,7 +19,7 @@ export function DashcoinLogo({ className = "", size = 40 }: DashcoinLogoProps) {
           />
         </div>
         <span className="dashcoin-title text-dashYellow-light text-2xl" style={{ fontSize: `${size / 2}px` }}>
-          DASHCOIN
+          Dashcoin Research
         </span>
       </div>
     </div>

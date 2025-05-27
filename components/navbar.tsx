@@ -14,7 +14,7 @@ export function Navbar({ dashcoinTradeLink }: NavbarProps) {
   const pathname = usePathname();
 
   return (
-    <header className="container mx-auto py-6 px-4">
+    <header className="w-full py-6 px-4">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
           <Link href="/">
