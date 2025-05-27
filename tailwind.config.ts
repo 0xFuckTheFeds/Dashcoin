@@ -80,8 +80,7 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", ...fontFamily.sans],
-        bangers: ["var(--font-bangers)"],
+        sans: ["Inter", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {

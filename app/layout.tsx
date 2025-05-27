@@ -1,11 +1,9 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Bangers } from "next/font/google"
+
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
-const bangers = Bangers({ weight: "400", subsets: ["latin"], variable: "--font-bangers" })
 
 export const metadata: Metadata = {
   title: "Dashcoin - Cryptocurrency Dashboard",
@@ -20,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${bangers.variable} font-sans`}>
+      <body className="font-sans">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
