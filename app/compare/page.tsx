@@ -275,8 +275,8 @@ export default function ComparePage() {
     },
   ] : [];
   
-  const GREEN_COLOR = "#10B981";
-  const RED_COLOR = "#EF4444";
+  const GREEN_COLOR = "#50E3C2"; // Teal Green
+  const RED_COLOR = "#E84042";   // Bright Red
 
   let token1ScaleClass = "scale-100 transform-origin-top";
   let token2ScaleClass = "scale-100 transform-origin-top";
@@ -474,8 +474,8 @@ export default function ComparePage() {
                       </ResponsiveContainer>
                     </div>
                     <div className="mt-4 grid grid-cols-2 gap-4">
-                      <div className="p-3 rounded-md bg-dashGreen-dark"><p className="text-sm opacity-70">{`${comparisonData.token1.name} Holders`}</p><p className="text-xl text-blue-500">{comparisonData.token1.holders.toLocaleString()}</p></div>
-                      <div className="p-3 rounded-md bg-dashGreen-dark"><p className="text-sm opacity-70">{`${comparisonData.token2.name} Holders`}</p><p className="text-xl text-blue-500">{comparisonData.token2.holders.toLocaleString()}</p></div>
+                      <div className="p-3 rounded-md bg-dashGreen-dark"><p className="text-sm opacity-70">{`${comparisonData.token1.name} Holders`}</p><p className="text-xl text-[#3B4FE4]">{comparisonData.token1.holders.toLocaleString()}</p></div>
+                      <div className="p-3 rounded-md bg-dashGreen-dark"><p className="text-sm opacity-70">{`${comparisonData.token2.name} Holders`}</p><p className="text-xl text-[#3B4FE4]">{comparisonData.token2.holders.toLocaleString()}</p></div>
                     </div>
                   </DashcoinCardContent>
                 </DashcoinCard>

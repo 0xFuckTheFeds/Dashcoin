@@ -4,48 +4,48 @@
 
 @layer base {
   :root {
-    --background: 70 60% 22%; /* dashGreen */
-    --foreground: 48 100% 95%; /* dashYellow light */
+    --background: 240 16% 9%; /* #13131A */
+    --foreground: 240 25% 92%; /* #E6E6F0 */
 
-    --card: 70 60% 12%; /* dashGreen-card - much darker */
-    --card-foreground: 48 100% 95%;
+    --card: 240 17% 13%; /* #1B1B26 */
+    --card-foreground: 240 25% 92%;
 
-    --popover: 70 60% 12%; /* dashGreen-card - much darker */
-    --popover-foreground: 48 100% 95%;
+    --popover: 240 17% 13%;
+    --popover-foreground: 240 25% 92%;
 
-    --primary: 48 100% 50%; /* dashYellow */
-    --primary-foreground: 70 60% 10%;
+    --primary: 240 25% 92%;
+    --primary-foreground: 240 16% 9%;
 
-    --secondary: 70 60% 30%; /* dashGreen light */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 240 17% 13%;
+    --secondary-foreground: 240 25% 92%;
 
-    --muted: 70 30% 30%;
-    --muted-foreground: 48 30% 90%;
+    --muted: 240 17% 20%;
+    --muted-foreground: 240 9% 66%; /* #A0A0B0 */
 
-    --accent: 0 100% 70%; /* dashRed */
-    --accent-foreground: 0 0% 100%;
+    --accent: 33 93% 54%; /* Bitcoin Orange */
+    --accent-foreground: 240 16% 9%;
 
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 359 79% 58%; /* Bright Red */
+    --destructive-foreground: 240 25% 92%;
 
-    --border: 70 30% 30%;
-    --input: 70 30% 30%;
-    --ring: 48 100% 50%;
+    --border: 240 17% 20%;
+    --input: 240 17% 20%;
+    --ring: 240 25% 92%;
 
     --radius: 0.75rem;
 
-      --font-inter: 'Inter', sans-serif;
+    --font-inter: 'Inter', sans-serif;
     --font-bangers: 'Bangers', cursive;
-    /* Updated palette: grey, black and off-white */
-    --dashcoin-yellow: #f5f5f5; /* off-white */
-    --dashcoin-yellow-dark: #e5e5e5;
-    --dashcoin-yellow-light: #fafafa;
-    --dashcoin-green: #3a3a3a; /* base grey */
-    --dashcoin-green-dark: #1a1a1a; /* near black */
-    --dashcoin-green-light: #4f4f4f;
-    --dashcoin-green-accent: #656565;
+
+    --dashcoin-yellow: #E6E6F0;
+    --dashcoin-yellow-dark: #E6E6F0;
+    --dashcoin-yellow-light: #E6E6F0;
+    --dashcoin-green: #13131A;
+    --dashcoin-green-dark: #13131A;
+    --dashcoin-green-light: #1B1B26;
+    --dashcoin-green-accent: #1B1B26;
     --dashcoin-black: #000000;
-    --dashcoin-red: #f05252;
+    --dashcoin-red: #E84042;
   }
 
   @layer base {
@@ -56,33 +56,33 @@
 
 
   .dark {
-    --background: 70 60% 12%; /* darker dashGreen */
-    --foreground: 48 100% 95%; /* dashYellow light */
+    --background: 240 16% 9%;
+    --foreground: 240 25% 92%;
 
-    --card: 70 60% 7%; /* dashGreen-cardDark - very dark */
-    --card-foreground: 48 100% 95%;
+    --card: 240 17% 13%;
+    --card-foreground: 240 25% 92%;
 
-    --popover: 70 60% 7%; /* dashGreen-cardDark - very dark */
-    --popover-foreground: 48 100% 95%;
+    --popover: 240 17% 13%;
+    --popover-foreground: 240 25% 92%;
 
-    --primary: 48 100% 50%; /* dashYellow */
-    --primary-foreground: 70 60% 10%;
+    --primary: 240 25% 92%;
+    --primary-foreground: 240 16% 9%;
 
-    --secondary: 70 50% 25%; /* darker dashGreen light */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 240 17% 13%;
+    --secondary-foreground: 240 25% 92%;
 
-    --muted: 70 30% 20%;
-    --muted-foreground: 48 30% 90%;
+    --muted: 240 17% 20%;
+    --muted-foreground: 240 9% 66%;
 
-    --accent: 0 100% 60%; /* darker dashRed */
-    --accent-foreground: 0 0% 100%;
+    --accent: 33 93% 54%;
+    --accent-foreground: 240 16% 9%;
 
-    --destructive: 0 100% 40%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 359 79% 58%;
+    --destructive-foreground: 240 25% 92%;
 
-    --border: 70 30% 20%;
-    --input: 70 30% 20%;
-    --ring: 48 100% 50%;
+    --border: 240 17% 20%;
+    --input: 240 17% 20%;
+    --ring: 240 25% 92%;
   }
 }
 
@@ -142,37 +142,37 @@
 
 @layer base {
   :root {
-    --background: 150 30% 12%;
-    --foreground: 0 0% 98%;
+    --background: 240 16% 9%;
+    --foreground: 240 25% 92%;
 
-    --muted: 147 30% 15%;
-    --muted-foreground: 240 5% 84%;
+    --muted: 240 17% 20%;
+    --muted-foreground: 240 9% 66%;
 
-    --popover: 150 30% 12%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 240 17% 13%;
+    --popover-foreground: 240 25% 92%;
 
-    --card: 146 31% 10%;
-    --card-foreground: 0 0% 98%;
+    --card: 240 17% 13%;
+    --card-foreground: 240 25% 92%;
 
-    --border: 146 31% 15%;
-    --input: 146 31% 15%;
+    --border: 240 17% 20%;
+    --input: 240 17% 20%;
 
-    --primary: 44 100% 48%;
-    --primary-foreground: 0 0% 9%;
+    --primary: 240 25% 92%;
+    --primary-foreground: 240 16% 9%;
 
-    --secondary: 146 31% 15%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 240 17% 13%;
+    --secondary-foreground: 240 25% 92%;
 
-    --accent: 160 61% 43%;
-    --accent-foreground: 0 0% 9%;
+    --accent: 33 93% 54%;
+    --accent-foreground: 240 16% 9%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 359 79% 58%;
+    --destructive-foreground: 240 25% 92%;
 
-    --ring: 146 31% 15%;
+    --ring: 240 25% 92%;
 
     --radius: 0.5rem;
-    
+
     --dashGreen: var(--dashcoin-green);
     --dashGreen-dark: var(--dashcoin-green-dark);
     --dashGreen-light: var(--dashcoin-green-light);
