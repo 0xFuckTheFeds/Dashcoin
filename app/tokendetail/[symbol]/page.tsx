@@ -6,7 +6,6 @@ import { Loader2, ArrowLeft, Twitter } from "lucide-react"
 import { DashcoinButton } from "@/components/ui/dashcoin-button"
 import { DashcoinLogo } from "@/components/dashcoin-logo"
 import { DashcoinCard, DashcoinCardHeader, DashcoinCardTitle, DashcoinCardContent } from "@/components/ui/dashcoin-card"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { DexscreenerChart } from "@/components/dexscreener-chart"
 import { fetchTokenDetails, getTimeUntilNextDuneRefresh } from "@/app/actions/dune-actions"
 import { fetchDexscreenerTokenData, getTimeUntilNextDexscreenerRefresh } from "@/app/actions/dexscreener-actions"
@@ -205,9 +204,6 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
       <header className="container mx-auto py-6 px-4">
         <div className="flex justify-between items-center">
           <DashcoinLogo size={48} />
-          <div>
-            <ThemeToggle />
-          </div>
         </div>
         <div className="mt-2 text-center">
           <div className="flex items-center justify-center gap-1">
