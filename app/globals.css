@@ -88,3 +88,161 @@
     --ring: 240 25% 92%;
   }
 }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dashcoin-green-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dashcoin-green-light);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dashcoin-yellow-dark);
+}
+
+/* Additional Dashcoin Card Styles */
+.dashcoin-card {
+  border: 1px solid var(--dashcoin-green-light);
+  border-radius: 0.5rem;
+  background-color: var(--dashcoin-green);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Tooltip custom styles */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: var(--dashcoin-green-dark) !important;
+  border: 1px solid var(--dashcoin-green-light) !important;
+  color: var(--dashcoin-yellow) !important;
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+  .responsive-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* Token hover effect */
+.token-row:hover {
+  background-color: var(--dashcoin-green-light);
+  transition: background-color 0.2s ease;
+}
+
+/* Custom animation for loading states */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.loading-pulse {
+  animation: pulse 1.5s infinite;
+}
+
+/* Military-themed animations */
+@keyframes tactical-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); text-shadow: 3px 3px 0 #222222, 0 0 10px rgba(255, 215, 0, 0.5); }
+}
+
+@keyframes tactical-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes tactical-scan {
+  0% { background-position: 0 0; }
+  100% { background-position: 16px 16px; }
+}
+
+@keyframes tactical-flash {
+  0%, 50%, 100% { opacity: 0; transform: scale(0.8); }
+  5%, 45% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes appear {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Animation classes */
+.animate-tactical-pulse {
+  animation: tactical-pulse 3s ease-in-out infinite;
+}
+
+.animate-tactical-blink {
+  animation: tactical-blink 2s ease-in-out infinite;
+}
+
+.animate-tactical-scan {
+  animation: tactical-scan 30s linear infinite;
+}
+
+.animate-tactical-flash {
+  animation: tactical-flash 4s ease-in-out infinite;
+}
+
+.animate-appear {
+  animation: appear 0.8s ease-out forwards;
+}
+
+/* Article styling extracted from uploaded documents */
+.article {
+  background: #1B1B26;
+  color: #E6E6F0;
+  font-family: 'Inter', sans-serif;
+  max-width: 800px;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;
+}
+
+.article h1,
+.article h2,
+.article h3 {
+  color: #ffffff;
+  font-weight: bold;
+  margin-top: 1.5rem;
+}
+
+.article p {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.article ul,
+.article ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.article blockquote {
+  background: #13131A;
+  border-left: 4px solid #50E3C2;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.article a {
+  color: #50E3C2;
+  text-decoration: none;
+}
+
+.article a:hover {
+  text-decoration: underline;
+}

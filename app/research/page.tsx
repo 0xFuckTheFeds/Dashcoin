@@ -794,10 +794,10 @@ export default function ResearchPage() {
                   </DashcoinCardHeader>
                   
                   <DashcoinCardContent className="no-scrollbar flex flex-col py-4">
-                    <div 
-                      className="prose prose-invert max-w-none prose-headings:text-dashYellow prose-a:text-dashYellow-light prose-img:rounded-lg prose-img:my-8 prose-img:shadow-lg flex-grow"
-                      dangerouslySetInnerHTML={{ 
-                        __html: selectedPost.content 
+                    <div
+                      className="article flex-grow"
+                      dangerouslySetInnerHTML={{
+                        __html: selectedPost.content
                       }}
                     />
                   </DashcoinCardContent>
