@@ -225,12 +225,24 @@ export async function batchFetchTokensData(
   tokenAddresses: string[],
 ): Promise<Map<string, DexscreenerTokenResponse | null>> {
   if (tokenAddresses.length === 0) return new Map();
-  
+
   const results = new Map<string, DexscreenerTokenResponse | null>();
-  const batchSize = 10;  
-  
-  for (let i = 0; i < tokenAddresses.length; i += batchSize) {
-    const batch = tokenAddresses.slice(i, i + batchSize);
+  const batchSize = 10;
+
+  const addressesToFetch: string[] = [];
+
+  for (const address of tokenAddresses) {
+    const cacheKey = `token:${address}`;
+    const cached = dexscreenerCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      results.set(address, cached.data);
+    } else {
+      addressesToFetch.push(address);
+    }
+  }
+
+  for (let i = 0; i < addressesToFetch.length; i += batchSize) {
+    const batch = addressesToFetch.slice(i, i + batchSize);
     const batchAddressString = batch.join(',');
 
     try {
@@ -256,21 +268,24 @@ export async function batchFetchTokensData(
         });
         
         batch.forEach(address => {
+          let value: DexscreenerTokenResponse = { pairs: [] };
           if (groupedByToken[address]) {
-            results.set(address, { pairs: groupedByToken[address] });
-          } else {
-            results.set(address, { pairs: [] });
+            value = { pairs: groupedByToken[address] };
           }
+          results.set(address, value);
+          dexscreenerCache.set(`token:${address}`, { data: value, timestamp: Date.now() });
         });
       } else {
-        batch.forEach(address => results.set(address, null));
+        batch.forEach(address => {
+          results.set(address, null);
+        });
       }
     } catch (error) {
       console.error(`Error fetching batch for addresses ${batchAddressString}:`, error);
       batch.forEach(address => results.set(address, null));
     }
     
-    if (i + batchSize < tokenAddresses.length) {
+    if (i + batchSize < addressesToFetch.length) {
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
   }

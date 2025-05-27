@@ -27,6 +27,8 @@ import { DuneQueryLink } from "@/components/dune-query-link";
 import { Navbar } from "@/components/navbar";
 import { Twitter } from "lucide-react";
 
+export const revalidate = 60;
+
 const MarketCapChartWrapper = async ({
   marketCapTimeDataPromise,
 }: {
