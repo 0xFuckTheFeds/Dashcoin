@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -34,8 +36,6 @@
 
     --radius: 0.75rem;
 
-    --font-inter: 'Inter', sans-serif;
-    --font-bangers: 'Bangers', cursive;
 
     --dashcoin-yellow: #E6E6F0;
     --dashcoin-yellow-dark: #E6E6F0;
@@ -51,6 +51,7 @@
   @layer base {
   body {
     @apply bg-dashGreen text-slate-50;
+    font-family: 'Inter', sans-serif;
   }
 }
 
@@ -92,6 +93,7 @@
   }
   body {
     @apply bg-dashGreen text-dashYellow-light dark:bg-dashGreen-dark;
+    font-family: 'Inter', sans-serif;
   }
 }
 
@@ -120,20 +122,22 @@
   pointer-events: none;
 }
 
+
 .dashcoin-title {
-  font-family: "Bangers", system-ui, sans-serif;
+  font-family: 'Inter', sans-serif;
   text-shadow: 3px 3px 0 #222222;
   letter-spacing: 1px;
 }
 
+
 .dashcoin-title-hq {
-  font-family: "Bangers", system-ui, sans-serif;
+  font-family: 'Inter', sans-serif;
   text-shadow: 3px 3px 0 #222222;
   letter-spacing: 5px;
 }
 
 .dashcoin-text {
-  font-family: "Bangers", system-ui, sans-serif;
+  font-family: 'Inter', sans-serif;
   text-shadow: 2px 2px 0 #222222;
   letter-spacing: 1px;
 }
