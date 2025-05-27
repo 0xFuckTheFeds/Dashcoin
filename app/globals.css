@@ -36,7 +36,6 @@
 
     --radius: 0.75rem;
 
-
     --dashcoin-yellow: #E6E6F0;
     --dashcoin-yellow-dark: #E6E6F0;
     --dashcoin-yellow-light: #E6E6F0;
@@ -46,136 +45,6 @@
     --dashcoin-green-accent: #1B1B26;
     --dashcoin-black: #000000;
     --dashcoin-red: #E84042;
-  }
-
-  @layer base {
-  body {
-    @apply bg-dashGreen text-slate-50;
-    font-family: 'Inter', sans-serif;
-  }
-}
-
-
-  .dark {
-    --background: 240 16% 9%;
-    --foreground: 240 25% 92%;
-
-    --card: 240 17% 13%;
-    --card-foreground: 240 25% 92%;
-
-    --popover: 240 17% 13%;
-    --popover-foreground: 240 25% 92%;
-
-    --primary: 240 25% 92%;
-    --primary-foreground: 240 16% 9%;
-
-    --secondary: 240 17% 13%;
-    --secondary-foreground: 240 25% 92%;
-
-    --muted: 240 17% 20%;
-    --muted-foreground: 240 9% 66%;
-
-    --accent: 33 93% 54%;
-    --accent-foreground: 240 16% 9%;
-
-    --destructive: 359 79% 58%;
-    --destructive-foreground: 240 25% 92%;
-
-    --border: 240 17% 20%;
-    --input: 240 17% 20%;
-    --ring: 240 25% 92%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-dashGreen text-dashYellow-light dark:bg-dashGreen-dark;
-    font-family: 'Inter', sans-serif;
-  }
-}
-
-.card-with-border {
-  position: relative;
-  border-radius: 1rem;
-  /* overflow: hidden; */ /* Removed to allow suggestion dropdown to be visible */
-  background: rgba(42, 47, 14, 0.98); /* dashGreen-card with high opacity */
-  border: 2px solid #222222;
-  box-shadow: 0 8px 0 0 #222222, 0 0 15px rgba(0, 0, 0, 0.3);
-}
-
-.dark .card-with-border {
-  background: rgba(26, 29, 8, 0.98); /* dashGreen-cardDark with high opacity */
-}
-
-.card-with-border::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border: 2px solid var(--dashYellow);
-  border-radius: 0.75rem;
-  pointer-events: none;
-}
-
-
-.dashcoin-title {
-  font-family: 'Inter', sans-serif;
-  text-shadow: 3px 3px 0 #222222;
-  letter-spacing: 1px;
-}
-
-
-.dashcoin-title-hq {
-  font-family: 'Inter', sans-serif;
-  text-shadow: 3px 3px 0 #222222;
-  letter-spacing: 5px;
-}
-
-.dashcoin-text {
-  font-family: 'Inter', sans-serif;
-  text-shadow: 2px 2px 0 #222222;
-  letter-spacing: 1px;
-}
-
-
-
-@layer base {
-  :root {
-    --background: 240 16% 9%;
-    --foreground: 240 25% 92%;
-
-    --muted: 240 17% 20%;
-    --muted-foreground: 240 9% 66%;
-
-    --popover: 240 17% 13%;
-    --popover-foreground: 240 25% 92%;
-
-    --card: 240 17% 13%;
-    --card-foreground: 240 25% 92%;
-
-    --border: 240 17% 20%;
-    --input: 240 17% 20%;
-
-    --primary: 240 25% 92%;
-    --primary-foreground: 240 16% 9%;
-
-    --secondary: 240 17% 13%;
-    --secondary-foreground: 240 25% 92%;
-
-    --accent: 33 93% 54%;
-    --accent-foreground: 240 16% 9%;
-
-    --destructive: 359 79% 58%;
-    --destructive-foreground: 240 25% 92%;
-
-    --ring: 240 25% 92%;
-
-    --radius: 0.5rem;
 
     --dashGreen: var(--dashcoin-green);
     --dashGreen-dark: var(--dashcoin-green-dark);
@@ -186,6 +55,37 @@
     --dashYellow-light: var(--dashcoin-yellow-light);
     --dashBlack: var(--dashcoin-black);
     --dashRed: var(--dashcoin-red);
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', sans-serif;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  .dark {
+    --background: 240 16% 9%;
+    --foreground: 240 25% 92%;
+    --card: 240 17% 13%;
+    --card-foreground: 240 25% 92%;
+    --popover: 240 17% 13%;
+    --popover-foreground: 240 25% 92%;
+    --primary: 240 25% 92%;
+    --primary-foreground: 240 16% 9%;
+    --secondary: 240 17% 13%;
+    --secondary-foreground: 240 25% 92%;
+    --muted: 240 17% 20%;
+    --muted-foreground: 240 9% 66%;
+    --accent: 33 93% 54%;
+    --accent-foreground: 240 16% 9%;
+    --destructive: 359 79% 58%;
+    --destructive-foreground: 240 25% 92%;
+    --border: 240 17% 20%;
+    --input: 240 17% 20%;
+    --ring: 240 25% 92%;
   }
 }
 

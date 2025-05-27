@@ -15,7 +15,14 @@ DashcoinCardHeader.displayName = "DashcoinCardHeader"
 
 const DashcoinCardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h3 ref={ref} className={cn("dashcoin-text text-xl text-dashYellow", className)} {...props} />
+    <h3
+      ref={ref}
+      className={cn(
+        "dashcoin-text text-xl font-semibold text-dashYellow",
+        className,
+      )}
+      {...props}
+    />
   ),
 )
 DashcoinCardTitle.displayName = "DashcoinCardTitle"

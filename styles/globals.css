@@ -4,18 +4,61 @@
 @tailwind components;
 @tailwind utilities;
 
+/* === GLOBAL BODY STYLES === */
 body {
   font-family: 'Inter', sans-serif;
 }
 
+/* === UTILITY CLASSES === */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
 
+/* === ROOT VARIABLES & THEME === */
 @layer base {
   :root {
+    --background: 240 16% 9%;
+    --foreground: 240 25% 92%;
+    --card: 240 17% 13%;
+    --card-foreground: 240 25% 92%;
+    --popover: 240 17% 13%;
+    --popover-foreground: 240 25% 92%;
+    --primary: 240 25% 92%;
+    --primary-foreground: 240 16% 9%;
+    --secondary: 240 17% 13%;
+    --secondary-foreground: 240 25% 92%;
+    --muted: 240 17% 20%;
+    --muted-foreground: 240 9% 66%;
+    --accent: 33 93% 54%;
+    --accent-foreground: 240 16% 9%;
+    --destructive: 359 79% 58%;
+    --destructive-foreground: 240 25% 92%;
+    --border: 240 17% 20%;
+    --input: 240 17% 20%;
+    --ring: 240 25% 92%;
+    --radius: 0.5rem;
+
+    /* Chart Colors */
+    --chart-1: 165 100% 83%;
+    --chart-2: 359 79% 58%;
+    --chart-3: 167 72% 60%;
+    --chart-4: 245 100% 81%;
+    --chart-5: 37 91% 55%;
+
+    /* Sidebar Styles */
+    --sidebar-background: 240 16% 9%;
+    --sidebar-foreground: 240 25% 92%;
+    --sidebar-primary: 240 25% 92%;
+    --sidebar-primary-foreground: 240 16% 9%;
+    --sidebar-accent: 240 17% 13%;
+    --sidebar-accent-foreground: 240 25% 92%;
+    --sidebar-border: 240 17% 20%;
+    --sidebar-ring: 240 25% 92%;
+  }
+
+  .dark {
     --background: 240 16% 9%;
     --foreground: 240 25% 92%;
     --card: 240 17% 13%;
@@ -40,7 +83,6 @@ body {
     --chart-3: 167 72% 60%;
     --chart-4: 245 100% 81%;
     --chart-5: 37 91% 55%;
-    --radius: 0.5rem;
     --sidebar-background: 240 16% 9%;
     --sidebar-foreground: 240 25% 92%;
     --sidebar-primary: 240 25% 92%;
@@ -50,9 +92,16 @@ body {
     --sidebar-border: 240 17% 20%;
     --sidebar-ring: 240 25% 92%;
   }
-  .dark {
-    --background: 240 16% 9%;
-    --foreground: 240 25% 92%;
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
     --card: 240 17% 13%;
     --card-foreground: 240 25% 92%;
     --popover: 240 17% 13%;

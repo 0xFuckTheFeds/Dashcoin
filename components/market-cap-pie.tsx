@@ -54,21 +54,21 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
 
     if (topTokens.length === 0) return
 
-    const dashYellow = getCssVariable("--dashYellow") || "#ffd700"
-    const dashGreen = getCssVariable("--dashGreen-accent") || "#66cc33"
-    const dashYellowLight = getCssVariable("--dashYellow-light") || "#fff0a0"
+    const dashYellow = "#50E3C2"
+    const dashGreen = "#6A8DFF"
+    const dashYellowLight = "#A0A0B0"
 
     const colors = [
       dashYellow,
       dashGreen,
-      "#ff6666",
-      "#0077cc",
-      "#99dd66",
-      "#e6b800",
-      "#339900",
-      "#ff9999", 
-      "#00aaff", 
-      "#cccccc", 
+      "#BD7BFF",
+      "#FFA45B",
+      "#8E87E1",
+      "#39C0FA",
+      "#C28AFF",
+      "#FF6B8A",
+      "#5ED9B7",
+      "#A0A0B0",
     ]
 
     const chartData = {
@@ -77,7 +77,7 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
         {
           data: topTokens.map((item) => item.market_cap_usd || 0),
           backgroundColor: colors.slice(0, topTokens.length),
-          borderColor: "#222222",
+          borderColor: "#2A2A35",
           borderWidth: 2,
         },
       ],
@@ -121,7 +121,7 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
         <DashcoinCardTitle>Market Cap Distribution</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
-        <div className="h-80">
+        <div className="h-80 bg-[#13131A]">
           <canvas ref={chartRef} />
         </div>
         <DuneQueryLink queryId={5140151} className="mt-2" />
