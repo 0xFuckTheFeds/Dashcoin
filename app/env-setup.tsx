@@ -4,7 +4,6 @@ import type React from "react"
 import { useState } from "react"
 import { DashcoinButton } from "@/components/ui/dashcoin-button"
 import { DashcoinLogo } from "@/components/dashcoin-logo"
-import { ThemeToggle } from "@/components/theme-toggle"
 import {
   DashcoinCard,
   DashcoinCardHeader,
@@ -32,9 +31,7 @@ export default function EnvSetup() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
+      
 
       <div className="mb-8">
         <DashcoinLogo size={64} />

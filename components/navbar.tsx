@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { ExternalLink } from "lucide-react";
 
 interface NavbarProps {
@@ -41,7 +40,6 @@ export function Navbar({ dashcoinTradeLink }: NavbarProps) {
               Graphs & Comparisons
             </NavLink>
           </nav>
-          <ThemeToggle />
         </div>
       </div>
       {/* Mobile Navigation */}
