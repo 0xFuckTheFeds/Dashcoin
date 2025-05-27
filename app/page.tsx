@@ -239,7 +239,7 @@ export default async function Home() {
       <Navbar dashcoinTradeLink={dashcoinTradeLink} />
 
       <main className="container mx-auto px-4 py-6 space-y-8">
-        {/* Hero Section with Frog Soldiers */}
+        {/* Hero Section */}
         <div className="text-center mb-12">
           <div className="flex justify-center items-center gap-4 mb-4">
             <div className="w-24 h-24 md:w-32 md:h-32 relative">
@@ -259,16 +259,6 @@ export default async function Home() {
               <p className="text-xl">Your Research hub for tokens launched on the Believe app</p>
             </div>
             
-            <div className="w-24 h-24 md:w-32 md:h-32 relative">
-              <Image
-                src="/images/Dashcoin%20Research%20Logo.png"
-                alt="Dashcoin Research Logo"
-                width={128}
-                height={128}
-                className="object-contain scale-x-[-1] rounded-full overflow-hidden"
-                style={{ clipPath: "circle(50%)" }}
-              />
-            </div>
           </div>
           {/* DASHC Token Stats Row */}
           <div className="mt-4 mb-6 py-2 px-4 bg-dashGreen-dark rounded-lg border border-dashBlack flex flex-wrap justify-between items-center gap-2 max-w-4xl mx-auto">
