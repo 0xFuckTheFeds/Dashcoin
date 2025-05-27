@@ -190,7 +190,7 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
               <DashcoinCardTitle>Volume (24h)</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">${formatCurrency(volume24h)}</p>
+              <p className="dashcoin-text text-2xl text-dashYellow">{formatCurrency(volume24h)}</p>
             </DashcoinCardContent>
           </DashcoinCard>
 
@@ -208,7 +208,7 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
               <DashcoinCardTitle>Market Cap</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">${formatCurrency(marketCap)}</p>
+              <p className="dashcoin-text text-2xl text-dashYellow">{formatCurrency(marketCap)}</p>
             </DashcoinCardContent>
           </DashcoinCard>
         </div>
@@ -230,7 +230,7 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
                 </div>
                 <div>
                   <p className="text-sm opacity-80">Liquidity</p>
-                  <p className="text-xl font-bold">${formatCurrency(liquidity)}</p>
+                  <p className="text-xl font-bold">{formatCurrency(liquidity)}</p>
                 </div>
                 <div>
                   <p className="text-sm opacity-80">Price Change (1h)</p>
