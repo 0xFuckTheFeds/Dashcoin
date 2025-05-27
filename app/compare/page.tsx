@@ -94,7 +94,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function ComparePage() {
   const dashcoinTradeLink = "https://axiom.trade/t/fRfKGCriduzDwSudCwpL7ySCEiboNuryhZDVJtr1a1C/dashc";
-  const dashcoinXLink = "https://x.com/dune_dashcoin";
+  const dashcoinXLink = "https://x.com/Dashc_Research";
 
   const [token1Address, setToken1Address] = useState("");
   const [token2Address, setToken2Address] = useState("");
