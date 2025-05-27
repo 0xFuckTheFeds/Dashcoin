@@ -20,10 +20,10 @@ interface TokenResearchData {
   Symbol: string
   Score: number | string
   "Founder Doxxed": number | string
-  "Startup Experience": number | string
+  "Dev is Active on Twitter": number | string
   "Successful Exit": number | string
   "Discussed Plans for Token Integration": number | string
-  "Project Has Some Virality / Popularity": number | string
+  "Project has 100k+ views on Social Media": number | string
   "Live Product Exists": number | string
   "Relevant Links": string
   "Comments": string
@@ -193,10 +193,10 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
 
   const frameworkCriteria = [
     "Founder Doxxed",
-    "Startup Experience",
+    "Dev is Active on Twitter",
     "Successful Exit",
     "Discussed Plans for Token Integration",
-    "Project Has Some Virality / Popularity",
+    "Project has 100k+ views on Social Media",
     "Live Product Exists"
   ];
 
@@ -457,22 +457,27 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
                 </thead>
                 <tbody>
                   <tr className="border-b border-dashGreen-light">
-                    {frameworkCriteria.map((criterion) => {
-                      const value = researchData?.[criterion];
-                      const numValue = typeof value === 'string' ? parseInt(value) : value;
-                      
-                      return (
-                        <td key={criterion} className="py-4 px-4 text-center border-r border-dashGreen-light last:border-r-0">
-                          <div className="text-2xl">
-                            {numValue === 1 ? (
-                              <span className="text-green-500">✅</span>
-                            ) : (
-                              <span className="text-red-500">❌</span>
-                            )}
-                          </div>
-                        </td>
-                      );
-                    })}
+                      {frameworkCriteria.map((criterion) => {
+                        const value = researchData?.[criterion];
+                        const numValue = typeof value === 'string' ? parseInt(value) : value;
+
+                        return (
+                          <td
+                            key={criterion}
+                            className="py-4 px-4 text-center border-r border-dashGreen-light last:border-r-0"
+                          >
+                            <div className="text-2xl">
+                              {numValue === 2 ? (
+                                <span className="text-green-500">✅</span>
+                              ) : numValue === 1 ? (
+                                <span className="text-red-500">❌</span>
+                              ) : (
+                                <span className="text-yellow-500">-</span>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })}
                   </tr>
                 </tbody>
               </table>
