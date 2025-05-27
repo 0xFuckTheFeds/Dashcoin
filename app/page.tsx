@@ -239,83 +239,60 @@ export default async function Home() {
       <Navbar dashcoinTradeLink={dashcoinTradeLink} />
 
       <main className="container mx-auto px-4 py-6 space-y-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="flex justify-center items-center gap-4 mb-4">
-            <div className="w-24 h-24 md:w-32 md:h-32 relative">
-              <Image
-                src="/images/Dashcoin%20Research%20Logo.png"
-                alt="Dashcoin Research Logo"
-                width={128}
-                height={128}
-                className="object-contain rounded-full overflow-hidden"
-                style={{ clipPath: "circle(50%)" }}
-              />
-            </div>
-            <div className="flex flex-col">
-              <h1 className="dashcoin-title-hq text-5xl md:text-8xl text-dashYellow">
-                DASHCOIN HQ
-              </h1>
-              <p className="text-xl">Your Research hub for tokens launched on the Believe app</p>
-            </div>
-            
+        <div className="mt-4 mb-4 py-2 px-4 bg-dashGreen-dark rounded-lg border border-dashBlack flex flex-wrap justify-between items-center gap-2 max-w-4xl mx-auto">
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-dashYellow text-sm">$DASHC:</span>
+            <CopyAddress
+              address={dashcoinCA}
+              truncate
+              displayLength={6}
+              className="text-dashYellow-light hover:text-dashYellow text-sm"
+            />
           </div>
-          {/* DASHC Token Stats Row */}
-          <div className="mt-4 mb-6 py-2 px-4 bg-dashGreen-dark rounded-lg border border-dashBlack flex flex-wrap justify-between items-center gap-2 max-w-4xl mx-auto">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-dashYellow">$DASHC:</span>
-              <CopyAddress
-                address={dashcoinCA}
-                truncate={true}
-                displayLength={6}
-                className="text-dashYellow-light hover:text-dashYellow"
-              />
+
+          <div className="flex flex-wrap gap-4 justify-center">
+            <div className="text-center">
+              <span className="text-xs opacity-70 font-medium">Price</span>
+              <p className="text-sm font-medium">${dashcPrice.toFixed(dashcPrice < 0.01 ? 8 : 6)}</p>
             </div>
 
-            <div className="flex flex-wrap gap-4 justify-center">
-              <div className="text-center">
-                <span className="text-xs opacity-70">Price</span>
-                <p className="font-bold">${dashcPrice.toFixed(dashcPrice < 0.01 ? 8 : 6)}</p>
-              </div>
-
-              <div className="text-center">
-                <span className="text-xs opacity-70">Market Cap</span>
-                <p className="font-bold">{formatCurrency(dashcMarketCap)}</p>
-              </div>
-
-              <div className="text-center">
-                <span className="text-xs opacity-70">24h Volume</span>
-                <p className="font-bold">{formatCurrency(dashcVolume)}</p>
-              </div>
-
-              <div className="text-center">
-                <span className="text-xs opacity-70">24h Change</span>
-                <p
-                  className={`font-bold ${
-                    dashcChange24h >= 0 ? "text-dashGreen-accent" : "text-dashRed"
-                  }`}
-                >
-                  {dashcChange24h >= 0 ? "+" : ""}
-                  {dashcChange24h.toFixed(2)}%
-                </p>
-              </div>
-
-              <div className="text-center">
-                <span className="text-xs opacity-70">Liquidity</span>
-                <p className="font-bold">{formatCurrency(dashcLiquidity)}</p>
-              </div>
+            <div className="text-center">
+              <span className="text-xs opacity-70 font-medium">Market Cap</span>
+              <p className="text-sm font-medium">{formatCurrency(dashcMarketCap)}</p>
             </div>
 
-            <div>
-              <a
-                href={dashcoinTradeLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1 bg-dashYellow text-dashBlack font-medium rounded-md hover:bg-dashYellow-dark transition-colors text-sm flex items-center justify-center border border-dashBlack"
+            <div className="text-center">
+              <span className="text-xs opacity-70 font-medium">24h Volume</span>
+              <p className="text-sm font-medium">{formatCurrency(dashcVolume)}</p>
+            </div>
+
+            <div className="text-center">
+              <span className="text-xs opacity-70 font-medium">24h Change</span>
+              <p
+                className={`text-sm font-medium ${
+                  dashcChange24h >= 0 ? "text-dashGreen-accent" : "text-dashRed"
+                }`}
               >
-                TRADE
-              </a>
+                {dashcChange24h >= 0 ? "+" : ""}
+                {dashcChange24h.toFixed(2)}%
+              </p>
             </div>
+
+            <div className="text-center">
+              <span className="text-xs opacity-70 font-medium">Liquidity</span>
+              <p className="text-sm font-medium">{formatCurrency(dashcLiquidity)}</p>
+            </div>
+          </div>
+
+          <div>
+            <a
+              href={dashcoinTradeLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1 bg-dashYellow text-dashBlack font-medium rounded-md hover:bg-dashYellow-dark transition-colors text-sm flex items-center justify-center border border-dashBlack"
+            >
+              TRADE
+            </a>
           </div>
         </div>
 
