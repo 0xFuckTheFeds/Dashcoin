@@ -247,3 +247,9 @@
 .article a:hover {
   text-decoration: underline;
 }
+
+/* Ensure uploaded HTML respects dark theme */
+.prose-invert * {
+  background: transparent !important;
+  color: inherit !important;
+}
