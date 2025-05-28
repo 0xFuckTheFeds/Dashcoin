@@ -22,7 +22,6 @@ import { formatCurrency } from "@/lib/utils";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
 import TokenTable from "@/components/token-table";
-import { CopyAddress } from "@/components/copy-address";
 import { DuneQueryLink } from "@/components/dune-query-link";
 import { Navbar } from "@/components/navbar";
 import { Twitter } from "lucide-react";
@@ -209,9 +208,6 @@ export default async function Home() {
   let dashcVolume = 0;
   let dashcChange24h = 0;
   let dashcLiquidity = 0;
-  const dashcHolders = 0; 
-  let dashcPairAddress = "";
-  let lastUpdated = new Date().toLocaleString();
 
   if (dexscreenerData && dexscreenerData.pairs && dexscreenerData.pairs.length > 0) {
     const pair = dexscreenerData.pairs[0];
@@ -221,83 +217,29 @@ export default async function Home() {
     dashcVolume = pair.volume?.h24 || 0;
     dashcChange24h = pair.priceChange?.h24 || 0;
     dashcLiquidity = pair.liquidity?.usd || 0;
-    dashcPairAddress = pair.pairAddress || "";
-
-    //@ts-ignore
-    if (pair.updatedAt) {
-      //@ts-ignore
-      lastUpdated = new Date(pair.updatedAt).toLocaleString(undefined, {
-        dateStyle: "short",
-        timeStyle: "medium",
-      });
-    }
+    // pair address and timestamp are available but unused in this view
   }
 
   return (
     <div className="min-h-screen">
       {/* Use the new Navbar component */}
-      <Navbar dashcoinTradeLink={dashcoinTradeLink} />
+      <Navbar
+        dashcoinTradeLink={dashcoinTradeLink}
+        dashcStats={{
+          dashcoinCA,
+          tradeLink: dashcoinTradeLink,
+          price: dashcPrice,
+          marketCap: dashcMarketCap,
+          volume: dashcVolume,
+          change24h: dashcChange24h,
+          liquidity: dashcLiquidity,
+        }}
+      />
 
-      <main className="container mx-auto px-4 py-6 space-y-8">
-        <div className="mt-4 mb-4 py-2 px-4 bg-dashGreen-dark rounded-lg border border-dashBlack flex flex-wrap justify-between items-center gap-2 max-w-4xl mx-auto">
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-dashYellow text-sm">$DASHC:</span>
-            <CopyAddress
-              address={dashcoinCA}
-              truncate
-              displayLength={6}
-              className="text-dashYellow-light hover:text-dashYellow text-sm"
-            />
-          </div>
-
-          <div className="flex flex-wrap gap-4 justify-center">
-            <div className="text-center">
-              <span className="text-xs opacity-70 font-medium">Price</span>
-              <p className="text-sm font-medium">${dashcPrice.toFixed(dashcPrice < 0.01 ? 8 : 6)}</p>
-            </div>
-
-            <div className="text-center">
-              <span className="text-xs opacity-70 font-medium">Market Cap</span>
-              <p className="text-sm font-medium">{formatCurrency(dashcMarketCap)}</p>
-            </div>
-
-            <div className="text-center">
-              <span className="text-xs opacity-70 font-medium">24h Volume</span>
-              <p className="text-sm font-medium">{formatCurrency(dashcVolume)}</p>
-            </div>
-
-            <div className="text-center">
-              <span className="text-xs opacity-70 font-medium">24h Change</span>
-              <p
-                className={`text-sm font-medium ${
-                  dashcChange24h >= 0 ? "text-dashGreen-accent" : "text-dashRed"
-                }`}
-              >
-                {dashcChange24h >= 0 ? "+" : ""}
-                {dashcChange24h.toFixed(2)}%
-              </p>
-            </div>
-
-            <div className="text-center">
-              <span className="text-xs opacity-70 font-medium">Liquidity</span>
-              <p className="text-sm font-medium">{formatCurrency(dashcLiquidity)}</p>
-            </div>
-          </div>
-
-          <div>
-            <a
-              href={dashcoinTradeLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1 bg-dashYellow text-dashBlack font-medium rounded-md hover:bg-dashYellow-dark transition-colors text-sm flex items-center justify-center border border-dashBlack"
-            >
-              TRADE
-            </a>
-          </div>
-        </div>
+      <main className="container mx-auto px-4 py-6 space-y-6">
 
         {/* Token Table */}
-        <div className="mt-8">
+        <div className="mt-4">
           <h2 className="dashcoin-text text-3xl text-dashYellow mb-4">
             Top Tokens by Market Cap
           </h2>
