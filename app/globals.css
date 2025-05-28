@@ -212,6 +212,12 @@
   margin: 0;
 }
 
+/* Ensure any injected elements inherit colors and do not override the theme */
+.article * {
+  color: inherit !important;
+  background-color: transparent !important;
+}
+
 .article h1,
 .article h2,
 .article h3 {

@@ -492,13 +492,12 @@ export default function ResearchPage() {
         description = firstParagraph ? firstParagraph.textContent?.trim().substring(0, 150) || '' : '';
       }
       
-      const headStyles = Array.from(
-        htmlDoc.head?.querySelectorAll('style, link[rel="stylesheet"]') || []
-      )
-        .map((el) => el.outerHTML)
-        .join('');
+      // Remove any embedded stylesheets to avoid overriding the app theme
+      htmlDoc.querySelectorAll('style, link[rel="stylesheet"]').forEach((el) => {
+        el.remove();
+      });
 
-      const fullContent = `${headStyles}${htmlDoc.body.innerHTML}`;
+      const fullContent = htmlDoc.body.innerHTML;
 
       return {
         title,
@@ -800,12 +799,13 @@ export default function ResearchPage() {
                   </DashcoinCardHeader>
                   
                   <DashcoinCardContent className="no-scrollbar flex flex-col py-4">
-                    <div
-                      className="article flex-grow"
-                      dangerouslySetInnerHTML={{
-                        __html: selectedPost.content
-                      }}
-                    />
+                    <div className="article flex-grow overflow-x-auto">
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: selectedPost.content
+                        }}
+                      />
+                    </div>
                   </DashcoinCardContent>
                 </div>
               </DashcoinCard>
