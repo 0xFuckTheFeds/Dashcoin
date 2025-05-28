@@ -5,18 +5,20 @@ import { usePathname } from "next/navigation";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ExternalLink } from "lucide-react";
+import { DashcStatsBar, DashcStatsBarProps } from "@/components/dashc-stats-bar";
 
 interface NavbarProps {
   dashcoinTradeLink: string;
+  dashcStats?: DashcStatsBarProps;
 }
 
-export function Navbar({ dashcoinTradeLink }: NavbarProps) {
+export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
   const pathname = usePathname();
 
   return (
     <header className="container mx-auto py-6 px-4">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           <Link href="/">
             <DashcoinLogo size={56} />
           </Link>
@@ -28,6 +30,11 @@ export function Navbar({ dashcoinTradeLink }: NavbarProps) {
           >
             SUPPORT THE PAGE <ExternalLink className="h-4 w-4 ml-1" />
           </a>
+          {dashcStats && (
+            <div className="mt-4 md:mt-0 w-full md:w-auto md:ml-4">
+              <DashcStatsBar {...dashcStats} />
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-8">
           <nav className="hidden md:flex items-center gap-6">
