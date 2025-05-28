@@ -349,7 +349,7 @@ export default function ComparePage() {
                         <div 
                           key={token.token} 
                           onClick={() => handleSuggestionClick(token.token, setToken1Name, setToken1Suggestions, setShowToken1Suggestions)}
-                          className="px-4 py-2 text-dashBlack hover:bg-yellow-500 hover:text-white cursor-pointer"
+                          className="px-4 py-2 text-dashBlack hover:bg-dashYellow-light hover:text-dashBlack cursor-pointer"
                         >
                           {token.name} ({token.symbol})
                           <div className="text-xs opacity-70 truncate">{token.token}</div>
@@ -371,7 +371,7 @@ export default function ComparePage() {
                         <div 
                           key={token.token} 
                           onClick={() => handleSuggestionClick(token.token, setToken2Name, setToken2Suggestions, setShowToken2Suggestions)}
-                          className="px-4 py-2 text-dashBlack hover:bg-yellow-500 hover:text-white cursor-pointer"
+                          className="px-4 py-2 text-dashBlack hover:bg-dashYellow-light hover:text-dashBlack cursor-pointer"
                         >
                           {token.name} ({token.symbol})
                           <div className="text-xs opacity-70 truncate">{token.token}</div>

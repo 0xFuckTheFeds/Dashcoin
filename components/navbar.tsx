@@ -37,6 +37,7 @@ export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
           )}
         </div>
         <div className="flex items-center gap-8">
+          <ThemeToggle />
           <nav className="hidden md:flex items-center gap-6">
             <NavLink href="/" active={pathname === "/"}>
               Overview
@@ -48,7 +49,6 @@ export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
               Graphs & Comparisons
             </NavLink>
           </nav>
-          <ThemeToggle />
         </div>
       </div>
       {/* Mobile Navigation */}
