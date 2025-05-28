@@ -51,6 +51,8 @@ export default function ResearchPage() {
   const [adminPassword, setAdminPassword] = useState("");
   const [authError, setAuthError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -59,9 +61,15 @@ export default function ResearchPage() {
     article.coinName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     article.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const selectedPost = selectedPostId ? 
-    articles.find((article) => article.id === selectedPostId) : 
+  const selectedPost = selectedPostId ?
+    articles.find((article) => article.id === selectedPostId) :
     articles.length > 0 ? articles[0] : null;
+
+  const estimatedReadTime = selectedPost
+    ? Math.ceil(
+        selectedPost.content.replace(/<[^>]+>/g, "").split(/\s+/).length / 200
+      )
+    : 0;
 
     const handleAdminLogin = async () => {
       setAuthError("");
@@ -265,6 +273,53 @@ export default function ResearchPage() {
       }
     }
   }, [selectedPostId, articles]);
+
+  useEffect(() => {
+    const blocks = document.querySelectorAll('.article pre');
+    blocks.forEach((pre) => {
+      if (pre.querySelector('.copy-btn')) return;
+      const btn = document.createElement('button');
+      btn.textContent = 'Copy';
+      btn.className = 'copy-btn absolute top-2 right-2 text-xs bg-dashGreen-light text-dashYellow px-2 py-1 rounded';
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText((pre as HTMLElement).innerText);
+      });
+      pre.classList.add('relative');
+      pre.appendChild(btn);
+    });
+  }, [selectedPostId]);
+
+  useEffect(() => {
+    if (!selectedPost) return;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(selectedPost.content, 'text/html');
+    const foundHeadings: { id: string; text: string; level: number }[] = [];
+    doc.querySelectorAll('h2, h3').forEach((el) => {
+      const text = el.textContent || '';
+      let id = el.getAttribute('id');
+      if (!id) {
+        id = text
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9\-]/g, '');
+      }
+      foundHeadings.push({ id, text, level: el.tagName === 'H2' ? 2 : 3 });
+    });
+    setHeadings(foundHeadings);
+
+    const articleContainer = document.getElementById('article-content');
+    if (articleContainer) {
+      articleContainer.querySelectorAll('h2, h3').forEach((el) => {
+        if (!el.id) {
+          const text = el.textContent || '';
+          el.id = text
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^a-z0-9\-]/g, '');
+        }
+      });
+    }
+  }, [selectedPostId, selectedPost]);
   
   const processDocxFile = async (file: File) => {
     return new Promise<any>((resolve, reject) => {
@@ -535,6 +590,116 @@ export default function ResearchPage() {
     }
   };
 
+  const Sidebar = ({ className = "lg:w-1/4 w-full sticky top-24" }) => (
+    <div className={className}>
+      <DashcoinCard className="sidebar-content-container overflow-hidden transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)]">
+        <DashcoinCardHeader className="sticky top-0 bg-dashGreen-darkest z-10">
+          <div className="flex justify-between items-center">
+            <DashcoinCardTitle className="flex items-center">
+              <BookOpen className="h-5 w-5 mr-2 text-dashYellow" />
+              Research Directory
+              {articles.length > 0 && (
+                <div className="ml-2 h-3 w-3 rounded-full bg-dashYellow animate-pulse" />
+              )}
+            </DashcoinCardTitle>
+            {isAdminMode && (
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="flex items-center gap-1 text-dashYellow hover:text-dashYellow-light transition-colors text-sm"
+              >
+                <Upload size={14} />
+                <span>Upload</span>
+              </button>
+            )}
+          </div>
+          <div className="relative mt-4 group">
+            <input
+              type="text"
+              placeholder="Search"
+              className="w-full px-4 py-2 rounded-md bg-dashGreen-dark border border-dashGreen-light focus:border-dashYellow focus:outline-none transition-all duration-300 group-hover:border-dashYellow-light"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchQuery}
+            />
+            <Search className="absolute right-3 top-2.5 h-5 w-5 text-dashYellow-light" />
+          </div>
+        </DashcoinCardHeader>
+        <DashcoinCardContent className="h-full overflow-y-auto scrollbar-thin scrollbar-track-dashGreen-dark scrollbar-thumb-dashYellow scrollbar-thumb-rounded-md hover:scrollbar-thumb-dashYellow-light">
+          {articles.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-center h-64 text-gray-400">
+              <FileText className="h-12 w-12 mb-4 opacity-50" />
+              <p className="mb-2">No research articles yet</p>
+              {isAdminMode && (
+                <button
+                  onClick={() => setShowUploadModal(true)}
+                  className="mt-2 px-4 py-2 bg-dashGreen-light rounded-md hover:bg-dashYellow hover:text-dashGreen-darkest transition-colors"
+                >
+                  Upload Your First Article
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-4 pr-2">
+              {filteredPosts.map((article) => (
+                <div
+                  key={article._id || article.id}
+                  className={`p-3 rounded-lg transition-all duration-200 cursor-pointer ${
+                    article._id === selectedPostId || article.id === selectedPostId
+                      ? 'bg-dashGreen-dark border-l-2 border-dashYellow'
+                      : 'hover:bg-dashGreen-dark/50'
+                  }`}
+                  onClick={() => {
+                    handleSelectPost(article._id || article.id);
+                    setShowMobileSidebar(false);
+                  }}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-grow">
+                      <h3 className="font-medium text-dashYellow-light mb-1 line-clamp-1">{article.title}</h3>
+                      <p className="text-sm opacity-70 mb-1 line-clamp-2">{article.description}</p>
+                      <div className="flex items-center gap-2 text-xs opacity-60">
+                        <Calendar className="h-3 w-3" />
+                        <span>{article.publishDate}</span>
+                      </div>
+                    </div>
+                    {isAdminMode && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteArticle(article.id || article._id);
+                        }}
+                        className="ml-2 p-1 text-gray-400 hover:text-red-400 transition-colors"
+                        title="Delete article"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </DashcoinCardContent>
+      </DashcoinCard>
+    </div>
+  );
+
+  const Toc = () => (
+    headings.length > 0 && (
+      <div className="mb-8 text-sm">
+        <p className="font-semibold mb-2">Contents</p>
+        <ul className="ml-4 space-y-1">
+          {headings.map((h) => (
+            <li key={h.id} className={h.level === 3 ? 'ml-4 list-disc' : 'list-disc'}>
+              <a href={`#${h.id}`} className="text-dashYellow-light hover:text-dashYellow">
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  );
+
   
   return (
     <div className="min-h-screen bg-dashGreen-darkest relative overflow-x-hidden">
@@ -641,171 +806,69 @@ export default function ResearchPage() {
           </div>
         )}
 
-        <div className="flex flex-col justify-center items-start lg:flex-row gap-8">
-          {/* Sidebar - Research Directory */} 
-          <div className="lg:w-1/4 w-full">
-            <DashcoinCard className="sidebar-content-container overflow-hidden transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)]">
-              <DashcoinCardHeader className="sticky top-0 bg-dashGreen-darkest z-10">
-                <div className="flex justify-between items-center">
-                  <DashcoinCardTitle className="flex items-center">
-                    <BookOpen className="h-5 w-5 mr-2 text-dashYellow" />
-                    Research Directory
-                    {articles.length > 0 && (
-                      <div className="ml-2 h-3 w-3 rounded-full bg-dashYellow animate-pulse"></div>
-                    )}
-                  </DashcoinCardTitle>
-                  {isAdminMode && (
-                    <button 
-                      onClick={() => setShowUploadModal(true)}
-                      className="flex items-center gap-1 text-dashYellow hover:text-dashYellow-light transition-colors text-sm"
-                    >
-                      <Upload size={14} />
-                      <span>Upload</span>
-                    </button>
-                  )}
-                </div>
-                <div className="relative mt-4 group">
-                  <input 
-                    type="text" 
-                    placeholder="Search" 
-                    className="w-full px-4 py-2 rounded-md bg-dashGreen-dark border border-dashGreen-light focus:border-dashYellow focus:outline-none transition-all duration-300 group-hover:border-dashYellow-light"
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    value={searchQuery}
-                  />
-                  <Search className="absolute right-3 top-2.5 h-5 w-5 text-dashYellow-light" />
-                </div>
-              </DashcoinCardHeader>
-              <DashcoinCardContent className="h-full overflow-y-auto scrollbar-thin scrollbar-track-dashGreen-dark scrollbar-thumb-dashYellow scrollbar-thumb-rounded-md hover:scrollbar-thumb-dashYellow-light">
-                {articles.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center text-center h-64 text-gray-400">
-                    <FileText className="h-12 w-12 mb-4 opacity-50" />
-                    <p className="mb-2">No research articles yet</p>
-                    {isAdminMode && (
-                      <button 
-                        onClick={() => setShowUploadModal(true)}
-                        className="mt-2 px-4 py-2 bg-dashGreen-light rounded-md hover:bg-dashYellow hover:text-dashGreen-darkest transition-colors"
-                      >
-                        Upload Your First Article
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  <div className="space-y-4 pr-2">
-                    {filteredPosts.map((article) => (
-                      <div 
-                        key={article._id || article.id} 
-                        className={`p-3 rounded-lg transition-all duration-200 cursor-pointer ${
-                          (article._id === selectedPostId || article.id === selectedPostId)
-                            ? 'bg-dashGreen-dark border-l-2 border-dashYellow'
-                            : 'hover:bg-dashGreen-dark/50'
-                        }`}
-                        onClick={() => handleSelectPost(article._id || article.id)}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div className="flex-grow">
-                            <h3 className="font-medium text-dashYellow-light mb-1 line-clamp-1">
-                              {article.title}
-                            </h3>
-                            <p className="text-sm opacity-70 mb-1 line-clamp-2">
-                              {article.description}
-                            </p>
-                            <div className="flex items-center gap-2 text-xs opacity-60">
-                              <Calendar className="h-3 w-3" />
-                              <span>{article.publishDate}</span>
-                            </div>
-                          </div>
-                          {isAdminMode && (
-                            <button 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteArticle(article.id || article._id);
-                              }}
-                              className="ml-2 p-1 text-gray-400 hover:text-red-400 transition-colors"
-                              title="Delete article"
-                            >
-                              <X size={16} />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </DashcoinCardContent>
-            </DashcoinCard>
+        <div className="lg:hidden mb-4 flex justify-end">
+          <button
+            onClick={() => setShowMobileSidebar(true)}
+            className="flex items-center gap-1 text-dashYellow hover:text-dashYellow-light px-3 py-2 border border-dashYellow rounded-md"
+          >
+            <BookOpen size={16} />
+            <span>Articles</span>
+          </button>
+        </div>
+
+        {showMobileSidebar && (
+          <div className="fixed inset-0 bg-black/80 z-50 flex">
+            <Sidebar className="w-3/4 max-w-xs bg-dashGreen-dark h-full overflow-y-auto p-4" />
+            <button
+              onClick={() => setShowMobileSidebar(false)}
+              className="absolute top-4 right-4 text-dashYellow"
+            >
+              <X size={24} />
+            </button>
           </div>
+        )}
+
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar - Research Directory */}
+          <Sidebar />
 
           {/* Main Content - Research Viewer */} 
-          <div className="lg:flex-1 w-full" id="content-top">
+          <div className="lg:w-4/5 w-full" id="content-top">
             {selectedPost ? (
               <DashcoinCard className="transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)] relative">
                 <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-transparent via-dashYellow/30 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-dashYellow/30 via-transparent to-dashYellow/30"></div>
                 
                 <div className="flex flex-col">
-                  <DashcoinCardHeader className="flex justify-between items-start border-b border-dashGreen-light pb-4 flex-shrink-0">
-                    <div className="flex flex-col flex-grow mr-4">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="h-10 w-10 rounded-full overflow-hidden relative bg-dashGreen-dark border border-dashYellow/20 flex items-center justify-center shadow-lg">
-                          <span className="text-xl font-bold text-dashYellow">{selectedPost.author[0]}</span>
-                        </div>
-                        <div>
-                          <p className="font-medium">{selectedPost.author}</p>
-                          <div className="flex items-center gap-1 text-sm opacity-70">
-                            <Clock className="h-3 w-3" />
-                            <span>{selectedPost.publishDate}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <DashcoinCardTitle className="text-2xl md:text-3xl relative">
+                  <DashcoinCardHeader className="border-b border-dashGreen-light pb-4">
+                    <div className="border-b border-dashGreen-light pb-4 mb-8 w-full">
+                      <h1 className="text-3xl font-bold text-dashYellow">
                         {selectedPost.title}
-                        <span className="absolute -bottom-2 left-0 w-16 h-0.5 bg-dashYellow/50"></span>
-                      </DashcoinCardTitle>
-                      <p className="text-dashYellow-light mt-2 text-lg">
-                        {selectedPost.coinName}
+                      </h1>
+                      <p className="text-sm text-dashYellow-light italic mt-1">
+                        By {selectedPost.author} — {selectedPost.publishDate} · {estimatedReadTime} min read
                       </p>
                     </div>
-                    
-                    {/* Image area with upload option */}
-                    <div 
-                      className="flex-shrink-0 w-32 h-32 overflow-hidden rounded-lg border border-dashYellow/20 relative group"
-                      onClick={() => setShowImageUploadModal(true)}
-                    >
-                      {selectedPost.imageUrl ? (
-                        <div className="relative w-full h-full">
-                          <img 
-                            src={selectedPost.imageUrl} 
-                            alt={selectedPost.title}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" 
-                          />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <ImageIcon className="text-white h-8 w-8" />
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="relative w-full h-full bg-dashGreen-dark flex items-center justify-center hover:scale-105 transition-transform duration-500 cursor-pointer">
-                          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-dashGreen-darkest opacity-50"></div>
-                          <div className="flex flex-col items-center justify-center gap-2">
-                            <p className="text-dashYellow relative z-10 font-bold text-sm text-center">
-                              {selectedPost.coinName}
-                            </p>
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                              <ImageIcon className="h-6 w-6 text-dashYellow-light" />
-                              <span className="text-xs text-dashYellow-light">Add image</span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    {selectedPost.imageUrl && (
+                      <img
+                        src={selectedPost.imageUrl}
+                        alt={selectedPost.title}
+                        className="w-full max-h-96 object-cover rounded-lg mb-8"
+                      />
+                    )}
                   </DashcoinCardHeader>
                   
-                  <DashcoinCardContent className="no-scrollbar flex flex-col py-4">
-                    <div
-                      className="article flex-grow"
-                      dangerouslySetInnerHTML={{
-                        __html: selectedPost.content
-                      }}
-                    />
+                  <DashcoinCardContent className="no-scrollbar flex flex-col">
+                    <div className="prose prose-invert max-w-4xl mx-auto px-6 py-10 bg-dashGreen-dark rounded-lg shadow-xl">
+                      <Toc />
+                      <div
+                        id="article-content"
+                        className="article"
+                        dangerouslySetInnerHTML={{
+                          __html: selectedPost.content
+                        }}
+                      />
+                    </div>
                   </DashcoinCardContent>
                 </div>
               </DashcoinCard>
