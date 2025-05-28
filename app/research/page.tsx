@@ -59,9 +59,15 @@ export default function ResearchPage() {
     article.coinName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     article.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const selectedPost = selectedPostId ? 
-    articles.find((article) => article.id === selectedPostId) : 
+  const selectedPost = selectedPostId ?
+    articles.find((article) => article.id === selectedPostId) :
     articles.length > 0 ? articles[0] : null;
+
+  const estimatedReadTime = selectedPost
+    ? Math.ceil(
+        selectedPost.content.replace(/<[^>]+>/g, "").split(/\s+/).length / 200
+      )
+    : 0;
 
     const handleAdminLogin = async () => {
       setAuthError("");
@@ -265,6 +271,21 @@ export default function ResearchPage() {
       }
     }
   }, [selectedPostId, articles]);
+
+  useEffect(() => {
+    const blocks = document.querySelectorAll('.article pre');
+    blocks.forEach((pre) => {
+      if (pre.querySelector('.copy-btn')) return;
+      const btn = document.createElement('button');
+      btn.textContent = 'Copy';
+      btn.className = 'copy-btn absolute top-2 right-2 text-xs bg-dashGreen-light text-dashYellow px-2 py-1 rounded';
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText((pre as HTMLElement).innerText);
+      });
+      pre.classList.add('relative');
+      pre.appendChild(btn);
+    });
+  }, [selectedPostId]);
   
   const processDocxFile = async (file: File) => {
     return new Promise<any>((resolve, reject) => {
@@ -641,9 +662,9 @@ export default function ResearchPage() {
           </div>
         )}
 
-        <div className="flex flex-col justify-center items-start lg:flex-row gap-8">
-          {/* Sidebar - Research Directory */} 
-          <div className="lg:w-1/4 w-full">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar - Research Directory */}
+          <div className="lg:w-1/4 w-full sticky top-24">
             <DashcoinCard className="sidebar-content-container overflow-hidden transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)]">
               <DashcoinCardHeader className="sticky top-0 bg-dashGreen-darkest z-10">
                 <div className="flex justify-between items-center">
@@ -736,76 +757,40 @@ export default function ResearchPage() {
           </div>
 
           {/* Main Content - Research Viewer */} 
-          <div className="lg:flex-1 w-full" id="content-top">
+          <div className="lg:w-3/4 w-full" id="content-top">
             {selectedPost ? (
               <DashcoinCard className="transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)] relative">
                 <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-transparent via-dashYellow/30 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-dashYellow/30 via-transparent to-dashYellow/30"></div>
                 
                 <div className="flex flex-col">
-                  <DashcoinCardHeader className="flex justify-between items-start border-b border-dashGreen-light pb-4 flex-shrink-0">
-                    <div className="flex flex-col flex-grow mr-4">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="h-10 w-10 rounded-full overflow-hidden relative bg-dashGreen-dark border border-dashYellow/20 flex items-center justify-center shadow-lg">
-                          <span className="text-xl font-bold text-dashYellow">{selectedPost.author[0]}</span>
-                        </div>
-                        <div>
-                          <p className="font-medium">{selectedPost.author}</p>
-                          <div className="flex items-center gap-1 text-sm opacity-70">
-                            <Clock className="h-3 w-3" />
-                            <span>{selectedPost.publishDate}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <DashcoinCardTitle className="text-2xl md:text-3xl relative">
+                  <DashcoinCardHeader className="border-b border-dashGreen-light pb-4">
+                    <div className="border-b border-dashGreen-light pb-4 mb-8 w-full">
+                      <h1 className="text-3xl font-bold text-dashYellow">
                         {selectedPost.title}
-                        <span className="absolute -bottom-2 left-0 w-16 h-0.5 bg-dashYellow/50"></span>
-                      </DashcoinCardTitle>
-                      <p className="text-dashYellow-light mt-2 text-lg">
-                        {selectedPost.coinName}
+                      </h1>
+                      <p className="text-sm text-dashYellow-light italic mt-1">
+                        By {selectedPost.author} — {selectedPost.publishDate} · {estimatedReadTime} min read
                       </p>
                     </div>
-                    
-                    {/* Image area with upload option */}
-                    <div 
-                      className="flex-shrink-0 w-32 h-32 overflow-hidden rounded-lg border border-dashYellow/20 relative group"
-                      onClick={() => setShowImageUploadModal(true)}
-                    >
-                      {selectedPost.imageUrl ? (
-                        <div className="relative w-full h-full">
-                          <img 
-                            src={selectedPost.imageUrl} 
-                            alt={selectedPost.title}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" 
-                          />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <ImageIcon className="text-white h-8 w-8" />
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="relative w-full h-full bg-dashGreen-dark flex items-center justify-center hover:scale-105 transition-transform duration-500 cursor-pointer">
-                          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-dashGreen-darkest opacity-50"></div>
-                          <div className="flex flex-col items-center justify-center gap-2">
-                            <p className="text-dashYellow relative z-10 font-bold text-sm text-center">
-                              {selectedPost.coinName}
-                            </p>
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                              <ImageIcon className="h-6 w-6 text-dashYellow-light" />
-                              <span className="text-xs text-dashYellow-light">Add image</span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    {selectedPost.imageUrl && (
+                      <img
+                        src={selectedPost.imageUrl}
+                        alt={selectedPost.title}
+                        className="w-full max-h-96 object-cover rounded-lg mb-8"
+                      />
+                    )}
                   </DashcoinCardHeader>
                   
-                  <DashcoinCardContent className="no-scrollbar flex flex-col py-4">
-                    <div
-                      className="article flex-grow"
-                      dangerouslySetInnerHTML={{
-                        __html: selectedPost.content
-                      }}
-                    />
+                  <DashcoinCardContent className="no-scrollbar flex flex-col">
+                    <div className="prose prose-invert max-w-4xl mx-auto px-6 py-10 bg-dashGreen-dark rounded-lg shadow-xl">
+                      <div
+                        className="article"
+                        dangerouslySetInnerHTML={{
+                          __html: selectedPost.content
+                        }}
+                      />
+                    </div>
                   </DashcoinCardContent>
                 </div>
               </DashcoinCard>
