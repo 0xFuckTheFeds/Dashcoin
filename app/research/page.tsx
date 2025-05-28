@@ -537,7 +537,7 @@ export default function ResearchPage() {
 
   
   return (
-    <div className="min-h-screen bg-dashGreen-darkest relative overflow-x-hidden">
+    <div className="min-h-screen bg-dashGreen-dark text-dashYellow-light relative overflow-x-hidden">
       <style jsx global>{globalStyles}</style>
       
       <div className="absolute top-20 left-10 opacity-5 transform rotate-45">
@@ -549,7 +549,7 @@ export default function ResearchPage() {
       
       <Navbar dashcoinTradeLink={dashcoinTradeLink} />
 
-      <main className="container mx-auto px-4 py-6 relative z-10">
+      <main className="p-6 relative z-10">
         {/* Upload Document Modal */}
         {showUploadModal && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
@@ -641,9 +641,9 @@ export default function ResearchPage() {
           </div>
         )}
 
-        <div className="flex flex-col justify-center items-start lg:flex-row gap-8">
+        <div className="flex flex-col md:flex-row min-h-screen gap-8">
           {/* Sidebar - Research Directory */} 
-          <div className="lg:w-1/4 w-full">
+          <div className="lg:w-1/4 w-full" id="directory">
             <DashcoinCard className="sidebar-content-container overflow-hidden transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)]">
               <DashcoinCardHeader className="sticky top-0 bg-dashGreen-darkest z-10">
                 <div className="flex justify-between items-center">
@@ -741,6 +741,17 @@ export default function ResearchPage() {
               <DashcoinCard className="transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)] relative">
                 <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-transparent via-dashYellow/30 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-dashYellow/30 via-transparent to-dashYellow/30"></div>
+                <button
+                  onClick={() =>
+                    document
+                      .getElementById('directory')?.scrollIntoView({
+                        behavior: 'smooth',
+                      })
+                  }
+                  className="absolute top-2 right-2 text-xs text-dashYellow hover:text-dashYellow-light"
+                >
+                  Back to Directory
+                </button>
                 
                 <div className="flex flex-col">
                   <DashcoinCardHeader className="flex justify-between items-start border-b border-dashGreen-light pb-4 flex-shrink-0">
@@ -801,7 +812,7 @@ export default function ResearchPage() {
                   
                   <DashcoinCardContent className="no-scrollbar flex flex-col py-4">
                     <div
-                      className="article flex-grow"
+                      className="prose prose-invert max-w-4xl mx-auto p-6 bg-dashGreen-card rounded-lg flex-grow"
                       dangerouslySetInnerHTML={{
                         __html: selectedPost.content
                       }}
@@ -888,7 +899,7 @@ export default function ResearchPage() {
         </div>
       )}
 
-      <footer className="container mx-auto py-6 px-4 border-t border-dashGreen-light">
+      <footer className="py-6 px-6 border-t border-dashGreen-light">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center space-x-2">
             <DashcoinLogo size={32} />
