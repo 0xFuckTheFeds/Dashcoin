@@ -11,7 +11,6 @@ import { CopyAddress } from "@/components/copy-address"
 import { DuneQueryLink } from "@/components/dune-query-link"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { useCallback } from "react"
-import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 
 interface ResearchScoreData {
   symbol: string
@@ -43,15 +42,20 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     const getResearchScores = async () => {
       setIsLoadingResearch(true);
       try {
-        const scores = await fetchTokenResearch();
-        setResearchScores(scores);
+        const response = await fetch('/api/token-research');
+        if (response.ok) {
+          const scores = await response.json();
+          setResearchScores(scores);
+        } else {
+          console.error('Error fetching research scores:', await response.text());
+        }
       } catch (error) {
         console.error("Error fetching research scores:", error);
       } finally {
         setIsLoadingResearch(false);
       }
     };
-    
+
     getResearchScores();
   }, []);
 
