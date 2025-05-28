@@ -492,14 +492,20 @@ export default function ResearchPage() {
         description = firstParagraph ? firstParagraph.textContent?.trim().substring(0, 150) || '' : '';
       }
       
-      const bodyContent = htmlDoc.body.innerHTML;
-      
+      const headStyles = Array.from(
+        htmlDoc.head?.querySelectorAll('style, link[rel="stylesheet"]') || []
+      )
+        .map((el) => el.outerHTML)
+        .join('');
+
+      const fullContent = `${headStyles}${htmlDoc.body.innerHTML}`;
+
       return {
         title,
         coinName,
         description: description || 'HTML document about ' + coinName,
         author: 'Research Document',
-        content: bodyContent
+        content: fullContent
       };
     } catch (error) {
       console.error("HTML parsing error:", error);
@@ -730,7 +736,7 @@ export default function ResearchPage() {
           </div>
 
           {/* Main Content - Research Viewer */} 
-          <div className="lg:w-3/4 w-full" id="content-top">
+          <div className="lg:flex-1 w-full" id="content-top">
             {selectedPost ? (
               <DashcoinCard className="transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)] relative">
                 <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-transparent via-dashYellow/30 to-transparent"></div>
