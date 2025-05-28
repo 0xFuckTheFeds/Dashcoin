@@ -26,6 +26,7 @@ import { CopyAddress } from "@/components/copy-address";
 import { DuneQueryLink } from "@/components/dune-query-link";
 import { Navbar } from "@/components/navbar";
 import { Twitter } from "lucide-react";
+import { fetchTokenResearch } from "./actions/googlesheet-action";
 
 const MarketCapChartWrapper = async ({
   marketCapTimeDataPromise,
@@ -70,6 +71,7 @@ const TokenTableWrapper = async ({
 }) => {
   try {
     const tokenData = await tokenDataPromise;
+    const researchScores = await fetchTokenResearch();
     return (
       <TokenTable
         data={
@@ -81,6 +83,7 @@ const TokenTableWrapper = async ({
             totalPages: 1,
           }
         }
+        researchScores={researchScores}
       />
     );
   } catch (error) {

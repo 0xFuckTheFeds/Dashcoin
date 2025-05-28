@@ -11,15 +11,9 @@ import { CopyAddress } from "@/components/copy-address"
 import { DuneQueryLink } from "@/components/dune-query-link"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { useCallback } from "react"
-import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
+import type { ResearchScoreData } from "@/app/actions/googlesheet-action"
 
-interface ResearchScoreData {
-  symbol: string
-  score: number | null
-  [key: string]: any 
-}
-
-export default function TokenTable({ data }: { data: PaginatedTokenResponse | TokenData[] }) {
+export default function TokenTable({ data, researchScores: initialResearchScores = [] }: { data: PaginatedTokenResponse | TokenData[]; researchScores?: ResearchScoreData[] }) {
   const initialData = Array.isArray(data)
     ? { tokens: data, page: 1, pageSize: 10, totalTokens: data.length, totalPages: Math.ceil(data.length / 10) }
     : data
@@ -32,28 +26,12 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [isLoading, setIsLoading] = useState(false)
   const [tokenData, setTokenData] = useState<PaginatedTokenResponse>(initialData)
   const [filteredTokens, setFilteredTokens] = useState<TokenData[]>(initialData.tokens || [])
-  const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([])
-  const [isLoadingResearch, setIsLoadingResearch] = useState(false)
+  const scores: ResearchScoreData[] = initialResearchScores
   const [isSortingLocally, setIsSortingLocally] = useState(false)
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshCountdown, setRefreshCountdown] = useState(60)
 
-  useEffect(() => {
-    const getResearchScores = async () => {
-      setIsLoadingResearch(true);
-      try {
-        const scores = await fetchTokenResearch();
-        setResearchScores(scores);
-      } catch (error) {
-        console.error("Error fetching research scores:", error);
-      } finally {
-        setIsLoadingResearch(false);
-      }
-    };
-    
-    getResearchScores();
-  }, []);
 
   useEffect(() => {
     if (!Array.isArray(tokenData.tokens)) {
@@ -151,7 +129,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     if (!tokenSymbol) return null;
     
     const normalizedSymbol = tokenSymbol.toUpperCase();
-    const scoreData = researchScores.find(item => item.symbol.toUpperCase() === normalizedSymbol);
+    const scoreData = scores.find(item => item.symbol.toUpperCase() === normalizedSymbol);
     return scoreData?.score !== undefined ? scoreData.score : null;
   }
 
@@ -458,12 +436,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                         {token && token.created_time ? new Date(token.created_time).toLocaleDateString() : "N/A"}
                       </td>
                       <td className="py-3 px-4">
-                        {isLoadingResearch ? (
-                          <div className="flex items-center">
-                            <Loader2 className="h-4 w-4 animate-spin text-dashYellow mr-2" />
-                            <span>Loading...</span>
-                          </div>
-                        ) : researchScore !== null && researchScore !== undefined ? (
+                        {researchScore !== null && researchScore !== undefined ? (
                           <div className="flex items-center">
                             <span className="font-medium mr-2">{researchScore.toFixed(1)}</span>
                             <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
