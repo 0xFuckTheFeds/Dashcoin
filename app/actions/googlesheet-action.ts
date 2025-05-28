@@ -1,7 +1,9 @@
-interface ResearchScoreData {
+"use server";
+
+export interface ResearchScoreData {
   symbol: string
   score: number | null
-  [key: string]: any 
+  [key: string]: any
 }
 
 export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
