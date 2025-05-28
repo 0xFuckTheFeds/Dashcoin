@@ -1,7 +1,9 @@
+"use server";
+
 interface ResearchScoreData {
   symbol: string
   score: number | null
-  [key: string]: any 
+  [key: string]: any
 }
 
 export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
@@ -40,4 +42,11 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
     console.error('Google Sheets API error:', err);
     return [];
   }
+}
+
+export async function fetchTokenResearchBySymbol(symbol: string): Promise<ResearchScoreData | null> {
+  const allData = await fetchTokenResearch();
+  const normalized = symbol.toUpperCase();
+  const entry = allData.find(item => item.symbol.toUpperCase() === normalized && item.score !== null);
+  return entry || null;
 }
