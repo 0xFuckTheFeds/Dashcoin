@@ -41,7 +41,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dashGreen-darkest">
+    <div className="min-h-screen flex items-center justify-center bg-black text-white">
       <div className="w-full max-w-md">
         <div className="bg-dashGreen-dark shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4 border border-dashYellow/20">
           <h1 className="text-2xl font-bold text-dashYellow mb-6 text-center">Admin Login</h1>
@@ -58,7 +58,7 @@ export default function LoginPage() {
                 Email
               </label>
               <input
-                className="w-full px-4 py-2 rounded-md bg-dashGreen-darkest border border-dashGreen-light focus:border-dashYellow focus:outline-none"
+                className="w-full px-4 py-2 rounded-md bg-black border border-dashGreen-light focus:border-dashYellow focus:outline-none"
                 id="email"
                 type="email"
                 placeholder="input your email"
@@ -72,7 +72,7 @@ export default function LoginPage() {
                 Password
               </label>
               <input
-                className="w-full px-4 py-2 rounded-md bg-dashGreen-darkest border border-dashGreen-light focus:border-dashYellow focus:outline-none"
+                className="w-full px-4 py-2 rounded-md bg-black border border-dashGreen-light focus:border-dashYellow focus:outline-none"
                 id="password"
                 type="password"
                 placeholder="********"
@@ -83,7 +83,7 @@ export default function LoginPage() {
             </div>
             <div className="flex items-center justify-center">
               <button
-                className="bg-dashYellow hover:bg-dashYellow-dark text-dashGreen-darkest font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full transition-colors"
+                className="bg-dashYellow hover:bg-dashYellow-dark text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full transition-colors"
                 type="submit"
                 disabled={loading}
               >
