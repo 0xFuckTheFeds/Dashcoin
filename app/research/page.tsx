@@ -643,7 +643,7 @@ export default function ResearchPage() {
 
         <div className="flex flex-col justify-center items-start lg:flex-row gap-8">
           {/* Sidebar - Research Directory */} 
-          <div className="lg:w-1/4 w-full">
+          <div className="lg:w-1/4 w-full" id="directory">
             <DashcoinCard className="sidebar-content-container overflow-hidden transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)]">
               <DashcoinCardHeader className="sticky top-0 bg-dashGreen-darkest z-10">
                 <div className="flex justify-between items-center">
@@ -741,6 +741,17 @@ export default function ResearchPage() {
               <DashcoinCard className="transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)] relative">
                 <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-transparent via-dashYellow/30 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-dashYellow/30 via-transparent to-dashYellow/30"></div>
+                <button
+                  onClick={() =>
+                    document
+                      .getElementById('directory')?.scrollIntoView({
+                        behavior: 'smooth',
+                      })
+                  }
+                  className="absolute top-2 right-2 text-xs text-dashYellow hover:text-dashYellow-light"
+                >
+                  Back to Directory
+                </button>
                 
                 <div className="flex flex-col">
                   <DashcoinCardHeader className="flex justify-between items-start border-b border-dashGreen-light pb-4 flex-shrink-0">
@@ -801,7 +812,7 @@ export default function ResearchPage() {
                   
                   <DashcoinCardContent className="no-scrollbar flex flex-col py-4">
                     <div
-                      className="article flex-grow"
+                      className="prose prose-invert max-w-4xl mx-auto p-6 bg-dashGreen-card rounded-lg flex-grow"
                       dangerouslySetInnerHTML={{
                         __html: selectedPost.content
                       }}
