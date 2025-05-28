@@ -50,6 +50,7 @@ export interface TokenData {
   name?: string
   num_holders?: number
   changeM5?: number
+  researchScore?: number | null
 }
 
 export interface PaginatedTokenResponse {

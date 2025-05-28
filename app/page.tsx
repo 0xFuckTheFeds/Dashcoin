@@ -18,6 +18,7 @@ import {
   getTimeUntilNextDuneRefresh,
 } from "./actions/dune-actions";
 import { fetchDexscreenerTokenData } from "./actions/dexscreener-actions";
+import { fetchResearchScores } from "./actions/research-scores";
 import { formatCurrency } from "@/lib/utils";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
@@ -69,11 +70,29 @@ const TokenTableWrapper = async ({
   tokenDataPromise: Promise<any>;
 }) => {
   try {
-    const tokenData = await tokenDataPromise;
+    const [tokenData, researchScores] = await Promise.all([
+      tokenDataPromise,
+      fetchResearchScores(),
+    ]);
+
+    const scoreMap = new Map(
+      researchScores.map(({ project, score }) => [project.toUpperCase(), score])
+    );
+
+    const merged = tokenData && tokenData.tokens
+      ? {
+          ...tokenData,
+          tokens: tokenData.tokens.map((t: any) => ({
+            ...t,
+            researchScore: scoreMap.get((t.symbol || "").toUpperCase()) ?? null,
+          })),
+        }
+      : tokenData;
+
     return (
       <TokenTable
         data={
-          tokenData || {
+          merged || {
             tokens: [],
             page: 1,
             pageSize: 10,

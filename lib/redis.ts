@@ -15,6 +15,7 @@ export const CACHE_KEYS = {
   TOKEN_MARKET_CAPS_LAST_REFRESH: "dashcoin:token_market_caps_last_refresh",
   MARKET_STATS_LAST_REFRESH: "dashcoin:market_stats_last_refresh",
   REFRESH_IN_PROGRESS: "dashcoin:refresh_in_progress",
+  RESEARCH_SCORES: "dashcoin:research_scores",
 }
 
 export const CACHE_DURATION = 1 * 60 * 60 * 1000  
