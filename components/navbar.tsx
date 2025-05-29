@@ -42,9 +42,6 @@ export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
             <NavLink href="/" active={pathname === "/"}>
               Overview
             </NavLink>
-            <NavLink href="/research" active={pathname === "/research"}>
-              Research
-            </NavLink>
             <NavLink href="/compare" active={pathname === "/compare"}>
               Graphs & Comparisons
             </NavLink>
@@ -59,9 +56,6 @@ export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
         <nav className="flex justify-between">
           <NavLink href="/" active={pathname === "/"}>
             Overview
-          </NavLink>
-          <NavLink href="/research" active={pathname === "/research"}>
-            Research
           </NavLink>
           <NavLink href="/compare" active={pathname === "/compare"}>
             Graphs & Comparisons
