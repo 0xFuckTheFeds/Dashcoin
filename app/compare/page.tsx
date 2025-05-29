@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/navbar";
 import { DashcoinCard, DashcoinCardContent, DashcoinCardHeader, DashcoinCardTitle } from "@/components/ui/dashcoin-card";
 import { Button } from "@/components/ui/button";
-import { Twitter, BarChart2, Users, ArrowRight, InfoIcon, Loader2, ArrowLeftRight } from "lucide-react";
+import { Twitter, BarChart2, Users, ArrowRight, InfoIcon, Loader2, ArrowLeftRight, ExternalLink } from "lucide-react";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { GrowthStatCard } from "@/components/ui/growth-stat-card";
 
@@ -30,6 +30,56 @@ interface ComparisonTokenData {
   volume24h: number;
   launchDate: string;
   marketcapgrowthperday: number;
+}
+
+interface CreatorWalletInfo {
+  walletLink: string;
+  walletComments: string;
+}
+
+async function fetchTokenResearch(tokenSymbol: string): Promise<CreatorWalletInfo | null> {
+  const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk';
+  const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
+  const SHEET_NAME = 'Dashcoin Scoring';
+  const RANGE = `${SHEET_NAME}!A1:M30`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.values || data.values.length < 2) {
+      console.warn('No data found in Google Sheet');
+      return null;
+    }
+
+    const [header, ...rows] = data.values;
+
+    const structured = rows.map((row: any) => {
+      const entry: Record<string, any> = {};
+      header.forEach((key: string, i: number) => {
+        entry[key.trim()] = row[i] || '';
+      });
+      return entry;
+    });
+
+    const normalizedSymbol = tokenSymbol.toUpperCase();
+    const tokenData = structured.find((entry: any) =>
+      entry['Project'] &&
+      entry['Project'].toString().toUpperCase() === normalizedSymbol &&
+      entry['Wallet Link']
+    );
+
+    if (!tokenData) return null;
+
+    return {
+      walletLink: tokenData['Wallet Link'] || '',
+      walletComments: tokenData['Wallet Comments'] || ''
+    };
+  } catch (err) {
+    console.error('Google Sheets API error:', err);
+    return null;
+  }
 }
 
 const formatNumber = (num: number): string => {
@@ -107,6 +157,8 @@ export default function ComparePage() {
     token1: null,
     token2: null
   });
+  const [creator1, setCreator1] = useState<CreatorWalletInfo | null>(null);
+  const [creator2, setCreator2] = useState<CreatorWalletInfo | null>(null);
 
   const [token1Suggestions, setToken1Suggestions] = useState<TokenData[]>([]);
   const [token2Suggestions, setToken2Suggestions] = useState<TokenData[]>([]);
@@ -175,9 +227,11 @@ export default function ComparePage() {
     };
   };
 
-  const handleCompare = () => {
+  const handleCompare = async () => {
     setIsLoading(true);
     setError(null);
+    setCreator1(null);
+    setCreator2(null);
     try {
       let token1 = allTokens.find(t => t.token.toLowerCase() === token1Name.toLowerCase());
       let token2 = allTokens.find(t => t.token.toLowerCase() === token2Name.toLowerCase());
@@ -203,6 +257,13 @@ export default function ComparePage() {
       }
       const token1Data = convertTokenData(token1);
       const token2Data = convertTokenData(token2);
+
+      const [wallet1, wallet2] = await Promise.all([
+        fetchTokenResearch(token1.symbol),
+        fetchTokenResearch(token2.symbol)
+      ]);
+      setCreator1(wallet1);
+      setCreator2(wallet2);
 
       console.log('TOKEN! ---------------------------->', token1Data)
       console.log("TOKEN2---------------->", token2Data);
@@ -252,12 +313,12 @@ export default function ComparePage() {
   };
 
   const handleSuggestionClick = (
-    tokenAddress: string,
+    token: TokenData,
     nameSetter: React.Dispatch<React.SetStateAction<string>>,
     suggestionsSetter: React.Dispatch<React.SetStateAction<TokenData[]>>,
     showSuggestionsSetter: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
-    nameSetter(tokenAddress);
+    nameSetter(token.name);
     suggestionsSetter([]);
     showSuggestionsSetter(false);
   };
@@ -348,7 +409,7 @@ export default function ComparePage() {
                       {token1Suggestions.map(token => (
                         <div 
                           key={token.token} 
-                          onClick={() => handleSuggestionClick(token.token, setToken1Name, setToken1Suggestions, setShowToken1Suggestions)}
+                          onClick={() => handleSuggestionClick(token, setToken1Name, setToken1Suggestions, setShowToken1Suggestions)}
                           className="px-4 py-2 text-dashBlack hover:bg-dashYellow-light hover:text-dashBlack cursor-pointer"
                         >
                           {token.name} ({token.symbol})
@@ -370,7 +431,7 @@ export default function ComparePage() {
                       {token2Suggestions.map(token => (
                         <div 
                           key={token.token} 
-                          onClick={() => handleSuggestionClick(token.token, setToken2Name, setToken2Suggestions, setShowToken2Suggestions)}
+                          onClick={() => handleSuggestionClick(token, setToken2Name, setToken2Suggestions, setShowToken2Suggestions)}
                           className="px-4 py-2 text-dashBlack hover:bg-dashYellow-light hover:text-dashBlack cursor-pointer"
                         >
                           {token.name} ({token.symbol})
@@ -412,12 +473,13 @@ export default function ComparePage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <div className="flex flex-col gap-4">
-                <DashcoinCard>
+            <div className="flex flex-col lg:flex-row gap-8 mb-8">
+              <div className="flex flex-col gap-8 lg:w-1/2">
+                <div className="flex flex-col gap-4">
+                  <DashcoinCard>
                   <DashcoinCardHeader><DashcoinCardTitle className="flex items-center gap-2"><BarChart2 className="h-5 w-5" />Market Cap Comparison</DashcoinCardTitle></DashcoinCardHeader>
                   <DashcoinCardContent>
-                    <div className="h-80">
+                    <div className="h-80 w-1/2 mx-auto">
                       <ResponsiveContainer width="100%" height="100%">
                         <RechartsBarChart data={barChartData.slice(0,1)} margin={{ top: 20, right: 30, left: 50, bottom: 5 }}>
                           <XAxis dataKey="name" />
@@ -445,19 +507,18 @@ export default function ComparePage() {
                     </div>
                   </DashcoinCardContent>
                 </DashcoinCard>
-                <GrowthStatCard 
+                <GrowthStatCard
                   value={`+${formatNumber(comparisonData.token1.marketcapgrowthperday)} / day`}
-                  label={`${comparisonData.token1.name} has added +${formatNumber(comparisonData.token1.marketcapgrowthperday)} in marketcap per day since creation.`}
                   className={`w-full min-h-[240px] mt-4 ${token1ScaleClass} ${token1AnimationClasses} transition-transform duration-300`}
                   isWinner={token1IsWinner}
                 />
-              </div>
+                </div>
 
-              <div className="flex flex-col gap-4">
-                <DashcoinCard>
+                <div className="flex flex-col gap-4">
+                  <DashcoinCard>
                   <DashcoinCardHeader><DashcoinCardTitle className="flex items-center gap-2"><Users className="h-5 w-5" />Holders Comparison</DashcoinCardTitle></DashcoinCardHeader>
                   <DashcoinCardContent>
-                    <div className="h-80">
+                    <div className="h-80 w-1/2 mx-auto">
                       <ResponsiveContainer width="100%" height="100%">
                         <RechartsBarChart data={barChartData.slice(1,2)} margin={{ top: 20, right: 30, left: 50, bottom: 5 }}>
                           <XAxis dataKey="name" />
@@ -479,20 +540,19 @@ export default function ComparePage() {
                     </div>
                   </DashcoinCardContent>
                 </DashcoinCard>
-                <GrowthStatCard 
+                <GrowthStatCard
                   value={`+${formatNumber(comparisonData.token2.marketcapgrowthperday)} / day`}
-                  label={`${comparisonData.token2.name} has added +${formatNumber(comparisonData.token2.marketcapgrowthperday)} in marketcap per day since creation.`}
                   className={`w-full min-h-[240px] mt-4 ${token2ScaleClass} ${token2AnimationClasses} transition-transform duration-300`}
                   isWinner={token2IsWinner}
                 />
+                </div>
               </div>
-            </div>
-
-            <DashcoinCard>
-              <DashcoinCardHeader><DashcoinCardTitle>Detailed Comparison</DashcoinCardTitle></DashcoinCardHeader>
-              <DashcoinCardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
+              <div className="flex justify-center lg:w-1/2">
+                <DashcoinCard className="w-full lg:w-2/3">
+                  <DashcoinCardHeader><DashcoinCardTitle>Detailed Comparison</DashcoinCardTitle></DashcoinCardHeader>
+                  <DashcoinCardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
                     <thead>
                       <tr className="border-b border-dashGreen-light">
                         <th className="text-left py-3 px-4 font-semibold">Metric</th>
@@ -595,6 +655,53 @@ export default function ComparePage() {
                 </div>
               </DashcoinCardContent>
             </DashcoinCard>
+
+            <DashcoinCard className="mt-8">
+              <DashcoinCardHeader>
+                <DashcoinCardTitle>Creator Wallets</DashcoinCardTitle>
+              </DashcoinCardHeader>
+              <DashcoinCardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {creator1 && (
+                    <div>
+                      <p className="dashcoin-text mb-1">{comparisonData.token1?.name}</p>
+                      {creator1.walletLink ? (
+                        <a
+                          href={creator1.walletLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-dashYellow hover:text-dashYellow-light flex items-center gap-1"
+                        >
+                          Link <ExternalLink className="h-3 w-3" />
+                        </a>
+                      ) : (
+                        <span className="text-sm opacity-70">No wallet link available</span>
+                      )}
+                      <p className="text-sm mt-2 opacity-80">{creator1.walletComments || 'No comments available'}</p>
+                    </div>
+                  )}
+                  {creator2 && (
+                    <div>
+                      <p className="dashcoin-text mb-1">{comparisonData.token2?.name}</p>
+                      {creator2.walletLink ? (
+                        <a
+                          href={creator2.walletLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-dashYellow hover:text-dashYellow-light flex items-center gap-1"
+                        >
+                          Link <ExternalLink className="h-3 w-3" />
+                        </a>
+                      ) : (
+                        <span className="text-sm opacity-70">No wallet link available</span>
+                      )}
+                      <p className="text-sm mt-2 opacity-80">{creator2.walletComments || 'No comments available'}</p>
+                    </div>
+                  )}
+                </div>
+              </DashcoinCardContent>
+            </DashcoinCard>
+
           </>
         )}
       </main>
