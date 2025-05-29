@@ -162,18 +162,6 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
             <ThemeToggle />
           </div>
         </div>
-        <div className="mt-2 text-center">
-          <div className="flex items-center justify-center gap-1">
-            <span className="text-sm font-mono text-dashYellow-light opacity-80">
-              $DASHC CA:
-            </span>
-            <CopyAddress
-              address="7gkgsqE2Uip7LUyrqEi8fyLPNSbn7GYu9yFgtxZwYUVa"
-              showBackground={true}
-              className="text-dashYellow-light hover:text-dashYellow"
-            />
-          </div>
-        </div>
       </header>
 
       <main className="container mx-auto px-4 py-6 space-y-8">
