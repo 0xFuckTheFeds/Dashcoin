@@ -92,7 +92,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function ComparePage() {
-  const dashcoinTradeLink = "https://axiom.trade/t/fRfKGCriduzDwSudCwpL7ySCEiboNuryhZDVJtr1a1C/dashc";
   const dashcoinXLink = "https://x.com/dune_dashcoin";
 
   const [token1Address, setToken1Address] = useState("");
@@ -350,7 +349,7 @@ export default function ComparePage() {
 
   return (
     <div className="min-h-screen">
-      <Navbar dashcoinTradeLink={dashcoinTradeLink} />
+      <Navbar />
       <main className="container mx-auto px-4 py-6">
         <div className="mb-8 text-center">
           <h1 className="dashcoin-title text-4xl md:text-5xl text-dashYellow mb-4">TOKEN COMPARISON</h1>

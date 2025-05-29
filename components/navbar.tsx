@@ -3,16 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { ExternalLink } from "lucide-react";
 import { DashcStatsBar, DashcStatsBarProps } from "@/components/dashc-stats-bar";
 
 interface NavbarProps {
-  dashcoinTradeLink: string;
   dashcStats?: DashcStatsBarProps;
 }
 
-export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
+export function Navbar({ dashcStats }: NavbarProps) {
   const pathname = usePathname();
 
   return (
@@ -22,22 +19,13 @@ export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
           <Link href="/">
             <DashcoinLogo size={56} />
           </Link>
-          <a
-            href={dashcoinTradeLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-dashYellow hover:text-dashYellow-dark font-medium dashcoin-text flex items-center text-lg"
-          >
-            SUPPORT THE PAGE <ExternalLink className="h-4 w-4 ml-1" />
-          </a>
           {dashcStats && (
             <div className="mt-4 md:mt-0 w-full md:w-auto md:ml-4">
               <DashcStatsBar {...dashcStats} />
             </div>
           )}
         </div>
-        <div className="flex items-center gap-8">
-          <ThemeToggle />
+        <div className="flex items-center gap-8 ml-auto">
           <nav className="hidden md:flex items-center gap-6">
             <NavLink href="/" active={pathname === "/"}>
               Overview
@@ -46,7 +34,7 @@ export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
               Research
             </NavLink>
             <NavLink href="/compare" active={pathname === "/compare"}>
-              Graphs & Comparisons
+              Compare Tokens
             </NavLink>
             <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
               Creator Wallets
@@ -64,7 +52,7 @@ export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
             Research
           </NavLink>
           <NavLink href="/compare" active={pathname === "/compare"}>
-            Graphs & Comparisons
+            Compare Tokens
           </NavLink>
           <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
             Creator Wallets

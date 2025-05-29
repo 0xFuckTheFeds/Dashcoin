@@ -8,7 +8,7 @@ import {
   DashcoinCardTitle,
   DashcoinCardContent,
 } from "@/components/ui/dashcoin-card";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Navbar } from "@/components/navbar";
 import { DexscreenerChart } from "@/components/dexscreener-chart";
 import {
   fetchTokenDetails,
@@ -153,28 +153,19 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
 
   return (
     <div className="min-h-screen">
-      <header className="container mx-auto py-6 px-4">
-        <div className="flex justify-between items-center">
-          <Link href="/">
-            <DashcoinLogo size={48} />
-          </Link>
-          <div>
-            <ThemeToggle />
-          </div>
+      <Navbar />
+      <div className="mt-2 text-center">
+        <div className="flex items-center justify-center gap-1">
+          <span className="text-sm font-mono text-dashYellow-light opacity-80">
+            $DASHC CA:
+          </span>
+          <CopyAddress
+            address="7gkgsqE2Uip7LUyrqEi8fyLPNSbn7GYu9yFgtxZwYUVa"
+            showBackground={true}
+            className="text-dashYellow-light hover:text-dashYellow"
+          />
         </div>
-        <div className="mt-2 text-center">
-          <div className="flex items-center justify-center gap-1">
-            <span className="text-sm font-mono text-dashYellow-light opacity-80">
-              $DASHC CA:
-            </span>
-            <CopyAddress
-              address="7gkgsqE2Uip7LUyrqEi8fyLPNSbn7GYu9yFgtxZwYUVa"
-              showBackground={true}
-              className="text-dashYellow-light hover:text-dashYellow"
-            />
-          </div>
-        </div>
-      </header>
+      </div>
 
       <main className="container mx-auto px-4 py-6 space-y-8">
         <Link

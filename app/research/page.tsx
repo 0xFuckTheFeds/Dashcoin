@@ -36,7 +36,6 @@ const globalStyles = `
 `;
 
 export default function ResearchPage() {
-  const dashcoinTradeLink = "https://axiom.trade/t/fRfKGCriduzDwSudCwpL7ySCEiboNuryhZDVJtr1a1C/dashc";
   const dashcoinXLink = "https://x.com/dune_dashcoin";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPostId, setSelectedPostId] = useState("");
@@ -547,7 +546,7 @@ export default function ResearchPage() {
         <Hexagon size={400} />
       </div>
       
-      <Navbar dashcoinTradeLink={dashcoinTradeLink} />
+      <Navbar />
 
       <main className="p-6 relative z-10">
         {/* Upload Document Modal */}

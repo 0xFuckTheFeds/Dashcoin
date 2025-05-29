@@ -11,8 +11,8 @@ import {
   DashcoinCardTitle,
   DashcoinCardContent,
 } from "@/components/ui/dashcoin-card";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { DexscreenerChart } from "@/components/dexscreener-chart";
+import { Navbar } from "@/components/navbar";
 import {
   fetchTokenDetails,
   getTimeUntilNextDuneRefresh,
@@ -26,15 +26,16 @@ import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
+import { FoundersEdgeChecklist } from "@/components/founders-edge-checklist";
 
 interface TokenResearchData {
   Symbol: string;
   Score: number | string;
   "Founder Doxxed": number | string;
-  "Startup Experience": number | string;
+  "Dev is Active on Twitter": number | string;
   "Successful Exit": number | string;
   "Discussed Plans for Token Integration": number | string;
-  "Project Has Some Virality / Popularity": number | string;
+  "Project has 200k+ views on Social Media": number | string;
   "Live Product Exists": number | string;
   "Relevant Links": string;
   Comments: string;
@@ -64,11 +65,22 @@ async function fetchTokenResearch(
 
     const [header, ...rows] = data.values;
 
+    const canonicalMap: Record<string, string> = {
+      "Startup Experience": "Dev is Active on Twitter",
+      "Project Has Some Virality / Popularity":
+        "Project has 200k+ views on Social Media",
+    };
+
     const structured = rows.map((row: any) => {
       const entry: Record<string, any> = {};
       header.forEach((key: string, i: number) => {
-        entry[key.trim()] = row[i] || "";
+        const trimmed = key.trim();
+        const canonical = canonicalMap[trimmed] || trimmed;
+        entry[canonical] = row[i] || "";
       });
+      if (entry["Project"]) {
+        entry["Project"] = entry["Project"].toString().trim().toUpperCase();
+      }
       return entry;
     });
 
@@ -227,39 +239,22 @@ export default function TokenResearchPage({
     : "Unknown";
   const marketCap = tokenData?.marketCap || 0;
 
-  const frameworkCriteria = [
-    "Founder Doxxed",
-    "Startup Experience",
-    "Successful Exit",
-    "Discussed Plans for Token Integration",
-    "Project Has Some Virality / Popularity",
-    "Live Product Exists",
-  ];
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <header className="container mx-auto py-6 px-4">
-        <div className="flex justify-between items-center">
-          <Link href="/">
-            <DashcoinLogo size={48} />
-          </Link>
-          <div>
-            <ThemeToggle />
-          </div>
+      <Navbar />
+      <div className="mt-2 text-center">
+        <div className="flex items-center justify-center gap-1">
+          <span className="text-sm font-mono text-dashYellow-light opacity-80">
+            $DASHC CA:
+          </span>
+          <CopyAddress
+            address="7gkgsqE2Uip7LUyrqEi8fyLPNSbn7GYu9yFgtxZwYUVa"
+            showBackground={true}
+            className="text-dashYellow-light hover:text-dashYellow"
+          />
         </div>
-        <div className="mt-2 text-center">
-          <div className="flex items-center justify-center gap-1">
-            <span className="text-sm font-mono text-dashYellow-light opacity-80">
-              $DASHC CA:
-            </span>
-            <CopyAddress
-              address="7gkgsqE2Uip7LUyrqEi8fyLPNSbn7GYu9yFgtxZwYUVa"
-              showBackground={true}
-              className="text-dashYellow-light hover:text-dashYellow"
-            />
-          </div>
-        </div>
-      </header>
+      </div>
       <main className="container mx-auto px-4 py-6 space-y-8">
         <Link
           href="/"
@@ -313,6 +308,10 @@ export default function TokenResearchPage({
             </a>
           </div>
         </div>
+
+        {researchData && (
+          <FoundersEdgeChecklist data={researchData} />
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <DashcoinCard>
@@ -476,12 +475,6 @@ export default function TokenResearchPage({
         )}
       </main>
 
-      {/* Page header */}
-      <div className="mb-8">
-        <h2 className="flex items-center text-center justify-center dashcoin-text text-5xl text-dashYellow items center mt-8 mb-8">
-          "FrameWork Score" table
-        </h2>
-      </div>
 
       {isLoading ? (
         <div className="flex justify-center py-12">
@@ -504,82 +497,20 @@ export default function TokenResearchPage({
         </DashcoinCard>
       ) : (
         <div className="space-y-8">
-          {/* Research Score */}
-          <DashcoinCard className="p-6">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-dashYellow mb-4 md:mb-0">
-                Research Score
-              </h2>
-              <div className="flex items-center">
-                <div className="text-4xl font-bold text-dashYellow">
-                  {typeof researchData?.Score === "string"
-                    ? parseFloat(researchData.Score).toFixed(1)
-                    : researchData?.Score.toFixed(1)}
-                </div>
-                <div className="text-dashYellow-light ml-3">/ 10.0</div>
-              </div>
+          <FoundersEdgeChecklist data={researchData} showLegend />
+          {researchData?.Twitter && (
+            <div className="flex justify-end">
+              <a
+                href={`${researchData.Twitter.replace("@", "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#1DA1F2] hover:bg-[#1a91da] text-white px-4 py-2 rounded-md flex items-center transition-colors"
+              >
+                <Twitter className="h-4 w-4 mr-2" />
+                View on Twitter
+              </a>
             </div>
-
-            {/* Framework Score Table */}
-            <h3 className="text-lg font-medium text-dashYellow mb-4">
-              Framework Criteria
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-dashGreen-card dark:bg-dashGreen-cardDark border-b-2 border-dashBlack">
-                    {frameworkCriteria.map((criterion) => (
-                      <th
-                        key={criterion}
-                        className="py-3 px-4 text-dashYellow text-center"
-                      >
-                        {criterion}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-dashGreen-light">
-                    {frameworkCriteria.map((criterion) => {
-                      const value = researchData?.[criterion];
-                      const numValue =
-                        typeof value === "string" ? parseInt(value) : value;
-
-                      return (
-                        <td
-                          key={criterion}
-                          className="py-4 px-4 text-center border-r border-dashGreen-light last:border-r-0"
-                        >
-                          <div className="text-2xl">
-                            {numValue === 1 ? (
-                              <span className="text-green-500">✅</span>
-                            ) : (
-                              <span className="text-red-500">❌</span>
-                            )}
-                          </div>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Twitter Button - Only if Twitter handle exists */}
-            {researchData?.Twitter && (
-              <div className="mt-8 flex justify-end">
-                <a
-                  href={`${researchData.Twitter.replace("@", "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#1DA1F2] hover:bg-[#1a91da] text-white px-4 py-2 rounded-md flex items-center transition-colors"
-                >
-                  <Twitter className="h-4 w-4 mr-2" />
-                  View on Twitter
-                </a>
-              </div>
-            )}
-          </DashcoinCard>
+          )}
         </div>
       )}
 
