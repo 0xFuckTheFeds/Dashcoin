@@ -248,18 +248,6 @@ export default function TokenResearchPage({
             <ThemeToggle />
           </div>
         </div>
-        <div className="mt-2 text-center">
-          <div className="flex items-center justify-center gap-1">
-            <span className="text-sm font-mono text-dashYellow-light opacity-80">
-              $DASHC CA:
-            </span>
-            <CopyAddress
-              address="7gkgsqE2Uip7LUyrqEi8fyLPNSbn7GYu9yFgtxZwYUVa"
-              showBackground={true}
-              className="text-dashYellow-light hover:text-dashYellow"
-            />
-          </div>
-        </div>
       </header>
       <main className="container mx-auto px-4 py-6 space-y-8">
         <Link
@@ -270,7 +258,7 @@ export default function TokenResearchPage({
           Back to Dashboard
         </Link>
 
-        <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
+        <div className="flex flex-col md:flex-row justify-start gap-6 items-start md:items-center">
           <div className="flex justify-between text-center">
             <div className="flex flex-col">
               <h1 className="dashcoin-title text-3xl text-dashYellow">
@@ -281,7 +269,7 @@ export default function TokenResearchPage({
           </div>
           <DashcoinCard className="md:max-w-md mt-4 md:mt-0">
             <DashcoinCardHeader>
-              <DashcoinCardTitle>Creator Wallet Activity</DashcoinCardTitle>
+              <DashcoinCardTitle className="text-2xl">Creator Wallet Activity</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
               <p>{researchData?.["Wallet Comments"] || "No wallet activity available"}</p>
@@ -297,6 +285,17 @@ export default function TokenResearchPage({
               ) : null}
             </DashcoinCardContent>
           </DashcoinCard>
+          {researchData?.Twitter && (
+            <a
+              href={`${researchData.Twitter.replace("@", "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#1DA1F2] hover:bg-[#1a91da] text-white px-4 py-2 rounded-md flex items-center transition-colors"
+            >
+              <Twitter className="h-4 w-4 mr-2" />
+              View on Twitter
+            </a>
+          )}
           <div className="flex gap-2">
             <a
               href={
@@ -305,7 +304,7 @@ export default function TokenResearchPage({
               }
               target="_blank"
               rel="noopener noreferrer"
-              className="text-dashYellow hover:text-dashYellow-dark font-medium dashcoin-text flex items-center"
+              className="text-dashYellow hover:text-dashYellow-dark font-medium dashcoin-text flex items-center px-4 py-2 text-lg"
             >
               Trade
               <ExternalLink className="h-4 w-4 ml-1" />
@@ -446,21 +445,7 @@ export default function TokenResearchPage({
           </p>
         </DashcoinCard>
       ) : (
-        <div className="space-y-8">
-          {researchData?.Twitter && (
-            <div className="flex justify-end">
-              <a
-                href={`${researchData.Twitter.replace("@", "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#1DA1F2] hover:bg-[#1a91da] text-white px-4 py-2 rounded-md flex items-center transition-colors"
-              >
-                <Twitter className="h-4 w-4 mr-2" />
-                View on Twitter
-              </a>
-            </div>
-          )}
-        </div>
+        <div className="space-y-8"></div>
       )}
 
       <footer className="container mx-auto py-8 px-4 mt-12 border-t border-dashGreen-light">
