@@ -52,6 +52,10 @@ export default function ResearchPage() {
   const [authError, setAuthError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState("");
+  const editorRef = useRef<HTMLDivElement>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const filteredPosts = articles.filter((article) => 
@@ -524,14 +528,64 @@ export default function ResearchPage() {
     const file = event.target.files?.[0];
     if (file && selectedPostId) {
       const imageUrl = URL.createObjectURL(file);
-      setArticles(prevArticles => 
-        prevArticles.map(article => 
-          article.id === selectedPostId 
-            ? { ...article, imageUrl } 
+      setArticles(prevArticles =>
+        prevArticles.map(article =>
+          article.id === selectedPostId
+            ? { ...article, imageUrl }
             : article
         )
       );
       setShowImageUploadModal(false);
+    }
+  };
+
+  const startEditing = () => {
+    if (selectedPost) {
+      setEditedContent(selectedPost.content);
+      setIsEditing(true);
+      setTimeout(() => {
+        editorRef.current?.focus();
+      }, 0);
+    }
+  };
+
+  const cancelEditing = () => {
+    setIsEditing(false);
+    setEditedContent("");
+  };
+
+  const formatText = (command: string, value?: string) => {
+    document.execCommand(command, false, value);
+    setEditedContent(editorRef.current?.innerHTML || "");
+  };
+
+  const handleInsertImageCommand = () => {
+    const url = prompt('Image URL');
+    if (url) {
+      formatText('insertImage', url);
+    }
+  };
+
+  const saveEdits = async () => {
+    if (!selectedPost) return;
+    try {
+      const response = await fetch(`/api/articles/${selectedPost._id || selectedPost.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: editedContent })
+      });
+
+      if (response.ok) {
+        const updated = await response.json();
+        setArticles(prev => prev.map(a =>
+          (a._id === updated._id || a.id === updated._id) ? updated : a
+        ));
+        setIsEditing(false);
+      } else {
+        console.error('Failed to save edits');
+      }
+    } catch (err) {
+      console.error('Save error', err);
     }
   };
 
@@ -775,6 +829,30 @@ export default function ResearchPage() {
                       <p className="text-dashYellow-light mt-2 text-lg">
                         {selectedPost.coinName}
                       </p>
+                      {isAdminMode && !isEditing && (
+                        <button
+                          onClick={startEditing}
+                          className="mt-2 text-sm text-dashGreen-darkest bg-dashYellow px-2 py-1 rounded-md w-max"
+                        >
+                          Edit Article
+                        </button>
+                      )}
+                      {isAdminMode && isEditing && (
+                        <div className="mt-2 flex gap-2">
+                          <button
+                            onClick={saveEdits}
+                            className="text-sm bg-dashYellow text-dashGreen-darkest px-2 py-1 rounded-md"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={cancelEditing}
+                            className="text-sm bg-dashGreen-light px-2 py-1 rounded-md"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
                     </div>
                     
                     {/* Image area with upload option */}
@@ -811,12 +889,31 @@ export default function ResearchPage() {
                   </DashcoinCardHeader>
                   
                   <DashcoinCardContent className="no-scrollbar flex flex-col py-4">
-                    <div
-                      className="prose prose-invert max-w-4xl mx-auto p-6 bg-dashGreen-card rounded-lg flex-grow"
-                      dangerouslySetInnerHTML={{
-                        __html: selectedPost.content
-                      }}
-                    />
+                    {isAdminMode && isEditing && (
+                      <div className="flex gap-2 mb-2">
+                        <button onClick={() => formatText('bold')} className="px-2 py-1 bg-dashGreen-light rounded text-sm">B</button>
+                        <button onClick={() => formatText('italic')} className="px-2 py-1 bg-dashGreen-light rounded text-sm">I</button>
+                        <button onClick={() => formatText('underline')} className="px-2 py-1 bg-dashGreen-light rounded text-sm">U</button>
+                        <button onClick={() => formatText('insertUnorderedList')} className="px-2 py-1 bg-dashGreen-light rounded text-sm">•</button>
+                        <button onClick={handleInsertImageCommand} className="px-2 py-1 bg-dashGreen-light rounded text-sm">Img</button>
+                      </div>
+                    )}
+                    {isAdminMode && isEditing ? (
+                      <div
+                        ref={editorRef}
+                        contentEditable
+                        className="prose prose-invert max-w-4xl mx-auto p-6 bg-dashGreen-card rounded-lg flex-grow outline-none"
+                        onInput={(e) => setEditedContent(e.currentTarget.innerHTML)}
+                        dangerouslySetInnerHTML={{ __html: editedContent }}
+                      />
+                    ) : (
+                      <div
+                        className="prose prose-invert max-w-4xl mx-auto p-6 bg-dashGreen-card rounded-lg flex-grow"
+                        dangerouslySetInnerHTML={{
+                          __html: selectedPost.content
+                        }}
+                      />
+                    )}
                   </DashcoinCardContent>
                 </div>
               </DashcoinCard>
