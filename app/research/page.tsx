@@ -52,6 +52,12 @@ export default function ResearchPage() {
   const [authError, setAuthError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState("");
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedCoinName, setEditedCoinName] = useState("");
+  const editorRef = useRef<HTMLDivElement>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const filteredPosts = articles.filter((article) => 
@@ -520,18 +526,98 @@ export default function ResearchPage() {
     }
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const convertToBase64 = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && selectedPostId) {
-      const imageUrl = URL.createObjectURL(file);
-      setArticles(prevArticles => 
-        prevArticles.map(article => 
-          article.id === selectedPostId 
-            ? { ...article, imageUrl } 
-            : article
-        )
-      );
-      setShowImageUploadModal(false);
+    if (file && selectedPostId && isAdminMode) {
+      try {
+        const base64 = await convertToBase64(file);
+        const response = await fetch(`/api/articles/${selectedPostId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageUrl: base64 })
+        });
+        if (response.ok) {
+          const updated = await response.json();
+          setArticles(prev => prev.map(a =>
+            (a._id === updated._id || a.id === updated._id) ? updated : a
+          ));
+        } else {
+          console.error('Failed to upload image');
+        }
+      } catch (err) {
+        console.error('Image upload error', err);
+      } finally {
+        setShowImageUploadModal(false);
+      }
+    }
+  };
+
+  const startEditing = () => {
+    if (selectedPost) {
+      setEditedContent(selectedPost.content);
+      setEditedTitle(selectedPost.title);
+      setEditedCoinName(selectedPost.coinName);
+      setIsEditing(true);
+      setTimeout(() => {
+        editorRef.current?.focus();
+      }, 0);
+    }
+  };
+
+  const cancelEditing = () => {
+    setIsEditing(false);
+    setEditedContent("");
+    setEditedTitle("");
+    setEditedCoinName("");
+  };
+
+  const formatText = (command: string, value?: string) => {
+    document.execCommand(command, false, value);
+    setEditedContent(editorRef.current?.innerHTML || "");
+  };
+
+  const handleInsertImageCommand = () => {
+    const url = prompt('Image URL');
+    if (url) {
+      formatText('insertImage', url);
+    }
+  };
+
+  const saveEdits = async () => {
+    if (!selectedPost) return;
+    try {
+      const response = await fetch(`/api/articles/${selectedPost._id || selectedPost.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: editedContent,
+          title: editedTitle,
+          coinName: editedCoinName
+        })
+      });
+
+      if (response.ok) {
+        const updated = await response.json();
+        setArticles(prev => prev.map(a =>
+          (a._id === updated._id || a.id === updated._id) ? updated : a
+        ));
+        setIsEditing(false);
+        setEditedTitle("");
+        setEditedCoinName("");
+      } else {
+        console.error('Failed to save edits');
+      }
+    } catch (err) {
+      console.error('Save error', err);
     }
   };
 
@@ -768,19 +854,62 @@ export default function ResearchPage() {
                           </div>
                         </div>
                       </div>
-                      <DashcoinCardTitle className="text-2xl md:text-3xl relative">
-                        {selectedPost.title}
-                        <span className="absolute -bottom-2 left-0 w-16 h-0.5 bg-dashYellow/50"></span>
-                      </DashcoinCardTitle>
-                      <p className="text-dashYellow-light mt-2 text-lg">
-                        {selectedPost.coinName}
-                      </p>
+                      {isAdminMode && isEditing ? (
+                        <div className="flex flex-col gap-2">
+                          <input
+                            className="px-2 py-1 rounded bg-dashGreen-darkest border border-dashGreen-light focus:border-dashYellow focus:outline-none"
+                            value={editedTitle}
+                            onChange={(e) => setEditedTitle(e.target.value)}
+                            placeholder="Title"
+                          />
+                          <input
+                            className="px-2 py-1 rounded bg-dashGreen-darkest border border-dashGreen-light focus:border-dashYellow focus:outline-none"
+                            value={editedCoinName}
+                            onChange={(e) => setEditedCoinName(e.target.value)}
+                            placeholder="Coin Name"
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          <DashcoinCardTitle className="text-2xl md:text-3xl relative">
+                            {selectedPost.title}
+                            <span className="absolute -bottom-2 left-0 w-16 h-0.5 bg-dashYellow/50"></span>
+                          </DashcoinCardTitle>
+                          <p className="text-dashYellow-light mt-2 text-lg">
+                            {selectedPost.coinName}
+                          </p>
+                        </>
+                      )}
+                      {isAdminMode && !isEditing && (
+                        <button
+                          onClick={startEditing}
+                          className="mt-2 text-sm text-dashGreen-darkest bg-dashYellow px-2 py-1 rounded-md w-max"
+                        >
+                          Edit Article
+                        </button>
+                      )}
+                      {isAdminMode && isEditing && (
+                        <div className="mt-2 flex gap-2">
+                          <button
+                            onClick={saveEdits}
+                            className="text-sm bg-dashYellow text-dashGreen-darkest px-2 py-1 rounded-md"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={cancelEditing}
+                            className="text-sm bg-dashGreen-light px-2 py-1 rounded-md"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
                     </div>
                     
                     {/* Image area with upload option */}
-                    <div 
+                    <div
                       className="flex-shrink-0 w-32 h-32 overflow-hidden rounded-lg border border-dashYellow/20 relative group"
-                      onClick={() => setShowImageUploadModal(true)}
+                      onClick={() => isAdminMode && setShowImageUploadModal(true)}
                     >
                       {selectedPost.imageUrl ? (
                         <div className="relative w-full h-full">
@@ -811,12 +940,31 @@ export default function ResearchPage() {
                   </DashcoinCardHeader>
                   
                   <DashcoinCardContent className="no-scrollbar flex flex-col py-4">
-                    <div
-                      className="prose prose-invert max-w-4xl mx-auto p-6 bg-dashGreen-card rounded-lg flex-grow"
-                      dangerouslySetInnerHTML={{
-                        __html: selectedPost.content
-                      }}
-                    />
+                    {isAdminMode && isEditing && (
+                      <div className="flex gap-2 mb-2">
+                        <button onClick={() => formatText('bold')} className="px-2 py-1 bg-dashGreen-light rounded text-sm">B</button>
+                        <button onClick={() => formatText('italic')} className="px-2 py-1 bg-dashGreen-light rounded text-sm">I</button>
+                        <button onClick={() => formatText('underline')} className="px-2 py-1 bg-dashGreen-light rounded text-sm">U</button>
+                        <button onClick={() => formatText('insertUnorderedList')} className="px-2 py-1 bg-dashGreen-light rounded text-sm">•</button>
+                        <button onClick={handleInsertImageCommand} className="px-2 py-1 bg-dashGreen-light rounded text-sm">Img</button>
+                      </div>
+                    )}
+                    {isAdminMode && isEditing ? (
+                      <div
+                        ref={editorRef}
+                        contentEditable
+                        className="prose prose-invert max-w-4xl mx-auto p-6 bg-dashGreen-card rounded-lg flex-grow outline-none"
+                        onInput={(e) => setEditedContent(e.currentTarget.innerHTML)}
+                        dangerouslySetInnerHTML={{ __html: editedContent }}
+                      />
+                    ) : (
+                      <div
+                        className="prose prose-invert max-w-4xl mx-auto p-6 bg-dashGreen-card rounded-lg flex-grow"
+                        dangerouslySetInnerHTML={{
+                          __html: selectedPost.content
+                        }}
+                      />
+                    )}
                   </DashcoinCardContent>
                 </div>
               </DashcoinCard>
