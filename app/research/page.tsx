@@ -642,8 +642,8 @@ export default function ResearchPage() {
         )}
 
         <div className="flex flex-col md:flex-row min-h-screen gap-8">
-          {/* Sidebar - Research Directory */} 
-          <div className="lg:w-1/4 w-full" id="directory">
+          {/* Sidebar - Research Directory */}
+          <div className="lg:w-[15%] w-full" id="directory">
             <DashcoinCard className="sidebar-content-container overflow-hidden transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.05)]">
               <DashcoinCardHeader className="sticky top-0 bg-dashGreen-darkest z-10">
                 <div className="flex justify-between items-center">
