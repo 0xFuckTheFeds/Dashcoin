@@ -412,12 +412,13 @@ export default function ComparePage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <div className="flex flex-col gap-4">
-                <DashcoinCard>
+            <div className="flex flex-col lg:flex-row gap-8 mb-8">
+              <div className="flex flex-col gap-8 lg:w-1/2">
+                <div className="flex flex-col gap-4">
+                  <DashcoinCard>
                   <DashcoinCardHeader><DashcoinCardTitle className="flex items-center gap-2"><BarChart2 className="h-5 w-5" />Market Cap Comparison</DashcoinCardTitle></DashcoinCardHeader>
                   <DashcoinCardContent>
-                    <div className="h-80">
+                    <div className="h-80 w-1/2 mx-auto">
                       <ResponsiveContainer width="100%" height="100%">
                         <RechartsBarChart data={barChartData.slice(0,1)} margin={{ top: 20, right: 30, left: 50, bottom: 5 }}>
                           <XAxis dataKey="name" />
@@ -445,19 +446,19 @@ export default function ComparePage() {
                     </div>
                   </DashcoinCardContent>
                 </DashcoinCard>
-                <GrowthStatCard 
+                <GrowthStatCard
                   value={`+${formatNumber(comparisonData.token1.marketcapgrowthperday)} / day`}
                   label={`${comparisonData.token1.name} has added +${formatNumber(comparisonData.token1.marketcapgrowthperday)} in marketcap per day since creation.`}
                   className={`w-full min-h-[240px] mt-4 ${token1ScaleClass} ${token1AnimationClasses} transition-transform duration-300`}
                   isWinner={token1IsWinner}
                 />
-              </div>
+                </div>
 
-              <div className="flex flex-col gap-4">
-                <DashcoinCard>
+                <div className="flex flex-col gap-4">
+                  <DashcoinCard>
                   <DashcoinCardHeader><DashcoinCardTitle className="flex items-center gap-2"><Users className="h-5 w-5" />Holders Comparison</DashcoinCardTitle></DashcoinCardHeader>
                   <DashcoinCardContent>
-                    <div className="h-80">
+                    <div className="h-80 w-1/2 mx-auto">
                       <ResponsiveContainer width="100%" height="100%">
                         <RechartsBarChart data={barChartData.slice(1,2)} margin={{ top: 20, right: 30, left: 50, bottom: 5 }}>
                           <XAxis dataKey="name" />
@@ -479,20 +480,20 @@ export default function ComparePage() {
                     </div>
                   </DashcoinCardContent>
                 </DashcoinCard>
-                <GrowthStatCard 
+                <GrowthStatCard
                   value={`+${formatNumber(comparisonData.token2.marketcapgrowthperday)} / day`}
                   label={`${comparisonData.token2.name} has added +${formatNumber(comparisonData.token2.marketcapgrowthperday)} in marketcap per day since creation.`}
                   className={`w-full min-h-[240px] mt-4 ${token2ScaleClass} ${token2AnimationClasses} transition-transform duration-300`}
                   isWinner={token2IsWinner}
                 />
+                </div>
               </div>
-            </div>
-
-            <DashcoinCard>
-              <DashcoinCardHeader><DashcoinCardTitle>Detailed Comparison</DashcoinCardTitle></DashcoinCardHeader>
-              <DashcoinCardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
+              <div className="flex justify-center lg:w-1/2">
+                <DashcoinCard className="w-full lg:w-1/3">
+                  <DashcoinCardHeader><DashcoinCardTitle>Detailed Comparison</DashcoinCardTitle></DashcoinCardHeader>
+                  <DashcoinCardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
                     <thead>
                       <tr className="border-b border-dashGreen-light">
                         <th className="text-left py-3 px-4 font-semibold">Metric</th>
@@ -595,6 +596,7 @@ export default function ComparePage() {
                 </div>
               </DashcoinCardContent>
             </DashcoinCard>
+          </div>
           </>
         )}
       </main>
