@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import dbConnect from '@/lib/mongodb';
-import Article from '@/models/Article'; 
+import Article from '@/models/Article';
+import { verifyAdminToken } from '@/app/api/admin/login/route';
 
 export async function GET() {
   try {
@@ -15,12 +16,17 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const isAdmin = await verifyAdminToken(request);
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     await dbConnect();
-    
+
     const article = new Article(body);
     await article.save();
-    
+
     return NextResponse.json(article, { status: 201 });
   } catch (error) {
     console.error('Error creating article:', error);
