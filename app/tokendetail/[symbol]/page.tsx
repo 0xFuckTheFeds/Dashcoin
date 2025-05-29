@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -31,25 +32,28 @@ interface TokenResearchData {
   "Wallet Comments": string
   Twitter?: string
   [key: string]: any
-}
 
-async function fetchTokenResearch(tokenSymbol: string): Promise<TokenResearchData | null> {
-  const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk';
-  const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
-  const SHEET_NAME = 'Dashcoin Scoring';
+
+async function fetchTokenResearch(
+  tokenSymbol: string,
+): Promise<TokenResearchData | null> {
+  const API_KEY = "AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk";
+  const SHEET_ID = "1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0";
+  const SHEET_NAME = "Dashcoin Scoring";
   const RANGE = `${SHEET_NAME}!A1:M30`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
   try {
     const response = await fetch(url);
     const data = await response.json();
-    
+
     if (!data.values || data.values.length < 2) {
-      console.warn('No data found in Google Sheet');
+      console.warn("No data found in Google Sheet");
       return null;
     }
 
     const [header, ...rows] = data.values;
+
     
     const COLUMN_NAME_MAP: Record<string, string> = {
       'Startup Experience': 'Dev is Active on Twitter',
@@ -57,11 +61,14 @@ async function fetchTokenResearch(tokenSymbol: string): Promise<TokenResearchDat
         'Project has 200k+ views on Social Media',
     };
 
+
     const structured = rows.map((row: any) => {
       const entry: Record<string, any> = {};
       header.forEach((key: string, i: number) => {
+
         const canonical = COLUMN_NAME_MAP[key.trim()] ?? key.trim();
         entry[canonical] = row[i] || '';
+
       });
       return entry;
     });
@@ -69,32 +76,39 @@ async function fetchTokenResearch(tokenSymbol: string): Promise<TokenResearchDat
     const normalizedSymbol = tokenSymbol.toUpperCase();
     const tokenData = structured.find(
       (entry: any) =>
+
         entry['Project'] &&
         entry['Project'].toString().trim().toUpperCase() === normalizedSymbol &&
         entry['Score'],
+
     );
-    
+
     return tokenData || null;
   } catch (err) {
-    console.error('Google Sheets API error:', err);
+    console.error("Google Sheets API error:", err);
     return null;
   }
 }
 
-export default function TokenResearchPage({ params }: { params: { symbol: string } }) {
-
-  const { symbol } = params
-  const [tokenData, setTokenData] = useState<any>(null)
-  const [dexscreenerData, setDexscreenerData] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [duneLastRefresh, setDuneLastRefresh] = useState<Date | null>(null)
-  const [duneNextRefresh, setDuneNextRefresh] = useState<Date | null>(null)
-  const [duneTimeRemaining, setDuneTimeRemaining] = useState<number>(0)
-  const [dexLastRefresh, setDexLastRefresh] = useState<Date | null>(null)
-  const [dexNextRefresh, setDexNextRefresh] = useState<Date | null>(null)
-  const [dexTimeRemaining, setDexTimeRemaining] = useState<number>(0)
+export default function TokenResearchPage({
+  params,
+}: {
+  params: { symbol: string };
+}) {
+  const { symbol } = params;
+  const [tokenData, setTokenData] = useState<any>(null);
+  const [dexscreenerData, setDexscreenerData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [duneLastRefresh, setDuneLastRefresh] = useState<Date | null>(null);
+  const [duneNextRefresh, setDuneNextRefresh] = useState<Date | null>(null);
+  const [duneTimeRemaining, setDuneTimeRemaining] = useState<number>(0);
+  const [dexLastRefresh, setDexLastRefresh] = useState<Date | null>(null);
+  const [dexNextRefresh, setDexNextRefresh] = useState<Date | null>(null);
+  const [dexTimeRemaining, setDexTimeRemaining] = useState<number>(0);
   const router = useRouter();
-  const [researchData, setResearchData] = useState<TokenResearchData | null>(null);
+  const [researchData, setResearchData] = useState<TokenResearchData | null>(
+    null,
+  );
   const [hasScore, setHasScore] = useState(false);
 
   const formattedDuneLastRefresh = duneLastRefresh
@@ -102,25 +116,25 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
         dateStyle: "short",
         timeStyle: "medium",
       })
-    : "N/A"
+    : "N/A";
   const formattedDuneNextRefresh = duneNextRefresh
     ? duneNextRefresh.toLocaleString(undefined, {
         dateStyle: "short",
         timeStyle: "medium",
       })
-    : "N/A"
+    : "N/A";
   const formattedDexLastRefresh = dexLastRefresh
     ? dexLastRefresh.toLocaleString(undefined, {
         dateStyle: "short",
         timeStyle: "medium",
       })
-    : "N/A"
+    : "N/A";
   const formattedDexNextRefresh = dexNextRefresh
     ? dexNextRefresh.toLocaleString(undefined, {
         dateStyle: "short",
         timeStyle: "medium",
       })
-    : "N/A"
+    : "N/A";
 
   useEffect(() => {
     const getResearchData = async () => {
@@ -135,47 +149,53 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
         setIsLoading(false);
       }
     };
-    
+
     getResearchData();
   }, [symbol]);
 
   useEffect(() => {
-      async function loadData() {
-        try {
-          const duneTokenData = await fetchTokenDetails(symbol)
-          if (!duneTokenData) {
-            notFound()
-          }
-  
-          setTokenData(duneTokenData)
-
-          const duneCache = await getTimeUntilNextDuneRefresh()
-          const dexCache = duneTokenData?.token
-            ? await getTimeUntilNextDexscreenerRefresh(`token:${duneTokenData.token}`)
-            : { timeRemaining: 0, lastRefreshTime: null }
-  
-          setDuneLastRefresh(duneCache.lastRefreshTime)
-          setDuneNextRefresh(new Date(duneCache.lastRefreshTime.getTime() + 1 * 60 * 60 * 1000))
-          setDuneTimeRemaining(duneCache.timeRemaining)
-  
-          if (dexCache.lastRefreshTime) {
-            setDexLastRefresh(dexCache.lastRefreshTime)
-            setDexNextRefresh(new Date(dexCache.lastRefreshTime.getTime() + 5 * 60 * 1000))
-            setDexTimeRemaining(dexCache.timeRemaining)
-          }
-  
-          if (duneTokenData && duneTokenData.token) {
-            const dexData = await fetchDexscreenerTokenData(duneTokenData.token)
-            if (dexData && dexData.pairs && dexData.pairs.length > 0) {
-              setDexscreenerData(dexData.pairs[0])
-            }
-          }
-        } catch (error) {
-          console.error("Error loading token data:", error)
-        } finally {
-          setIsLoading(false)
+    async function loadData() {
+      try {
+        const duneTokenData = await fetchTokenDetails(symbol);
+        if (!duneTokenData) {
+          notFound();
         }
+
+        setTokenData(duneTokenData);
+
+        const duneCache = await getTimeUntilNextDuneRefresh();
+        const dexCache = duneTokenData?.token
+          ? await getTimeUntilNextDexscreenerRefresh(
+              `token:${duneTokenData.token}`,
+            )
+          : { timeRemaining: 0, lastRefreshTime: null };
+
+        setDuneLastRefresh(duneCache.lastRefreshTime);
+        setDuneNextRefresh(
+          new Date(duneCache.lastRefreshTime.getTime() + 1 * 60 * 60 * 1000),
+        );
+        setDuneTimeRemaining(duneCache.timeRemaining);
+
+        if (dexCache.lastRefreshTime) {
+          setDexLastRefresh(dexCache.lastRefreshTime);
+          setDexNextRefresh(
+            new Date(dexCache.lastRefreshTime.getTime() + 5 * 60 * 1000),
+          );
+          setDexTimeRemaining(dexCache.timeRemaining);
+        }
+
+        if (duneTokenData && duneTokenData.token) {
+          const dexData = await fetchDexscreenerTokenData(duneTokenData.token);
+          if (dexData && dexData.pairs && dexData.pairs.length > 0) {
+            setDexscreenerData(dexData.pairs[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading token data:", error);
+      } finally {
+        setIsLoading(false);
       }
+
   
       loadData()
     }, [symbol])
@@ -203,12 +223,15 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
   const scoreOutOf100 = Math.round(numericScore * 10)
   const borderColor = scoreOutOf100 >= 70 ? "border-dashGreen-light" : "border-dashRed"
 
+
   const frameworkCriteria = [
     "Founder Doxxed",
     "Dev is Active on Twitter",
     "Successful Exit",
     "Discussed Plans for Token Integration",
+
     "Project has 200k+ views on Social Media",
+
     "Live Product Exists",
   ];
 
@@ -216,14 +239,18 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
     <div className="container mx-auto px-4 py-6">
       <header className="container mx-auto py-6 px-4">
         <div className="flex justify-between items-center">
-          <DashcoinLogo size={48} />
+          <Link href="/">
+            <DashcoinLogo size={48} />
+          </Link>
           <div>
             <ThemeToggle />
           </div>
         </div>
         <div className="mt-2 text-center">
           <div className="flex items-center justify-center gap-1">
-            <span className="text-sm font-mono text-dashYellow-light opacity-80">$DASHC CA:</span>
+            <span className="text-sm font-mono text-dashYellow-light opacity-80">
+              $DASHC CA:
+            </span>
             <CopyAddress
               address="7gkgsqE2Uip7LUyrqEi8fyLPNSbn7GYu9yFgtxZwYUVa"
               showBackground={true}
@@ -233,40 +260,49 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
         </div>
       </header>
       <main className="container mx-auto px-4 py-6 space-y-8">
-        <Link href="/" className="flex items-center gap-2 text-dashYellow-light hover:text-dashYellow">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-dashYellow-light hover:text-dashYellow"
+        >
           <ArrowLeft className="h-4 w-4" />
           Back to Dashboard
         </Link>
 
         <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
-          
           <div className="flex justify-between text-center">
             <div className="flex flex-col">
-              <h1 className="dashcoin-title text-3xl text-dashYellow">{tokenSymbol}</h1>
+              <h1 className="dashcoin-title text-3xl text-dashYellow">
+                {tokenSymbol}
+              </h1>
               <p className="opacity-80">{tokenName}</p>
               <p className="text-xs opacity-60 mt-1">Created: {createdTime}</p>
             </div>
-          </div>  
+          </div>
           <div className="flex flex-col items-center justify-center text-center mt-2">
             <p className="dashcoin-title text-4xl text-dashYellow">
               {researchData?.["Wallet Comments"] || "Creator Wallet Activity"}
             </p>
             {researchData?.["Wallet Link"] ? (
-              <a 
-                href={researchData["Wallet Link"]} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href={researchData["Wallet Link"]}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="hover:text-dashYellow-light flex items-center text-sm mt-1"
               >
                 Link to creator wallet <ExternalLink className="h-3 w-3 ml-1" />
               </a>
             ) : (
-              <span className="text-sm mt-1 opacity-60">No wallet link available</span>
+              <span className="text-sm mt-1 opacity-60">
+                No wallet link available
+              </span>
             )}
           </div>
           <div className="flex gap-2">
             <a
-              href={dexscreenerData?.url || `https://axiom.trade/t/${tokenAddress}/dashc`}
+              href={
+                dexscreenerData?.url ||
+                `https://axiom.trade/t/${tokenAddress}/dashc`
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="text-dashYellow hover:text-dashYellow-dark font-medium dashcoin-text flex items-center"
@@ -343,9 +379,13 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
               <DashcoinCardTitle>Price</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">${price.toFixed(price < 0.01 ? 8 : 6)}</p>
+              <p className="dashcoin-text text-2xl text-dashYellow">
+                ${price.toFixed(price < 0.01 ? 8 : 6)}
+              </p>
               <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
-                <p className={`text-sm ${change24h >= 0 ? "text-dashGreen-accent" : "text-dashRed"}`}>
+                <p
+                  className={`text-sm ${change24h >= 0 ? "text-dashGreen-accent" : "text-dashRed"}`}
+                >
                   {change24h >= 0 ? "↑" : "↓"}
                   {Math.abs(change24h).toFixed(2)}% (24h)
                 </p>
@@ -358,7 +398,9 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
               <DashcoinCardTitle>Volume (24h)</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">${formatCurrency(volume24h)}</p>
+              <p className="dashcoin-text text-2xl text-dashYellow">
+                ${formatCurrency(volume24h)}
+              </p>
             </DashcoinCardContent>
           </DashcoinCard>
 
@@ -367,7 +409,9 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
               <DashcoinCardTitle>Transactions</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">{txs.toLocaleString()}</p>
+              <p className="dashcoin-text text-2xl text-dashYellow">
+                {txs.toLocaleString()}
+              </p>
             </DashcoinCardContent>
           </DashcoinCard>
 
@@ -376,7 +420,9 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
               <DashcoinCardTitle>Market Cap</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">${formatCurrency(marketCap)}</p>
+              <p className="dashcoin-text text-2xl text-dashYellow">
+                ${formatCurrency(marketCap)}
+              </p>
             </DashcoinCardContent>
           </DashcoinCard>
         </div>
@@ -390,19 +436,27 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm opacity-80">Buys</p>
-                  <p className="text-xl font-bold text-dashGreen-accent">{buys.toLocaleString()}</p>
+                  <p className="text-xl font-bold text-dashGreen-accent">
+                    {buys.toLocaleString()}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm opacity-80">Sells</p>
-                  <p className="text-xl font-bold text-dashRed">{sells.toLocaleString()}</p>
+                  <p className="text-xl font-bold text-dashRed">
+                    {sells.toLocaleString()}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm opacity-80">Liquidity</p>
-                  <p className="text-xl font-bold">${formatCurrency(liquidity)}</p>
+                  <p className="text-xl font-bold">
+                    ${formatCurrency(liquidity)}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm opacity-80">Price Change (1h)</p>
-                  <p className={`text-xl font-bold ${change1h >= 0 ? "text-dashGreen-accent" : "text-dashRed"}`}>
+                  <p
+                    className={`text-xl font-bold ${change1h >= 0 ? "text-dashGreen-accent" : "text-dashRed"}`}
+                  >
                     {change1h >= 0 ? "+" : ""}
                     {change1h.toFixed(2)}%
                   </p>
@@ -455,7 +509,9 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
                 )}
               </div>
               <div className="mt-4 pt-4 border-t border-dashGreen-light">
-                <p className="text-xs opacity-70 mb-1">Data Refresh Information:</p>
+                <p className="text-xs opacity-70 mb-1">
+                  Data Refresh Information:
+                </p>
                 <div className="grid grid-cols-2 gap-2 text-xs opacity-70">
                   <div>
                     <p>Dune data last updated:</p>
@@ -474,13 +530,18 @@ export default function TokenResearchPage({ params }: { params: { symbol: string
         </div>
 
         {/* Dexscreener Chart */}
-        {chartAddress && <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />}
+        {chartAddress && (
+          <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
+        )}
       </main>
+
 
       <footer className="container mx-auto py-8 px-4 mt-12 border-t border-dashGreen-light">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <DashcoinLogo size={32} />
-          <p className="text-sm opacity-80">© 2025 Dashcoin. All rights reserved.</p>
+          <p className="text-sm opacity-80">
+            © 2025 Dashcoin. All rights reserved.
+          </p>
           <div className="flex gap-4">
             <DashcoinButton variant="outline" size="sm">
               Docs
