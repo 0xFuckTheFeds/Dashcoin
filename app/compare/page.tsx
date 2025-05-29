@@ -116,7 +116,7 @@ export default function ComparePage() {
   const token1SuggestionsRef = useRef<HTMLDivElement>(null);
   const token2SuggestionsRef = useRef<HTMLDivElement>(null);
 
-
+  
   useEffect(() => {
     async function fetchTokens() {
       try {
@@ -137,6 +137,32 @@ export default function ComparePage() {
     }
     fetchTokens();
   }, []);
+
+  // Auto compare the top two tokens by market cap on initial load
+  useEffect(() => {
+    if (
+      allTokens.length > 1 &&
+      !isComparing &&
+      token1Name === "" &&
+      token2Name === ""
+    ) {
+      // Sort tokens client-side by market cap in descending order
+      const sorted = [...allTokens].sort(
+        (a, b) => (b.marketCap || 0) - (a.marketCap || 0)
+      );
+
+      const topTwo = sorted.slice(0, 2);
+      if (topTwo.length === 2) {
+        const token1Data = convertTokenData(topTwo[0]);
+        const token2Data = convertTokenData(topTwo[1]);
+
+        setToken1Name(topTwo[0].token);
+        setToken2Name(topTwo[1].token);
+        setComparisonData({ token1: token1Data, token2: token2Data });
+        setIsComparing(true);
+      }
+    }
+  }, [allTokens]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
