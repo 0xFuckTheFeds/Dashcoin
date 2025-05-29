@@ -224,7 +224,6 @@ export default async function Home() {
     <div className="min-h-screen">
       {/* Use the new Navbar component */}
       <Navbar
-        dashcoinTradeLink={dashcoinTradeLink}
         dashcStats={{
           dashcoinCA,
           tradeLink: dashcoinTradeLink,
