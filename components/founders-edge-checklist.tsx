@@ -34,20 +34,30 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
     score >= 70 ? "border-green-500" : score >= 40 ? "border-yellow-500" : "border-red-500";
 
   return (
-    <DashcoinCard className={`relative bg-zinc-900 p-8 rounded-2xl shadow-lg ${borderColor}`}>
-      <div className="absolute top-4 right-4 bg-dashYellow text-black px-3 py-1 rounded-full text-sm font-semibold shadow">
-        Score: <span className="font-bold">{score}</span> / 100
+    <DashcoinCard
+      className={`relative bg-zinc-900 p-10 rounded-2xl shadow-lg ${borderColor}`}
+    >
+      <div className="flex justify-center items-center gap-6 mb-4">
+        <h2 className="text-2xl font-semibold text-dashYellow">Founder&apos;s Edge Checklist</h2>
+        <div className="bg-dashYellow text-black px-3 py-1 rounded-full text-sm font-semibold shadow flex items-center">
+          <span>
+            Score: <span className="font-bold">{score}</span> / 100
+          </span>
+          {score >= 75 && <span className="ml-2 animate-bounce">🐸</span>}
+        </div>
       </div>
-      <h2 className="text-xl font-semibold text-dashYellow mb-1">Founder&apos;s Edge Checklist</h2>
-      <p className="text-sm opacity-80 mb-4">Signal-based checklist of founder credibility and product traction.</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <p className="text-base opacity-80 mb-6 text-center">Signal-based checklist of founder credibility and product traction.</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {canonicalChecklist.map((label) => {
           const raw = data[label];
           const val = typeof raw === "string" ? parseInt(raw) : Number(raw);
           return (
-            <div key={label} className="flex items-center gap-2 bg-zinc-800 rounded-full px-3 py-2">
+            <div
+              key={label}
+              className="flex items-center gap-2 bg-zinc-800 rounded-full px-4 py-3"
+            >
               {getIcon(val)}
-              <span className="text-sm">{label}</span>
+              <span className="text-base">{label}</span>
             </div>
           );
         })}
