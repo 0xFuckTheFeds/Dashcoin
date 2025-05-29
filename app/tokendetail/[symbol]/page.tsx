@@ -10,6 +10,7 @@ import {
   XCircle,
   MinusCircle,
 } from "lucide-react";
+
 import { DashcoinButton } from "@/components/ui/dashcoin-button";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import {
@@ -51,6 +52,7 @@ interface TokenResearchData {
   [key: string]: any;
 }
 
+
 const COLUMN_NAME_MAP: Record<string, string> = {
   "Founder Doxxed": "Founder Doxxed",
   "Startup Experience": "Dev is Active on Twitter",
@@ -89,8 +91,12 @@ async function fetchTokenResearch(
     const structured = rows.map((row: any) => {
       const entry: Record<string, any> = {};
       header.forEach((key: string, i: number) => {
+
         const canonical = COLUMN_NAME_MAP[key.trim()] || key.trim();
         entry[canonical] = row[i] || "";
+=======
+        entry[key.trim()] = row[i] || "";
+
       });
       return entry;
     });
@@ -99,7 +105,9 @@ async function fetchTokenResearch(
     const tokenData = structured.find(
       (entry: any) =>
         entry["Project"] &&
+
         entry["Project"].toString().trim().toUpperCase() === normalizedSymbol &&
+
         entry["Score"],
     );
 
@@ -250,16 +258,20 @@ export default function TokenResearchPage({
     : "Unknown";
   const marketCap = tokenData?.marketCap || 0;
 
+
   const numericScore = researchData ? parseFloat(String(researchData.Score)) : 0;
   const scoreOutOf100 = Math.round(numericScore * 10);
   const borderColor = scoreOutOf100 >= 70 ? "border-dashGreen-light" : "border-dashRed";
+
 
   const frameworkCriteria = [
     "Founder Doxxed",
     "Dev is Active on Twitter",
     "Successful Exit",
     "Discussed Plans for Token Integration",
+
     "Project has 200k+ views on Social Media",
+
     "Live Product Exists",
   ];
 
