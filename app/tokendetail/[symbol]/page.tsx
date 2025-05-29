@@ -2,7 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, Twitter } from "lucide-react";
+import {
+  Loader2,
+  ArrowLeft,
+  Twitter,
+  CheckCircle,
+  XCircle,
+  MinusCircle,
+  ExternalLink,
+} from "lucide-react";
 import { DashcoinButton } from "@/components/ui/dashcoin-button";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import {
@@ -22,7 +30,6 @@ import {
   getTimeUntilNextDexscreenerRefresh,
 } from "@/app/actions/dexscreener-actions";
 import { formatCurrency } from "@/lib/utils";
-import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
@@ -31,10 +38,10 @@ interface TokenResearchData {
   Symbol: string;
   Score: number | string;
   "Founder Doxxed": number | string;
-  "Startup Experience": number | string;
+  "Dev is Active on Twitter": number | string;
   "Successful Exit": number | string;
   "Discussed Plans for Token Integration": number | string;
-  "Project Has Some Virality / Popularity": number | string;
+  "Project has 200k+ views on Social Media": number | string;
   "Live Product Exists": number | string;
   "Relevant Links": string;
   Comments: string;
@@ -44,9 +51,19 @@ interface TokenResearchData {
   [key: string]: any;
 }
 
-async function fetchTokenResearch(
-  tokenSymbol: string,
-): Promise<TokenResearchData | null> {
+const COLUMN_NAME_MAP: Record<string, string> = {
+  "Founder Doxxed": "Founder Doxxed",
+  "Startup Experience": "Dev is Active on Twitter",
+  "Dev is Active on Twitter": "Dev is Active on Twitter",
+  "Successful Exit": "Successful Exit",
+  "Discussed Plans for Token Integration": "Discussed Plans for Token Integration",
+  "Project Has Some Virality / Popularity": "Project has 200k+ views on Social Media",
+  "Project has 200k+ views on Social Media": "Project has 200k+ views on Social Media",
+  "Live Product Exists": "Live Product Exists",
+  Score: "Score",
+};
+
+async function fetchTokenResearch(tokenSymbol: string): Promise<TokenResearchData | null> {
   const API_KEY = "AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk";
   const SHEET_ID = "1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0";
   const SHEET_NAME = "Dashcoin Scoring";
@@ -67,7 +84,8 @@ async function fetchTokenResearch(
     const structured = rows.map((row: any) => {
       const entry: Record<string, any> = {};
       header.forEach((key: string, i: number) => {
-        entry[key.trim()] = row[i] || "";
+        const canonical = COLUMN_NAME_MAP[key.trim()] || key.trim();
+        entry[canonical] = row[i] || '';
       });
       return entry;
     });
@@ -76,8 +94,17 @@ async function fetchTokenResearch(
     const tokenData = structured.find(
       (entry: any) =>
         entry["Project"] &&
-        entry["Project"].toString().toUpperCase() === normalizedSymbol &&
-        entry["Score"],
+        entry["Project"].toString().trim().toUpperCase() === normalizedSymbol &&
+        entry["Score"]
+    );
+
+    return tokenData || null;
+  } catch (err) {
+    console.error("Google Sheets API error:", err);
+    return null;
+  }
+}
+
     );
 
     return tokenData || null;
@@ -139,7 +166,7 @@ export default function TokenResearchPage({
       try {
         const data = await fetchTokenResearch(symbol);
         setResearchData(data);
-        setHasScore(true);
+        setHasScore(!!data);
       } catch (error) {
         console.error(`Error fetching research data for ${symbol}:`, error);
       } finally {
@@ -192,47 +219,87 @@ export default function TokenResearchPage({
       } finally {
         setIsLoading(false);
       }
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const duneTokenData = await fetchTokenDetails(symbol);
+        if (!duneTokenData) {
+          notFound();
+        }
+
+        setTokenData(duneTokenData);
+
+        const duneCache = await getTimeUntilNextDuneRefresh();
+        const dexCache = duneTokenData?.token
+          ? await getTimeUntilNextDexscreenerRefresh(
+              `token:${duneTokenData.token}`
+            )
+          : { timeRemaining: 0, lastRefreshTime: null };
+
+        setDuneLastRefresh(duneCache.lastRefreshTime);
+        setDuneNextRefresh(
+          new Date(duneCache.lastRefreshTime.getTime() + 1 * 60 * 60 * 1000)
+        );
+        setDuneTimeRemaining(duneCache.timeRemaining);
+
+        if (dexCache.lastRefreshTime) {
+          setDexLastRefresh(dexCache.lastRefreshTime);
+          setDexNextRefresh(
+            new Date(dexCache.lastRefreshTime.getTime() + 5 * 60 * 1000)
+          );
+          setDexTimeRemaining(dexCache.timeRemaining);
+        }
+
+        if (duneTokenData && duneTokenData.token) {
+          const dexData = await fetchDexscreenerTokenData(duneTokenData.token);
+          if (dexData && dexData.pairs && dexData.pairs.length > 0) {
+            setDexscreenerData(dexData.pairs[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading token data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
     loadData();
   }, [symbol]);
 
-  const chartAddress =
-    dexscreenerData?.pairAddress || (tokenData && tokenData.token) || "";
+  const chartAddress = dexscreenerData?.pairAddress || tokenData?.token || "";
   const price = dexscreenerData?.priceUsd
     ? Number.parseFloat(dexscreenerData.priceUsd)
-    : (tokenData && tokenData.price) || 0;
-  const change24h =
-    dexscreenerData?.priceChange?.h24 ||
-    (tokenData && tokenData.change24h) ||
-    0;
-  const volume24h =
-    dexscreenerData?.volume?.h24 || (tokenData && tokenData.volume24h) || 0;
-  const liquidity =
-    dexscreenerData?.liquidity?.usd || (tokenData && tokenData.liquidity) || 0;
+    : tokenData?.price || 0;
+  const change24h = dexscreenerData?.priceChange?.h24 || tokenData?.change24h || 0;
+  const volume24h = dexscreenerData?.volume?.h24 || tokenData?.volume24h || 0;
+  const liquidity = dexscreenerData?.liquidity?.usd || tokenData?.liquidity || 0;
   const txs = dexscreenerData
-    ? (dexscreenerData.txns?.h24?.buys || 0) +
-      (dexscreenerData.txns?.h24?.sells || 0)
-    : (tokenData && tokenData.txs) || 0;
+    ? (dexscreenerData.txns?.h24?.buys || 0) + (dexscreenerData.txns?.h24?.sells || 0)
+    : tokenData?.txs || 0;
   const buys = dexscreenerData?.txns?.h24?.buys || 0;
   const sells = dexscreenerData?.txns?.h24?.sells || 0;
-  const change1h =
-    dexscreenerData?.priceChange?.h1 || (tokenData && tokenData.change1h) || 0;
+  const change1h = dexscreenerData?.priceChange?.h1 || tokenData?.change1h || 0;
   const tokenSymbol = tokenData?.symbol || "Unknown";
-  const tokenName =
-    tokenData?.name || tokenData?.description || "Unknown Token";
+  const tokenName = tokenData?.name || tokenData?.description || "Unknown Token";
   const tokenAddress = tokenData?.token || "";
   const createdTime = tokenData?.created_time
     ? new Date(tokenData.created_time).toLocaleDateString()
     : "Unknown";
   const marketCap = tokenData?.marketCap || 0;
 
+  const numericScore = researchData ? parseFloat(String(researchData.Score)) : 0;
+  const scoreOutOf100 = Math.round(numericScore * 10);
+  const borderColor = scoreOutOf100 >= 70 ? "border-dashGreen-light" : "border-dashRed";
+
   const frameworkCriteria = [
     "Founder Doxxed",
-    "Startup Experience",
+    "Dev is Active on Twitter",
     "Successful Exit",
     "Discussed Plans for Token Integration",
-    "Project Has Some Virality / Popularity",
+    "Project has 200k+ views on Social Media",
+    "Live Product Exists"
+  ];
+
     "Live Product Exists",
   ];
 
@@ -313,6 +380,66 @@ export default function TokenResearchPage({
             </a>
           </div>
         </div>
+
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <div className="flex flex-col items-center">
+              <Loader2 className="h-8 w-8 animate-spin text-dashYellow" />
+              <p className="mt-4 text-dashYellow-light">Loading research data...</p>
+            </div>
+          </div>
+        ) : !hasScore ? (
+          <div className="p-8 text-center bg-zinc-900 border border-dashGreen-light rounded-2xl shadow-lg">
+            <h2 className="text-xl font-semibold text-dashYellow">No Research Available</h2>
+            <p className="mt-4 text-dashYellow-light">
+              Research data is not yet available for {symbol}. Check back later or try another token.
+            </p>
+          </div>
+        ) : (
+          <div className={`relative bg-zinc-900 p-6 rounded-2xl shadow-lg border ${borderColor}`}>
+            <h2 className="text-2xl font-semibold text-white">Founder’s Edge Checklist</h2>
+            <p className="text-sm text-gray-400 mt-1">Signal-based checklist of founder credibility and product traction.</p>
+            <div className="absolute top-4 right-4 bg-dashYellow text-black px-3 py-1 rounded-full text-sm font-semibold shadow">
+              Score: {scoreOutOf100} / 100
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+              {frameworkCriteria.map((criterion) => {
+                const value = researchData?.[criterion]
+                const numeric = parseInt(String(value).trim())
+
+                let icon = null
+                if (numeric === 2) {
+                  icon = <CheckCircle className="text-green-500 w-4 h-4" />
+                } else if (numeric === 1) {
+                  icon = <XCircle className="text-red-500 w-4 h-4" />
+                } else {
+                  icon = <MinusCircle className="text-yellow-400 w-4 h-4" />
+                }
+
+                return (
+                  <div
+                    key={criterion}
+                    className="flex items-center gap-2 px-3 py-2 rounded-md bg-zinc-800 border border-zinc-700 text-sm"
+                  >
+                    {icon}
+                    <span className="text-white">{criterion}</span>
+                  </div>
+                )
+              })}
+            </div>
+            <div className="mt-4 flex gap-4 text-xs text-gray-400">
+              <div className="flex items-center gap-1">
+                <CheckCircle className="text-green-500 w-3 h-3" /> Yes
+              </div>
+              <div className="flex items-center gap-1">
+                <XCircle className="text-red-500 w-3 h-3" /> No
+              </div>
+              <div className="flex items-center gap-1">
+                <MinusCircle className="text-yellow-400 w-3 h-3" /> Unknown
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <DashcoinCard>
@@ -476,112 +603,104 @@ export default function TokenResearchPage({
         )}
       </main>
 
-      {/* Page header */}
-      <div className="mb-8">
-        <h2 className="flex items-center text-center justify-center dashcoin-text text-5xl text-dashYellow items center mt-8 mb-8">
-          "FrameWork Score" table
+{isLoading ? (
+  <div className="flex justify-center py-12">
+    <div className="flex flex-col items-center">
+      <Loader2 className="h-8 w-8 animate-spin text-dashYellow" />
+      <p className="mt-4 text-dashYellow-light">
+        Loading research data...
+      </p>
+    </div>
+  </div>
+) : !hasScore ? (
+  <DashcoinCard className="p-8 text-center">
+    <h2 className="text-xl font-semibold text-dashYellow">
+      No Research Available
+    </h2>
+    <p className="mt-4 text-dashYellow-light">
+      Research data is not yet available for {symbol}. Check back later or try another token.
+    </p>
+  </DashcoinCard>
+) : (
+  <div className="space-y-8">
+    {/* Research Score */}
+    <DashcoinCard className="p-6">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-dashYellow mb-4 md:mb-0">
+          Research Score
         </h2>
+        <div className="flex items-center">
+          <div className="text-4xl font-bold text-dashYellow">
+            {typeof researchData?.Score === "string"
+              ? parseFloat(researchData.Score).toFixed(1)
+              : researchData?.Score.toFixed(1)}
+          </div>
+          <div className="text-dashYellow-light ml-3">/ 10.0</div>
+        </div>
       </div>
 
-      {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="flex flex-col items-center">
-            <Loader2 className="h-8 w-8 animate-spin text-dashYellow" />
-            <p className="mt-4 text-dashYellow-light">
-              Loading research data...
-            </p>
-          </div>
-        </div>
-      ) : !hasScore ? (
-        <DashcoinCard className="p-8 text-center">
-          <h2 className="text-xl font-semibold text-dashYellow">
-            No Research Available
-          </h2>
-          <p className="mt-4 text-dashYellow-light">
-            Research data is not yet available for {symbol}. Check back later or
-            try another token.
-          </p>
-        </DashcoinCard>
-      ) : (
-        <div className="space-y-8">
-          {/* Research Score */}
-          <DashcoinCard className="p-6">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-dashYellow mb-4 md:mb-0">
-                Research Score
-              </h2>
-              <div className="flex items-center">
-                <div className="text-4xl font-bold text-dashYellow">
-                  {typeof researchData?.Score === "string"
-                    ? parseFloat(researchData.Score).toFixed(1)
-                    : researchData?.Score.toFixed(1)}
-                </div>
-                <div className="text-dashYellow-light ml-3">/ 10.0</div>
-              </div>
-            </div>
-
-            {/* Framework Score Table */}
-            <h3 className="text-lg font-medium text-dashYellow mb-4">
-              Framework Criteria
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-dashGreen-card dark:bg-dashGreen-cardDark border-b-2 border-dashBlack">
-                    {frameworkCriteria.map((criterion) => (
-                      <th
-                        key={criterion}
-                        className="py-3 px-4 text-dashYellow text-center"
-                      >
-                        {criterion}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-dashGreen-light">
-                    {frameworkCriteria.map((criterion) => {
-                      const value = researchData?.[criterion];
-                      const numValue =
-                        typeof value === "string" ? parseInt(value) : value;
-
-                      return (
-                        <td
-                          key={criterion}
-                          className="py-4 px-4 text-center border-r border-dashGreen-light last:border-r-0"
-                        >
-                          <div className="text-2xl">
-                            {numValue === 1 ? (
-                              <span className="text-green-500">✅</span>
-                            ) : (
-                              <span className="text-red-500">❌</span>
-                            )}
-                          </div>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Twitter Button - Only if Twitter handle exists */}
-            {researchData?.Twitter && (
-              <div className="mt-8 flex justify-end">
-                <a
-                  href={`${researchData.Twitter.replace("@", "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#1DA1F2] hover:bg-[#1a91da] text-white px-4 py-2 rounded-md flex items-center transition-colors"
+      {/* Framework Score Table */}
+      <h3 className="text-lg font-medium text-dashYellow mb-4">
+        Framework Criteria
+      </h3>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-dashGreen-card dark:bg-dashGreen-cardDark border-b-2 border-dashBlack">
+              {frameworkCriteria.map((criterion) => (
+                <th
+                  key={criterion}
+                  className="py-3 px-4 text-dashYellow text-center"
                 >
-                  <Twitter className="h-4 w-4 mr-2" />
-                  View on Twitter
-                </a>
-              </div>
-            )}
-          </DashcoinCard>
+                  {criterion}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-dashGreen-light">
+              {frameworkCriteria.map((criterion) => {
+                const value = researchData?.[criterion];
+                const numValue =
+                  typeof value === "string" ? parseInt(value) : value;
+
+                return (
+                  <td
+                    key={criterion}
+                    className="py-4 px-4 text-center border-r border-dashGreen-light last:border-r-0"
+                  >
+                    <div className="text-2xl">
+                      {numValue === 1 ? (
+                        <span className="text-green-500">✅</span>
+                      ) : (
+                        <span className="text-red-500">❌</span>
+                      )}
+                    </div>
+                  </td>
+                );
+              })}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* Twitter Button - Only if Twitter handle exists */}
+      {researchData?.Twitter && (
+        <div className="mt-8 flex justify-end">
+          <a
+            href={`${researchData.Twitter.replace("@", "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#1DA1F2] hover:bg-[#1a91da] text-white px-4 py-2 rounded-md flex items-center transition-colors"
+          >
+            <Twitter className="h-4 w-4 mr-2" />
+            View on Twitter
+          </a>
         </div>
       )}
+    </DashcoinCard>
+  </div>
+)}
 
       <footer className="container mx-auto py-8 px-4 mt-12 border-t border-dashGreen-light">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
