@@ -26,15 +26,16 @@ import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
+import { FoundersEdgeChecklist } from "@/components/founders-edge-checklist";
 
 interface TokenResearchData {
   Symbol: string;
   Score: number | string;
   "Founder Doxxed": number | string;
-  "Startup Experience": number | string;
+  "Dev is Active on Twitter": number | string;
   "Successful Exit": number | string;
   "Discussed Plans for Token Integration": number | string;
-  "Project Has Some Virality / Popularity": number | string;
+  "Project has 200k+ views on Social Media": number | string;
   "Live Product Exists": number | string;
   "Relevant Links": string;
   Comments: string;
@@ -64,11 +65,22 @@ async function fetchTokenResearch(
 
     const [header, ...rows] = data.values;
 
+    const canonicalMap: Record<string, string> = {
+      "Startup Experience": "Dev is Active on Twitter",
+      "Project Has Some Virality / Popularity":
+        "Project has 200k+ views on Social Media",
+    };
+
     const structured = rows.map((row: any) => {
       const entry: Record<string, any> = {};
       header.forEach((key: string, i: number) => {
-        entry[key.trim()] = row[i] || "";
+        const trimmed = key.trim();
+        const canonical = canonicalMap[trimmed] || trimmed;
+        entry[canonical] = row[i] || "";
       });
+      if (entry["Project"]) {
+        entry["Project"] = entry["Project"].toString().trim().toUpperCase();
+      }
       return entry;
     });
 
@@ -219,22 +231,11 @@ export default function TokenResearchPage({
   const change1h =
     dexscreenerData?.priceChange?.h1 || (tokenData && tokenData.change1h) || 0;
   const tokenSymbol = tokenData?.symbol || "Unknown";
-  const tokenName =
-    tokenData?.name || tokenData?.description || "Unknown Token";
   const tokenAddress = tokenData?.token || "";
   const createdTime = tokenData?.created_time
     ? new Date(tokenData.created_time).toLocaleDateString()
     : "Unknown";
-  const marketCap = tokenData?.marketCap || 0;
 
-  const frameworkCriteria = [
-    "Founder Doxxed",
-    "Startup Experience",
-    "Successful Exit",
-    "Discussed Plans for Token Integration",
-    "Project Has Some Virality / Popularity",
-    "Live Product Exists",
-  ];
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -275,29 +276,27 @@ export default function TokenResearchPage({
               <h1 className="dashcoin-title text-3xl text-dashYellow">
                 {tokenSymbol}
               </h1>
-              <p className="opacity-80">{tokenName}</p>
               <p className="text-xs opacity-60 mt-1">Created: {createdTime}</p>
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center text-center mt-2">
-            <p className="dashcoin-title text-4xl text-dashYellow">
-              {researchData?.["Wallet Comments"] || "Creator Wallet Activity"}
-            </p>
-            {researchData?.["Wallet Link"] ? (
-              <a
-                href={researchData["Wallet Link"]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-dashYellow-light flex items-center text-sm mt-1"
-              >
-                Link to creator wallet <ExternalLink className="h-3 w-3 ml-1" />
-              </a>
-            ) : (
-              <span className="text-sm mt-1 opacity-60">
-                No wallet link available
-              </span>
-            )}
-          </div>
+          <DashcoinCard className="md:max-w-md mt-4 md:mt-0">
+            <DashcoinCardHeader>
+              <DashcoinCardTitle>Creator Wallet Activity</DashcoinCardTitle>
+            </DashcoinCardHeader>
+            <DashcoinCardContent>
+              <p>{researchData?.["Wallet Comments"] || "No wallet activity available"}</p>
+              {researchData?.["Wallet Link"] ? (
+                <a
+                  href={researchData["Wallet Link"]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-dashYellow-light flex items-center text-sm mt-2"
+                >
+                  Link to creator wallet <ExternalLink className="h-3 w-3 ml-1" />
+                </a>
+              ) : null}
+            </DashcoinCardContent>
+          </DashcoinCard>
           <div className="flex gap-2">
             <a
               href={
@@ -314,59 +313,9 @@ export default function TokenResearchPage({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Price</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">
-                ${price.toFixed(price < 0.01 ? 8 : 6)}
-              </p>
-              <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
-                <p
-                  className={`text-sm ${change24h >= 0 ? "text-dashGreen-accent" : "text-dashRed"}`}
-                >
-                  {change24h >= 0 ? "↑" : "↓"}
-                  {Math.abs(change24h).toFixed(2)}% (24h)
-                </p>
-              </div>
-            </DashcoinCardContent>
-          </DashcoinCard>
-
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Volume (24h)</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">
-                ${formatCurrency(volume24h)}
-              </p>
-            </DashcoinCardContent>
-          </DashcoinCard>
-
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Transactions</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">
-                {txs.toLocaleString()}
-              </p>
-            </DashcoinCardContent>
-          </DashcoinCard>
-
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Market Cap</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-2xl text-dashYellow">
-                ${formatCurrency(marketCap)}
-              </p>
-            </DashcoinCardContent>
-          </DashcoinCard>
-        </div>
+        {researchData && (
+          <FoundersEdgeChecklist data={researchData} showLegend />
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <DashcoinCard>
@@ -476,12 +425,6 @@ export default function TokenResearchPage({
         )}
       </main>
 
-      {/* Page header */}
-      <div className="mb-8">
-        <h2 className="flex items-center text-center justify-center dashcoin-text text-5xl text-dashYellow items center mt-8 mb-8">
-          "FrameWork Score" table
-        </h2>
-      </div>
 
       {isLoading ? (
         <div className="flex justify-center py-12">
@@ -504,82 +447,19 @@ export default function TokenResearchPage({
         </DashcoinCard>
       ) : (
         <div className="space-y-8">
-          {/* Research Score */}
-          <DashcoinCard className="p-6">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-dashYellow mb-4 md:mb-0">
-                Research Score
-              </h2>
-              <div className="flex items-center">
-                <div className="text-4xl font-bold text-dashYellow">
-                  {typeof researchData?.Score === "string"
-                    ? parseFloat(researchData.Score).toFixed(1)
-                    : researchData?.Score.toFixed(1)}
-                </div>
-                <div className="text-dashYellow-light ml-3">/ 10.0</div>
-              </div>
+          {researchData?.Twitter && (
+            <div className="flex justify-end">
+              <a
+                href={`${researchData.Twitter.replace("@", "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#1DA1F2] hover:bg-[#1a91da] text-white px-4 py-2 rounded-md flex items-center transition-colors"
+              >
+                <Twitter className="h-4 w-4 mr-2" />
+                View on Twitter
+              </a>
             </div>
-
-            {/* Framework Score Table */}
-            <h3 className="text-lg font-medium text-dashYellow mb-4">
-              Framework Criteria
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-dashGreen-card dark:bg-dashGreen-cardDark border-b-2 border-dashBlack">
-                    {frameworkCriteria.map((criterion) => (
-                      <th
-                        key={criterion}
-                        className="py-3 px-4 text-dashYellow text-center"
-                      >
-                        {criterion}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-dashGreen-light">
-                    {frameworkCriteria.map((criterion) => {
-                      const value = researchData?.[criterion];
-                      const numValue =
-                        typeof value === "string" ? parseInt(value) : value;
-
-                      return (
-                        <td
-                          key={criterion}
-                          className="py-4 px-4 text-center border-r border-dashGreen-light last:border-r-0"
-                        >
-                          <div className="text-2xl">
-                            {numValue === 1 ? (
-                              <span className="text-green-500">✅</span>
-                            ) : (
-                              <span className="text-red-500">❌</span>
-                            )}
-                          </div>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Twitter Button - Only if Twitter handle exists */}
-            {researchData?.Twitter && (
-              <div className="mt-8 flex justify-end">
-                <a
-                  href={`${researchData.Twitter.replace("@", "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#1DA1F2] hover:bg-[#1a91da] text-white px-4 py-2 rounded-md flex items-center transition-colors"
-                >
-                  <Twitter className="h-4 w-4 mr-2" />
-                  View on Twitter
-                </a>
-              </div>
-            )}
-          </DashcoinCard>
+          )}
         </div>
       )}
 
