@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { ExternalLink } from "lucide-react";
 import { DashcStatsBar, DashcStatsBarProps } from "@/components/dashc-stats-bar";
 
@@ -37,7 +36,6 @@ export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
           )}
         </div>
         <div className="flex items-center gap-8">
-          <ThemeToggle />
           <nav className="hidden md:flex items-center gap-6">
             <NavLink href="/" active={pathname === "/"}>
               Overview

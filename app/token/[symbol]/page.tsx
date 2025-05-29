@@ -8,7 +8,6 @@ import {
   DashcoinCardTitle,
   DashcoinCardContent,
 } from "@/components/ui/dashcoin-card";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { DexscreenerChart } from "@/components/dexscreener-chart";
 import {
   fetchTokenDetails,
@@ -158,9 +157,6 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
           <Link href="/">
             <DashcoinLogo size={48} />
           </Link>
-          <div>
-            <ThemeToggle />
-          </div>
         </div>
       </header>
 
