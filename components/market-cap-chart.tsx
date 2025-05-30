@@ -151,7 +151,7 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         <DashcoinCardTitle>Market Cap & Holders Over Time</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
-        <div className="h-80 bg-[#13131A]">
+        <div className="h-48 bg-[#13131A]">
           <canvas ref={chartRef} />
         </div>
         <DuneQueryLink queryId={5119241} className="mt-2" />

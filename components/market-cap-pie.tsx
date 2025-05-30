@@ -121,7 +121,7 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
         <DashcoinCardTitle>Market Cap Distribution</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
-        <div className="h-80 bg-[#13131A]">
+        <div className="h-48 bg-[#13131A]">
           <canvas ref={chartRef} />
         </div>
         <DuneQueryLink queryId={5140151} className="mt-2" />
