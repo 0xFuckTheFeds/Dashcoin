@@ -3,15 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
-import { ExternalLink } from "lucide-react";
 import { DashcStatsBar, DashcStatsBarProps } from "@/components/dashc-stats-bar";
 
 interface NavbarProps {
-  dashcoinTradeLink: string;
   dashcStats?: DashcStatsBarProps;
 }
 
-export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
+export function Navbar({ dashcStats }: NavbarProps) {
   const pathname = usePathname();
 
   return (
@@ -21,14 +19,6 @@ export function Navbar({ dashcoinTradeLink, dashcStats }: NavbarProps) {
           <Link href="/">
             <DashcoinLogo size={56} />
           </Link>
-          <a
-            href={dashcoinTradeLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-dashYellow hover:text-dashYellow-dark font-medium dashcoin-text flex items-center text-lg"
-          >
-            SUPPORT THE PAGE <ExternalLink className="h-4 w-4 ml-1" />
-          </a>
           {dashcStats && (
             <div className="mt-4 md:mt-0 w-full md:w-auto md:ml-4">
               <DashcStatsBar {...dashcStats} />

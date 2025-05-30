@@ -22,7 +22,7 @@ export default async function CreatorWalletsPage() {
 
   return (
     <div className="min-h-screen">
-      <Navbar dashcoinTradeLink="https://axiom.trade/meme/Fjq9SmWmtnETAVNbir1eXhrVANi1GDoHEA4nb4tNn7w6/@dashc" />
+      <Navbar />
       <main className="container mx-auto px-4 py-6 space-y-6">
         <h1 className="dashcoin-text text-3xl text-dashYellow mb-2">Creator Wallets</h1>
         <p className="mb-4 text-dashYellow-light">Track what your favorite creator is doing with their earned fees!</p>
