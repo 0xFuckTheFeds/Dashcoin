@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react"
 import { DashcoinCard, DashcoinCardHeader, DashcoinCardTitle, DashcoinCardContent } from "@/components/ui/dashcoin-card"
 import type { MarketCapTimeData } from "@/types/dune"
 import { formatCurrency, getCssVariable, hexToRgba } from "@/lib/utils"
-import { DuneQueryLink } from "@/components/dune-query-link"
 
 declare global {
   interface Window {
@@ -154,7 +153,6 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         <div className="h-48 bg-[#13131A]">
           <canvas ref={chartRef} />
         </div>
-        <DuneQueryLink queryId={5119241} className="mt-2" />
       </DashcoinCardContent>
     </DashcoinCard>
   )
