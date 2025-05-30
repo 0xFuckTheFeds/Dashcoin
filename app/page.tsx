@@ -199,9 +199,7 @@ export default async function Home() {
   const formattedMarketCap = formatCurrency(
     marketStats?.totalMarketCap || 0
   );
-  const formattedVolume = formatCurrency(marketStats?.volume24h || 0);
   const formattedFeeEarnings = formatCurrency(marketStats?.feeEarnings24h || 0);
-  const formattedCoinLaunches = (marketStats?.coinLaunches || 0).toLocaleString();
 
   let dashcPrice = 0;
   let dashcMarketCap = 0;
@@ -273,7 +271,7 @@ export default async function Home() {
           </Suspense>
         </div>
 
-        {/* Summary Stats */}
+        {/* Market Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <DashcoinCard className="flex flex-col items-center justify-center py-8">
             <DashcoinCardHeader>
@@ -293,58 +291,10 @@ export default async function Home() {
 
           <DashcoinCard className="flex flex-col items-center justify-center py-8">
             <DashcoinCardHeader>
-              <DashcoinCardTitle>Coin Launches</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent className="text-center">
-              <p className="dashcoin-text text-4xl text-dashYellow">{formattedCoinLaunches}</p>
-              <p className="text-sm opacity-80 mt-2">Total coins tracked</p>
-              <DuneQueryLink queryId={5140151} className="mt-2 justify-center" />
-            </DashcoinCardContent>
-          </DashcoinCard>
-        </div>
-
-        {/* Market Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Market Cap</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">{formattedMarketCap}</p>
-              <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
-                <p className="text-sm">From Dune Analytics</p>
-              </div>
-              <DashcoinCacheStatus
-                lastUpdated={formattedLastRefresh}
-                nextUpdate={formattedNextRefresh}
-                hoursRemaining={hoursUntilRefresh}
-                minutesRemaining={minutesUntilRefresh}
-              />
-              <DuneQueryLink queryId={5140151} className="mt-2" />
-            </DashcoinCardContent>
-          </DashcoinCard>
-
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>24h Volume</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">{formattedVolume}</p>
-              <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
-                <p className="text-sm">From Dune Analytics</p>
-              </div>
-              <DuneQueryLink queryId={5140151} className="mt-2" />
-            </DashcoinCardContent>
-          </DashcoinCard>
-
-          <DashcoinCard>
-            <DashcoinCardHeader>
               <DashcoinCardTitle>Fee Earnings</DashcoinCardTitle>
             </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">
-                {formattedFeeEarnings}
-              </p>
+            <DashcoinCardContent className="text-center">
+              <p className="dashcoin-text text-4xl text-dashYellow">{formattedFeeEarnings}</p>
               <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
                 <p className="text-sm">Estimated at 0.3% of volume</p>
               </div>
