@@ -22,7 +22,6 @@ import { formatCurrency } from "@/lib/utils";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
 import TokenTable from "@/components/token-table";
-import { DuneQueryLink } from "@/components/dune-query-link";
 import { Navbar } from "@/components/navbar";
 import { Twitter } from "lucide-react";
 
@@ -287,7 +286,6 @@ export default async function Home() {
                   ? new Date(totalMarketCap.latest_data_at).toLocaleString()
                   : "N/A"}
               </p>
-              <DuneQueryLink queryId={5140151} className="mt-2 justify-center" />
             </DashcoinCardContent>
           </DashcoinCard>
 
@@ -298,7 +296,6 @@ export default async function Home() {
             <DashcoinCardContent className="text-center">
               <p className="dashcoin-text text-4xl text-dashYellow">{formattedCoinLaunches}</p>
               <p className="text-sm opacity-80 mt-2">Total coins tracked</p>
-              <DuneQueryLink queryId={5140151} className="mt-2 justify-center" />
             </DashcoinCardContent>
           </DashcoinCard>
         </div>
@@ -320,7 +317,6 @@ export default async function Home() {
                 hoursRemaining={hoursUntilRefresh}
                 minutesRemaining={minutesUntilRefresh}
               />
-              <DuneQueryLink queryId={5140151} className="mt-2" />
             </DashcoinCardContent>
           </DashcoinCard>
 
@@ -333,7 +329,6 @@ export default async function Home() {
               <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
                 <p className="text-sm">From Dune Analytics</p>
               </div>
-              <DuneQueryLink queryId={5140151} className="mt-2" />
             </DashcoinCardContent>
           </DashcoinCard>
 
@@ -348,7 +343,6 @@ export default async function Home() {
               <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
                 <p className="text-sm">Estimated at 0.3% of volume</p>
               </div>
-              <DuneQueryLink queryId={5140151} className="mt-2" />
             </DashcoinCardContent>
           </DashcoinCard>
         </div>

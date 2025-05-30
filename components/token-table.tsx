@@ -8,7 +8,6 @@ import { ChevronDown, ChevronUp, Search, Loader2, FileSearch, Filter } from "luc
 import { fetchPaginatedTokens } from "@/app/actions/dune-actions"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
-import { DuneQueryLink } from "@/components/dune-query-link"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
@@ -557,13 +556,11 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         </div>
       </DashcoinCard>
 
-      {/* Dune Query Link */}
       <div className="flex justify-between mt-2">
         <div className="text-xs opacity-70 mt-1">
           Last updated: {lastRefreshed ? lastRefreshed.toLocaleTimeString() : 'Never'} 
           {lastRefreshed && <span> (refreshing in {refreshCountdown}s)</span>}
         </div>
-        <DuneQueryLink queryId={5140151} />
       </div>
 
       {/* Pagination - Fixed using handlePageChange */}
