@@ -31,7 +31,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
               Overview
             </NavLink>
             <NavLink href="/compare" active={pathname === "/compare"}>
-              Graphs & Comparisons
+              Compare Tokens
             </NavLink>
             <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
               Creator Wallets
@@ -46,7 +46,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
             Overview
           </NavLink>
           <NavLink href="/compare" active={pathname === "/compare"}>
-            Graphs & Comparisons
+            Compare Tokens
           </NavLink>
           <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
             Creator Wallets
