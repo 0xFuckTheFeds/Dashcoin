@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { formatCurrency } from "@/lib/utils"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
-import { ChevronDown, ChevronUp, Search, Loader2, FileSearch } from "lucide-react"
+import { ChevronDown, ChevronUp, Search, Loader2, FileSearch, Filter } from "lucide-react"
 import { fetchPaginatedTokens } from "@/app/actions/dune-actions"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
@@ -12,6 +12,7 @@ import { DuneQueryLink } from "@/components/dune-query-link"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
+import { canonicalChecklist } from "@/components/founders-edge-checklist"
 
 interface ResearchScoreData {
   symbol: string
@@ -38,6 +39,31 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshCountdown, setRefreshCountdown] = useState(60)
+  const [checklistFilters, setChecklistFilters] = useState<Record<string, string>>(
+    () => {
+      const initial: Record<string, string> = {}
+      canonicalChecklist.forEach(label => {
+        initial[label] = ''
+      })
+      return initial
+    }
+  )
+  const [openChecklistFilter, setOpenChecklistFilter] = useState<string | null>(null)
+  const checklistRefs = useRef<Record<string, HTMLDivElement | null>>({})
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        openChecklistFilter &&
+        checklistRefs.current[openChecklistFilter] &&
+        !checklistRefs.current[openChecklistFilter]!.contains(event.target as Node)
+      ) {
+        setOpenChecklistFilter(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [openChecklistFilter])
 
   useEffect(() => {
     const getResearchScores = async () => {
@@ -61,32 +87,47 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       return
     }
 
-    if (searchTerm.trim() === "") {
-      setFilteredTokens(tokenData.tokens)
-      return
+    let filtered = [...tokenData.tokens]
+
+    if (searchTerm.trim() !== "") {
+      filtered = filtered.filter((token: any) => {
+        const symbolMatch =
+          token.symbol && typeof token.symbol === "string"
+            ? token.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+            : false
+
+        const nameMatch =
+          token.name && typeof token.name === "string"
+            ? token.name.toLowerCase().includes(searchTerm.toLowerCase())
+            : false
+
+        const descriptionMatch =
+          token.description && typeof token.description === "string"
+            ? token.description.toLowerCase().includes(searchTerm.toLowerCase())
+            : false
+
+        return symbolMatch || nameMatch || descriptionMatch
+      })
     }
 
-    const filtered = tokenData.tokens.filter((token: any) => {
-      const symbolMatch =
-        token.symbol && typeof token.symbol === "string"
-          ? token.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-          : false
-
-      const nameMatch =
-        token.name && typeof token.name === "string"
-          ? token.name.toLowerCase().includes(searchTerm.toLowerCase())
-          : false
-
-      const descriptionMatch =
-        token.description && typeof token.description === "string"
-          ? token.description.toLowerCase().includes(searchTerm.toLowerCase())
-          : false
-
-      return symbolMatch || nameMatch || descriptionMatch
+    filtered = filtered.filter(token => {
+      const research = researchScores.find(
+        item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()
+      )
+      return canonicalChecklist.every(label => {
+        const filterVal = checklistFilters[label]
+        if (!filterVal) return true
+        const raw = research ? research[label] : null
+        const val = raw !== undefined && raw !== '' ? parseInt(raw) : null
+        if (filterVal === 'Yes') return val === 2
+        if (filterVal === 'No') return val === 1
+        if (filterVal === 'Unknown') return val !== 2 && val !== 1
+        return true
+      })
     })
 
     setFilteredTokens(filtered)
-  }, [searchTerm, tokenData.tokens])
+  }, [searchTerm, tokenData.tokens, researchScores, checklistFilters])
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -158,10 +199,12 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const tokensWithDexData = filteredTokens.map(token => {
     const tokenAddress = getTokenProperty(token, "token", "");
     const dexData = tokenAddress && dexscreenerData[tokenAddress] ? dexscreenerData[tokenAddress] : {};
+    const research = researchScores.find(item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()) || {};
 
     return {
       ...token,
       ...dexData,
+      ...research,
       marketCap: dexData.marketCap !== undefined ? dexData.marketCap : token.marketCap,
     };
   });
@@ -255,23 +298,9 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             ? scoreA - scoreB 
             : scoreB - scoreA;
 
-        case "volume24h":
-          valueA = a.volume24h || 0;
-          valueB = b.volume24h || 0;
-          return sortDirection === "asc" 
-            ? valueA - valueB
-            : valueB - valueA;
-            
         case "change24h":
           valueA = a.change24h || 0;
           valueB = b.change24h || 0;
-          return sortDirection === "asc" 
-            ? valueA - valueB
-            : valueB - valueA;
-            
-        case "changeM5":
-          valueA = a.changeM5 || 0;
-          valueB = b.changeM5 || 0;
           return sortDirection === "asc"
             ? valueA - valueB
             : valueB - valueA;
@@ -325,13 +354,10 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             <option value="marketCap">Market Cap</option>
             <option value="num_holders">Holders</option>
             <option value="created_time">Created Date</option>
-            <option value="name">Name</option>
             <option value="symbol">Token</option>
             <option value="researchScore">Research Score</option>
-            <option value="volume24h">24h Volume</option>
             <option value="change24h">24h %Gain</option>
-            <option value="changeM5">5m %Gain</option>
-          </select>
+         </select>
           <select
             value={sortDirection}
             onChange={(e) => setSortDirection(e.target.value as "asc" | "desc")}
@@ -355,6 +381,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         </div>
       </div>
 
+
       <DashcoinCard className="p-0 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
@@ -364,14 +391,17 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                   <div className="flex items-center gap-1">Token {renderSortIndicator("symbol")}</div>
                 </th>
                 <th className="text-left py-3 px-4 text-dashYellow">Actions</th>
-                <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("name")}>
-                  <div className="flex items-center gap-1">Name {renderSortIndicator("name")}</div>
-                </th>
                 <th
                   className="text-left py-3 px-4 text-dashYellow cursor-pointer"
                   onClick={() => handleSort("marketCap")}
                 >
                   <div className="flex items-center gap-1">Market Cap {renderSortIndicator("marketCap")}</div>
+                </th>
+                <th
+                  className="text-left py-3 px-4 text-dashYellow cursor-pointer"
+                  onClick={() => handleSort("change24h")}
+                >
+                  <div className="flex items-center gap-1">24h %Gain {renderSortIndicator("change24h")}</div>
                 </th>
                 <th
                   className="text-left py-3 px-4 text-dashYellow cursor-pointer"
@@ -393,21 +423,45 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                     Research Score {renderSortIndicator("researchScore")}
                   </div>
                 </th>
-                <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("volume24h")}>
-                  <div className="flex items-center gap-1">24h Volume {renderSortIndicator("volume24h")}</div>
-                </th>
-                <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("change24h")}>
-                  <div className="flex items-center gap-1">24h %Gain {renderSortIndicator("change24h")}</div>
-                </th>
-                <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("changeM5")}>
-                  <div className="flex items-center gap-1">5m %Gain {renderSortIndicator("changeM5")}</div>
-                </th>
+                {canonicalChecklist.map(label => (
+                  <th key={label} className="relative text-left py-3 px-4 text-dashYellow">
+                    <div className="flex items-center gap-1">
+                      {label}
+                      <Filter
+                        className="h-7 w-7 cursor-pointer"
+                        onClick={e => {
+                          e.stopPropagation()
+                          setOpenChecklistFilter(prev => (prev === label ? null : label))
+                        }}
+                      />
+                    </div>
+                    {openChecklistFilter === label && (
+                      <div
+                        ref={el => (checklistRefs.current[label] = el)}
+                        className="absolute z-10 left-0 top-full mt-1 bg-dashGreen-dark border border-dashBlack rounded-md"
+                      >
+                        {['', 'Yes', 'No', 'Unknown'].map(option => (
+                          <button
+                            key={option || 'All'}
+                            onClick={() => {
+                              setChecklistFilters(prev => ({ ...prev, [label]: option }))
+                              setOpenChecklistFilter(null)
+                            }}
+                            className="block px-3 py-1 text-left w-full hover:bg-dashGreen-light"
+                          >
+                            {option === '' ? 'All' : option}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={10} className="py-8 text-center">
+                  <td colSpan={13} className="py-8 text-center">
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin text-dashYellow" />
                       <span>Loading tokens...</span>
@@ -451,8 +505,12 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                           </a>
                         </div>
                       </td>
-                      <td className="py-3 px-4">{getTokenProperty(token, "name")}</td>
                       <td className="py-3 px-4">{formatCurrency(getTokenProperty(token, "marketCap", 0))}</td>
+                      <td className="py-3 px-4">
+                        <div className={`${token.change24h > 0 ? 'text-green-500' : token.change24h < 0 ? 'text-red-500' : ''}`}>
+                          {getTokenProperty(token, "change24h", 0).toFixed(2)}%
+                        </div>
+                      </td>
                       <td className="py-3 px-4">{getTokenProperty(token, "num_holders", 0).toLocaleString()}</td>
                       <td className="py-3 px-4">
                         {token && token.created_time ? new Date(token.created_time).toLocaleDateString() : "N/A"}
@@ -474,23 +532,20 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                           <span className="text-dashYellow-light opacity-50">-</span>
                         )}
                       </td>
-                      <td className="py-3 px-4">{formatCurrency(getTokenProperty(token, "volume24h", 0))}</td>
-                      <td className="py-3 px-4">
-                        <div className={`${token.change24h > 0 ? 'text-green-500' : token.change24h < 0 ? 'text-red-500' : ''}`}>
-                          {getTokenProperty(token, "change24h", 0).toFixed(2)}%
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className={`${token.changeM5 > 0 ? 'text-green-500' : token.changeM5 < 0 ? 'text-red-500' : ''}`}>
-                          {getTokenProperty(token, "changeM5", 0).toFixed(2)}%
-                        </div>
-                      </td>
+                      {canonicalChecklist.map(label => {
+                        const raw = (token as any)[label]
+                        const val = raw !== undefined && raw !== '' ? parseInt(raw) : null
+                        const display = val === 2 ? 'Yes' : val === 1 ? 'No' : '-'
+                        return (
+                          <td key={label} className="py-3 px-4">{display}</td>
+                        )
+                      })}
                     </tr>
                   )
                 })
               ) : (
                 <tr>
-                  <td colSpan={10} className="py-8 text-center opacity-80">
+                  <td colSpan={13} className="py-8 text-center opacity-80">
                     {searchTerm
                       ? "No tokens found matching your search."
                       : "No token data available. Check your Dune query or API key."}
