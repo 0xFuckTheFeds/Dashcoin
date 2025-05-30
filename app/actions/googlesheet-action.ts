@@ -1,14 +1,14 @@
 interface ResearchScoreData {
   symbol: string
   score: number | null
-  [key: string]: any 
+  [key: string]: any
 }
 
 export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
   const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk';
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
   const SHEET_NAME = 'Dashcoin Scoring';
-  const RANGE = `${SHEET_NAME}!A1:K30`;
+  const RANGE = `${SHEET_NAME}!A1:M30`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
   try {
@@ -22,19 +22,39 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
 
     const [header, ...rows] = data.values;
     
+    const canonicalMap: Record<string, string> = {
+      'Startup Experience': 'Dev is Active on Twitter',
+      'Project Has Some Virality / Popularity':
+        'Project has 200k+ views on Social Media',
+    };
+
     const structured = rows.map((row: any) => {
       const entry: Record<string, any> = {};
       header.forEach((key: string, i: number) => {
-        entry[key.trim()] = row[i] || '';
+        const trimmed = key.trim();
+        const canonical = canonicalMap[trimmed] || trimmed;
+        entry[canonical] = row[i] || '';
       });
       return entry;
     });
 
     return structured.map((entry: any) => {
-      return {
+      const result: Record<string, any> = {
         symbol: (entry['Project'] || '').toString().toUpperCase(),
-        score: entry['Score'] !== undefined && entry['Score'] !== '' ? parseFloat(entry['Score']) : null,
+        score:
+          entry['Score'] !== undefined && entry['Score'] !== ''
+            ? parseFloat(entry['Score'])
+            : null,
       };
+      ['Founder Doxxed',
+        'Dev is Active on Twitter',
+        'Successful Exit',
+        'Discussed Plans for Token Integration',
+        'Project has 200k+ views on Social Media',
+        'Live Product Exists'].forEach(label => {
+        result[label] = entry[label] ?? '';
+      });
+      return result as ResearchScoreData;
     });
   } catch (err) {
     console.error('Google Sheets API error:', err);
