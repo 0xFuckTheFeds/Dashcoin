@@ -39,7 +39,7 @@ interface TokenResearchData {
   "Relevant Links": string;
   Comments: string;
   "Wallet Link": string;
-  "Wallet Comments": string;
+  "Creator Wallet Activity Comment": string;
   Twitter?: string;
   [key: string]: any;
 }
@@ -50,7 +50,7 @@ async function fetchTokenResearch(
   const API_KEY = "AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk";
   const SHEET_ID = "1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0";
   const SHEET_NAME = "Dashcoin Scoring";
-  const RANGE = `${SHEET_NAME}!A1:M100`;
+  const RANGE = `${SHEET_NAME}!A1:O100`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
   try {
@@ -268,7 +268,10 @@ export default function TokenResearchPage({
               <DashcoinCardTitle className="text-2xl">Creator Wallet Activity</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p>{researchData?.["Wallet Comments"] || "No wallet activity available"}</p>
+              <p>
+                {researchData?.["Creator Wallet Activity Comment"] ||
+                  "No wallet activity available"}
+              </p>
               {researchData?.["Wallet Link"] ? (
                 <a
                   href={researchData["Wallet Link"]}
