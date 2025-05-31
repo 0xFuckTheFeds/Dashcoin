@@ -200,7 +200,6 @@ export default async function Home() {
   );
   const formattedVolume = formatCurrency(marketStats?.volume24h || 0);
   const formattedFeeEarnings = formatCurrency(marketStats?.feeEarnings24h || 0);
-  const formattedCoinLaunches = (marketStats?.coinLaunches || 0).toLocaleString();
 
   let dashcPrice = 0;
   let dashcMarketCap = 0;
@@ -272,39 +271,12 @@ export default async function Home() {
           </Suspense>
         </div>
 
-        {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <DashcoinCard className="flex flex-col items-center justify-center py-8">
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Total Market Cap</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent className="text-center">
-              <p className="dashcoin-text text-4xl text-dashYellow">{formattedMarketCap}</p>
-              <p className="text-sm opacity-80 mt-2">
-                Last updated:{" "}
-                {totalMarketCap && totalMarketCap.latest_data_at
-                  ? new Date(totalMarketCap.latest_data_at).toLocaleString()
-                  : "N/A"}
-              </p>
-            </DashcoinCardContent>
-          </DashcoinCard>
-
-          <DashcoinCard className="flex flex-col items-center justify-center py-8">
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Coin Launches</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent className="text-center">
-              <p className="dashcoin-text text-4xl text-dashYellow">{formattedCoinLaunches}</p>
-              <p className="text-sm opacity-80 mt-2">Total coins tracked</p>
-            </DashcoinCardContent>
-          </DashcoinCard>
-        </div>
 
         {/* Market Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <DashcoinCard>
             <DashcoinCardHeader>
-              <DashcoinCardTitle>Market Cap</DashcoinCardTitle>
+              <DashcoinCardTitle>Total Market Cap of Believe Coins excluding Launchcoin</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
               <p className="dashcoin-text text-3xl text-dashYellow">{formattedMarketCap}</p>
@@ -322,19 +294,7 @@ export default async function Home() {
 
           <DashcoinCard>
             <DashcoinCardHeader>
-              <DashcoinCardTitle>24h Volume</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">{formattedVolume}</p>
-              <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
-                <p className="text-sm">From Dune Analytics</p>
-              </div>
-            </DashcoinCardContent>
-          </DashcoinCard>
-
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Fee Earnings</DashcoinCardTitle>
+              <DashcoinCardTitle>Total Creator Fees</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
               <p className="dashcoin-text text-3xl text-dashYellow">
