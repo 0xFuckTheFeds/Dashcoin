@@ -511,8 +511,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                       </td>
                       {canonicalChecklist.map(label => {
                         const raw = (token as any)[label]
-                        const val = raw !== undefined && raw !== '' ? valueToScore(raw, (gradeMaps as any)[label]) : null
-                        const display = val === 2 ? 'Yes' : val === 1 ? 'No' : '-'
+                        const display = raw !== undefined && raw !== '' ? raw : '-'
                         return (
                           <td key={label} className="py-3 px-4">{display}</td>
                         )
