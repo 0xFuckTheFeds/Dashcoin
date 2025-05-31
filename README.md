@@ -41,6 +41,8 @@ The cache admin interface is available at `/admin/cache`. This interface allows 
 - `KV_REST_API_TOKEN`: Your Upstash Redis API token
 - `ENABLE_DUNE_API`: Set to `true` to enable real Dune API calls (default: `false`)
 - `VERCEL_ENV`: Automatically set by Vercel to indicate the environment
+- `NEXT_PUBLIC_FOUNDERS_GUIDE_DOC_URL`: Public URL for the Founders Guide Google Document
+  (defaults to the published Believe Founder Guide if unset)
 
 ## Cache Keys
 

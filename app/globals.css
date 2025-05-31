@@ -253,3 +253,22 @@
   background: transparent !important;
   color: inherit !important;
 }
+
+/* Founders Guide styling */
+.founders-guide {
+  font-size: 1.25rem; /* enlarge text */
+  line-height: 1.6;
+  background: var(--dashcoin-green-dark);
+  color: var(--dashcoin-yellow);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.founders-guide h1 {
+  text-align: center;
+}
+
+.founders-guide p,
+.founders-guide li {
+  margin-bottom: 0.5rem;
+}
