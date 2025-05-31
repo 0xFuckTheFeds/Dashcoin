@@ -8,7 +8,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
   const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk';
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
   const SHEET_NAME = 'Dashcoin Scoring';
-  const RANGE = `${SHEET_NAME}!A1:M100`;
+  const RANGE = `${SHEET_NAME}!A1:O100`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
   try {
@@ -72,7 +72,7 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
   const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk'
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0'
   const SHEET_NAME = 'Dashcoin Scoring'
-  const RANGE = `${SHEET_NAME}!A1:M100`
+  const RANGE = `${SHEET_NAME}!A1:O100`
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`
 
   try {
@@ -98,7 +98,7 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
       return {
         symbol: (entry['Project'] || '').toString().toUpperCase(),
         walletLink: entry['Wallet Link'] || '',
-        walletActivity: entry['Wallet Comments'] || ''
+        walletActivity: entry['Creator Wallet Activity Comment'] || ''
       }
     })
   } catch (err) {
