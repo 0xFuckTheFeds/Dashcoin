@@ -1,6 +1,9 @@
 "use server"
 
 import { cache } from "react"
+import { fetchAllTokensFromDune } from "./dune-actions"
+import type { TokenMarketCapData } from "@/types/dune"
+import { CACHE_KEYS, getFromCache, setInCache } from "@/lib/redis"
 
 export interface DexscreenerPair {
   chainId: string
@@ -438,5 +441,42 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
   } catch (error) {
     console.error("Error enriching token data with Dexscreener:", error)
     return tokenData || {}
+  }
+}
+
+export async function fetchDexscreenerTokenMarketCaps(): Promise<TokenMarketCapData[]> {
+  try {
+    const cached = await getFromCache<TokenMarketCapData[]>(CACHE_KEYS.TOKEN_MARKET_CAPS)
+    if (cached && cached.length > 0) {
+      return cached
+    }
+
+    const allTokens = await fetchAllTokensFromDune()
+    const addresses = allTokens.map(t => t.token).filter(Boolean)
+
+    const dexscreenerMap = await batchFetchTokensData(addresses)
+
+    const currentDate = new Date().toISOString().split("T")[0]
+
+    const data: TokenMarketCapData[] = allTokens.map((token, index) => {
+      const dsData = dexscreenerMap.get(token.token)
+      const marketCap = dsData?.pairs?.[0]?.fdv || 0
+      return {
+        date: currentDate,
+        token_mint_address: token.token || "",
+        name: token.name || "Unknown",
+        symbol: token.symbol || "???",
+        market_cap_usd: marketCap,
+        num_holders: token.num_holders || 0,
+        rn: index + 1,
+      }
+    })
+
+    await setInCache(CACHE_KEYS.TOKEN_MARKET_CAPS, data)
+
+    return data
+  } catch (error) {
+    console.error("Error fetching Dexscreener token market caps:", error)
+    return []
   }
 }

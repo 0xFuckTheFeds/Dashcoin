@@ -13,11 +13,10 @@ import {
   fetchMarketCapOverTime,
   fetchMarketStats,
   fetchPaginatedTokens,
-  fetchTokenMarketCaps,
   fetchTotalMarketCap,
   getTimeUntilNextDuneRefresh,
 } from "./actions/dune-actions";
-import { fetchDexscreenerTokenData } from "./actions/dexscreener-actions";
+import { fetchDexscreenerTokenData, fetchDexscreenerTokenMarketCaps } from "./actions/dexscreener-actions";
 import { formatCurrency } from "@/lib/utils";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
@@ -126,7 +125,7 @@ export default async function Home() {
     return [];
   });
     
-  const tokenMarketCapsPromise = fetchTokenMarketCaps().then(data => {
+  const tokenMarketCapsPromise = fetchDexscreenerTokenMarketCaps().then(data => {
     return data;
   }).catch((error) => {
     console.error("error.fetching tokens makret cap", error);
