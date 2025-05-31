@@ -1,14 +1,17 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import { CheckCircle, XCircle, MinusCircle } from "lucide-react";
 import React from "react";
+import { gradeMaps, valueToScore } from "@/lib/score";
 
 export const canonicalChecklist = [
-  "Founder Doxxed",
-  "Dev is Active on Twitter",
-  "Successful Exit",
-  "Discussed Plans for Token Integration",
-  "Project has 200k+ views on Social Media",
-  "Live Product Exists",
+  "Team Doxxed",
+  "Twitter Activity Level",
+  "Time Commitment",
+  "Prior Founder Experience",
+  "Product Maturity",
+  "Funding Status",
+  "Token-Product Integration Depth",
+  "Social Reach & Engagement Index",
 ];
 
 function getIcon(value: number) {
@@ -50,7 +53,7 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {canonicalChecklist.map((label) => {
           const raw = data[label];
-          const val = typeof raw === "string" ? parseInt(raw) : Number(raw);
+          const val = valueToScore(raw, (gradeMaps as any)[label]);
           return (
             <div
               key={label}
