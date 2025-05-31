@@ -47,6 +47,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       return initial
     }
   )
+  const [gradeMaps, setGradeMaps] = useState<Record<string, string[]>>({})
   const [openChecklistFilter, setOpenChecklistFilter] = useState<string | null>(null)
   const checklistRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
@@ -76,9 +77,34 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         setIsLoadingResearch(false);
       }
     };
-    
+
     getResearchScores();
   }, []);
+
+  useEffect(() => {
+    if (!researchScores.length) return
+
+    const map: Record<string, Set<string>> = {}
+    canonicalChecklist.forEach(label => {
+      map[label] = new Set<string>()
+    })
+
+    researchScores.forEach(entry => {
+      canonicalChecklist.forEach(label => {
+        const val = entry[label]
+        if (val !== undefined && val !== '') {
+          map[label].add(val.toString())
+        }
+      })
+    })
+
+    const result: Record<string, string[]> = {}
+    canonicalChecklist.forEach(label => {
+      result[label] = Array.from(map[label])
+    })
+
+    setGradeMaps(result)
+  }, [researchScores])
 
   useEffect(() => {
     if (!Array.isArray(tokenData.tokens)) {
@@ -117,11 +143,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         const filterVal = checklistFilters[label]
         if (!filterVal) return true
         const raw = research ? research[label] : null
-        const val = raw !== undefined && raw !== '' ? parseInt(raw) : null
-        if (filterVal === 'Yes') return val === 2
-        if (filterVal === 'No') return val === 1
-        if (filterVal === 'Unknown') return val !== 2 && val !== 1
-        return true
+        return raw === filterVal
       })
     })
 
@@ -439,7 +461,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                         ref={el => (checklistRefs.current[label] = el)}
                         className="absolute z-10 left-0 top-full mt-1 bg-dashGreen-dark border border-dashBlack rounded-md"
                       >
-                        {['', 'Yes', 'No', 'Unknown'].map(option => (
+                        {['', ...(gradeMaps[label] || [])].map(option => (
                           <button
                             key={option || 'All'}
                             onClick={() => {
@@ -533,10 +555,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                       </td>
                       {canonicalChecklist.map(label => {
                         const raw = (token as any)[label]
-                        const val = raw !== undefined && raw !== '' ? parseInt(raw) : null
-                        const display = val === 2 ? 'Yes' : val === 1 ? 'No' : '-'
                         return (
-                          <td key={label} className="py-3 px-4">{display}</td>
+                          <td key={label} className="py-3 px-4">{raw || '-'}</td>
                         )
                       })}
                     </tr>
