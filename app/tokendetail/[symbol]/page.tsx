@@ -25,7 +25,8 @@ import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
-import { FoundersEdgeChecklist } from "@/components/founders-edge-checklist";
+import { FoundersEdgeChecklist, canonicalChecklist } from "@/components/founders-edge-checklist";
+import { computeScoreFallback } from "@/lib/score";
 
 interface TokenResearchData {
   Symbol: string;
@@ -52,7 +53,7 @@ async function fetchTokenResearch(
   const API_KEY = "AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk";
   const SHEET_ID = "1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0";
   const SHEET_NAME = "Dashcoin Scoring";
-  const RANGE = `${SHEET_NAME}!A1:T200`;
+  const RANGE = `${SHEET_NAME}!A1:L200`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
   try {
@@ -89,11 +90,22 @@ async function fetchTokenResearch(
     const tokenData = structured.find(
       (entry: any) =>
         entry["Project"] &&
-        entry["Project"].toString().toUpperCase() === normalizedSymbol &&
-        entry["Score"],
+        entry["Project"].toString().toUpperCase() === normalizedSymbol,
     );
 
-    return tokenData || null;
+    if (!tokenData) return null;
+
+    canonicalChecklist.forEach(label => {
+      tokenData[label] = tokenData[label] ?? '';
+    });
+
+    let score = parseFloat(tokenData['Score']);
+    if (Number.isNaN(score)) {
+      score = computeScoreFallback(tokenData);
+    }
+    tokenData['Score'] = score;
+
+    return tokenData as any;
   } catch (err) {
     console.error("Google Sheets API error:", err);
     return null;

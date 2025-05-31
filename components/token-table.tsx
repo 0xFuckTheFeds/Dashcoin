@@ -12,7 +12,8 @@ import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
-import { gradeMaps, valueToScore } from "@/lib/score"
+import { Slider } from "@/components/ui/slider"
+import { gradeMaps } from "@/lib/score"
 
 interface ResearchScoreData {
   symbol: string
@@ -26,7 +27,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     : data
 
   const [searchTerm, setSearchTerm] = useState("")
-  const [sortField, setSortField] = useState("marketCap")
+  const [sortField, setSortField] = useState("researchScore")
   const [sortDirection, setSortDirection] = useState("desc")
   const [currentPage, setCurrentPage] = useState(initialData.page || 1)
   const [itemsPerPage, setItemsPerPage] = useState(initialData.pageSize || 10)
@@ -50,6 +51,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   )
   const [openChecklistFilter, setOpenChecklistFilter] = useState<string | null>(null)
   const checklistRefs = useRef<Record<string, HTMLDivElement | null>>({})
+  const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -114,20 +116,19 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       const research = researchScores.find(
         item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()
       )
+      const score = research ? research.score : null
+      if (score !== null && (score < scoreRange[0] || score > scoreRange[1])) return false
+
       return canonicalChecklist.every(label => {
         const filterVal = checklistFilters[label]
         if (!filterVal) return true
-        const raw = research ? research[label] : null
-        const val = raw !== undefined && raw !== '' ? valueToScore(raw, (gradeMaps as any)[label]) : null
-        if (filterVal === 'Yes') return val === 2
-        if (filterVal === 'No') return val === 1
-        if (filterVal === 'Unknown') return val !== 2 && val !== 1
-        return true
+        const raw = research ? research[label] : ''
+        return raw === filterVal
       })
     })
 
     setFilteredTokens(filtered)
-  }, [searchTerm, tokenData.tokens, researchScores, checklistFilters])
+  }, [searchTerm, tokenData.tokens, researchScores, checklistFilters, scoreRange])
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -371,6 +372,16 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             <option value="20">20 per page</option>
             <option value="50">50 per page</option>
           </select>
+          <div className="flex items-center gap-2 w-40">
+            <span className="text-xs">Score {scoreRange[0]}-{scoreRange[1]}</span>
+            <Slider
+              min={0}
+              max={100}
+              step={1}
+              value={scoreRange}
+              onValueChange={(val: number[]) => setScoreRange([val[0], val[1] ?? val[0]])}
+            />
+          </div>
         </div>
       </div>
 
@@ -421,7 +432,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                         ref={el => (checklistRefs.current[label] = el)}
                         className="absolute z-10 left-0 top-full mt-1 bg-dashGreen-dark border border-dashBlack rounded-md"
                       >
-                        {['', 'Yes', 'No', 'Unknown'].map(option => (
+                        {['', ...Object.keys((gradeMaps as any)[label] || gradeMaps.default).filter(o => !['2','1','0',2,1,0,''].includes(o))].map(option => (
                           <button
                             key={option || 'All'}
                             onClick={() => {
@@ -499,9 +510,19 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                             <span>Loading...</span>
                           </div>
                         ) : researchScore !== null && researchScore !== undefined ? (
-                          <div className="flex items-center">
-                            <span className="font-medium mr-2">{researchScore.toFixed(1)}</span>
-                            <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
+                          <div className="flex items-center" title="Dashcoin Research Score (0-100)">
+                            <span
+                              className={`px-2 py-0.5 rounded text-sm font-medium ${
+                                researchScore < 40
+                                  ? 'bg-red-600'
+                                  : researchScore < 70
+                                  ? 'bg-amber-500'
+                                  : 'bg-green-600'
+                              }`}
+                            >
+                              {researchScore.toFixed(1)}
+                            </span>
+                            <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow ml-2">
                               <FileSearch className="h-4 w-4" />
                             </Link>
                           </div>
@@ -510,11 +531,9 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                         )}
                       </td>
                       {canonicalChecklist.map(label => {
-                        const raw = (token as any)[label]
-                        const val = raw !== undefined && raw !== '' ? valueToScore(raw, (gradeMaps as any)[label]) : null
-                        const display = val === 2 ? 'Yes' : val === 1 ? 'No' : '-'
+                        const raw = (token as any)[label] ?? ''
                         return (
-                          <td key={label} className="py-3 px-4">{display}</td>
+                          <td key={label} className="py-3 px-4">{raw || '-'}</td>
                         )
                       })}
                     </tr>

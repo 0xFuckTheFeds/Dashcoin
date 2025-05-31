@@ -4,11 +4,14 @@ interface ResearchScoreData {
   [key: string]: any
 }
 
+import { canonicalChecklist } from '@/components/founders-edge-checklist';
+import { computeScoreFallback } from '@/lib/score';
+
 export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
   const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk';
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
   const SHEET_NAME = 'Dashcoin Scoring';
-  const RANGE = `${SHEET_NAME}!A1:T200`;
+  const RANGE = `${SHEET_NAME}!A1:L200`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
   try {
@@ -46,18 +49,14 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
             ? parseFloat(entry['Score'])
             : null,
       };
-      [
-        'Team Doxxed',
-        'Twitter Activity Level',
-        'Time Commitment',
-        'Prior Founder Experience',
-        'Product Maturity',
-        'Funding Status',
-        'Token-Product Integration Depth',
-        'Social Reach & Engagement Index',
-      ].forEach(label => {
+      canonicalChecklist.forEach(label => {
         result[label] = entry[label] ?? '';
       });
+
+      if (result.score === null || Number.isNaN(result.score)) {
+        result.score = computeScoreFallback(result);
+      }
+
       return result as ResearchScoreData;
     });
   } catch (err) {
