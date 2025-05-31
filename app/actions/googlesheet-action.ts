@@ -23,9 +23,9 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
     const [header, ...rows] = data.values;
     
     const canonicalMap: Record<string, string> = {
-      'Startup Experience': 'Dev is Active on Twitter',
+      'Startup Experience': 'Prior Founder Experience',
       'Project Has Some Virality / Popularity':
-        'Project has 200k+ views on Social Media',
+        'Social Reach & Engagement Index',
     };
 
     const structured = rows.map((row: any) => {
@@ -46,12 +46,16 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
             ? parseFloat(entry['Score'])
             : null,
       };
-      ['Founder Doxxed',
-        'Dev is Active on Twitter',
-        'Successful Exit',
-        'Discussed Plans for Token Integration',
-        'Project has 200k+ views on Social Media',
-        'Live Product Exists'].forEach(label => {
+      [
+        'Team Doxxed',
+        'Twitter Activity Level',
+        'Time Commitment',
+        'Prior Founder Experience',
+        'Product Maturity',
+        'Funding Status',
+        'Token-Product Integration Depth',
+        'Social Reach & Engagement Index',
+      ].forEach(label => {
         result[label] = entry[label] ?? '';
       });
       return result as ResearchScoreData;

@@ -30,12 +30,14 @@ import { FoundersEdgeChecklist } from "@/components/founders-edge-checklist";
 interface TokenResearchData {
   Symbol: string;
   Score: number | string;
-  "Founder Doxxed": number | string;
-  "Dev is Active on Twitter": number | string;
-  "Successful Exit": number | string;
-  "Discussed Plans for Token Integration": number | string;
-  "Project has 200k+ views on Social Media": number | string;
-  "Live Product Exists": number | string;
+  "Team Doxxed": number | string;
+  "Twitter Activity Level": number | string;
+  "Time Commitment": number | string;
+  "Prior Founder Experience": number | string;
+  "Product Maturity": number | string;
+  "Funding Status": number | string;
+  "Token-Product Integration Depth": number | string;
+  "Social Reach & Engagement Index": number | string;
   "Relevant Links": string;
   Comments: string;
   "Wallet Link": string;
@@ -65,9 +67,9 @@ async function fetchTokenResearch(
     const [header, ...rows] = data.values;
 
     const canonicalMap: Record<string, string> = {
-      "Startup Experience": "Dev is Active on Twitter",
+      "Startup Experience": "Prior Founder Experience",
       "Project Has Some Virality / Popularity":
-        "Project has 200k+ views on Social Media",
+        "Social Reach & Engagement Index",
     };
 
     const structured = rows.map((row: any) => {
