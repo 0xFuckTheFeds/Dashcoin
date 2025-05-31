@@ -143,3 +143,11 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Founders Guide article styles */
+.founders-guide {
+  @apply prose prose-invert mx-auto text-[1.25rem] leading-relaxed max-w-3xl;
+}
+.founders-guide p {
+  @apply my-2;
+}
