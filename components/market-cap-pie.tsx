@@ -3,7 +3,20 @@
 import { useEffect, useRef } from "react"
 import { DashcoinCard, DashcoinCardHeader, DashcoinCardTitle, DashcoinCardContent } from "@/components/ui/dashcoin-card"
 import type { TokenMarketCapData } from "@/types/dune"
-import { formatCurrency, getCssVariable, hexToRgba } from "@/lib/utils"
+import { formatCurrency } from "@/lib/utils"
+
+export const palette = [
+  "#4E79A7", // blue
+  "#F28E2B", // orange
+  "#E15759", // red
+  "#76B7B2", // teal
+  "#59A14F", // green
+  "#EDC948", // yellow
+  "#AF7AA1", // purple
+  "#FF9DA7", // pink
+  "#9C755F", // brown
+  "#BAB0AC", // gray
+]
 
 interface MarketCapPieProps {
   data: TokenMarketCapData[]
@@ -53,22 +66,9 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
 
     if (topTokens.length === 0) return
 
-    const dashYellow = "#50E3C2"
-    const dashGreen = "#6A8DFF"
     const dashYellowLight = "#A0A0B0"
 
-    const colors = [
-      dashYellow,
-      dashGreen,
-      "#BD7BFF",
-      "#FFA45B",
-      "#8E87E1",
-      "#39C0FA",
-      "#C28AFF",
-      "#FF6B8A",
-      "#5ED9B7",
-      "#A0A0B0",
-    ]
+    const colors = palette
 
     const chartData = {
       labels: topTokens.map((item) => item.symbol || "Unknown"),
