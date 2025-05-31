@@ -5,6 +5,9 @@ import Link from "next/link"
 import { formatCurrency } from "@/lib/utils"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import { ChevronDown, ChevronUp, Search, Loader2, FileSearch, Filter } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
+import { Slider } from "@/components/ui/slider"
 import { fetchPaginatedTokens } from "@/app/actions/dune-actions"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
@@ -16,8 +19,15 @@ import { canonicalChecklist } from "@/components/founders-edge-checklist"
 interface ResearchScoreData {
   symbol: string
   score: number | null
-  [key: string]: any 
+  [key: string]: any
 }
+
+const scoreClasses = (score: number) =>
+  score < 40
+    ? "bg-red-500/20 text-red-500"
+    : score < 70
+      ? "bg-amber-500/20 text-amber-500"
+      : "bg-green-500/20 text-green-500"
 
 export default function TokenTable({ data }: { data: PaginatedTokenResponse | TokenData[] }) {
   const initialData = Array.isArray(data)
@@ -25,7 +35,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     : data
 
   const [searchTerm, setSearchTerm] = useState("")
-  const [sortField, setSortField] = useState("marketCap")
+  const [sortField, setSortField] = useState("researchScore")
   const [sortDirection, setSortDirection] = useState("desc")
   const [currentPage, setCurrentPage] = useState(initialData.page || 1)
   const [itemsPerPage, setItemsPerPage] = useState(initialData.pageSize || 10)
@@ -38,6 +48,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshCountdown, setRefreshCountdown] = useState(60)
+  const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100])
   const [checklistFilters, setChecklistFilters] = useState<Record<string, string>>(
     () => {
       const initial: Record<string, string> = {}
@@ -113,6 +124,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       const research = researchScores.find(
         item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()
       )
+      const s = research ? research.score : null
+      if (s !== null && (s < scoreRange[0] || s > scoreRange[1])) return false
       return canonicalChecklist.every(label => {
         const filterVal = checklistFilters[label]
         if (!filterVal) return true
@@ -126,7 +139,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     })
 
     setFilteredTokens(filtered)
-  }, [searchTerm, tokenData.tokens, researchScores, checklistFilters])
+  }, [searchTerm, tokenData.tokens, researchScores, checklistFilters, scoreRange])
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -344,7 +357,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             className="w-full pl-10 pr-4 py-2 bg-dashGreen-dark border border-dashBlack rounded-md text-dashYellow-light placeholder:text-dashYellow-light/50 focus:outline-none focus:ring-2 focus:ring-dashYellow"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <select
             value={sortField}
             onChange={(e) => handleSort(e.target.value)}
@@ -377,6 +390,16 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             <option value="20">20 per page</option>
             <option value="50">50 per page</option>
           </select>
+          <div className="flex flex-col items-center w-40">
+            <Slider
+              min={0}
+              max={100}
+              step={1}
+              value={scoreRange}
+              onValueChange={(val) => setScoreRange(val as [number, number])}
+            />
+            <span className="text-xs mt-1 text-dashYellow-light">Score {scoreRange[0]}-{scoreRange[1]}</span>
+          </div>
         </div>
       </div>
 
@@ -521,12 +544,23 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                             <span>Loading...</span>
                           </div>
                         ) : researchScore !== null && researchScore !== undefined ? (
-                          <div className="flex items-center">
-                            <span className="font-medium mr-2">{researchScore.toFixed(1)}</span>
-                            <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
-                              <FileSearch className="h-4 w-4" />
-                            </Link>
-                          </div>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center gap-2">
+                                  <Badge className={scoreClasses(researchScore)}>
+                                    {researchScore}
+                                  </Badge>
+                                  <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
+                                    <FileSearch className="h-4 w-4" />
+                                  </Link>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                Dashcoin Research Score (0-100)
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         ) : (
                           <span className="text-dashYellow-light opacity-50">-</span>
                         )}
