@@ -21,19 +21,24 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
     }
 
     const [header, ...rows] = data.values;
-    
-    const canonicalMap: Record<string, string> = {
-      'Startup Experience': 'Dev is Active on Twitter',
-      'Project Has Some Virality / Popularity':
-        'Project has 200k+ views on Social Media',
-    };
+
+    const rubricColumns = header.filter(col => {
+      const trimmed = col.trim();
+      return ![
+        'Project',
+        'Score',
+        'Relevant Links',
+        'Comments',
+        'Wallet Link',
+        'Wallet Comments',
+        'Twitter',
+      ].includes(trimmed);
+    });
 
     const structured = rows.map((row: any) => {
       const entry: Record<string, any> = {};
       header.forEach((key: string, i: number) => {
-        const trimmed = key.trim();
-        const canonical = canonicalMap[trimmed] || trimmed;
-        entry[canonical] = row[i] || '';
+        entry[key.trim()] = row[i] || '';
       });
       return entry;
     });
@@ -46,12 +51,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
             ? parseFloat(entry['Score'])
             : null,
       };
-      ['Founder Doxxed',
-        'Dev is Active on Twitter',
-        'Successful Exit',
-        'Discussed Plans for Token Integration',
-        'Project has 200k+ views on Social Media',
-        'Live Product Exists'].forEach(label => {
+      rubricColumns.forEach(label => {
         result[label] = entry[label] ?? '';
       });
       return result as ResearchScoreData;
