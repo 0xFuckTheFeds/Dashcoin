@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { formatCurrency } from "@/lib/utils"
+import { formatCurrency0 } from "@/lib/utils"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import { ChevronDown, ChevronUp, Search, Loader2, FileSearch, Filter } from "lucide-react"
 import { fetchPaginatedTokens } from "@/app/actions/dune-actions"
@@ -12,6 +12,7 @@ import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
+import { gradeMaps, valueToScore } from "@/lib/score"
 
 interface ResearchScoreData {
   symbol: string
@@ -117,7 +118,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         const filterVal = checklistFilters[label]
         if (!filterVal) return true
         const raw = research ? research[label] : null
-        const val = raw !== undefined && raw !== '' ? parseInt(raw) : null
+        const val = raw !== undefined && raw !== '' ? valueToScore(raw, (gradeMaps as any)[label]) : null
         if (filterVal === 'Yes') return val === 2
         if (filterVal === 'No') return val === 1
         if (filterVal === 'Unknown') return val !== 2 && val !== 1
@@ -253,7 +254,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       setSortDirection("desc");
     }
     
-    setIsSortingLocally(["researchScore", "name", "created_time", "symbol", "marketCap"].includes(field));
+    setIsSortingLocally(["researchScore", "name", "symbol", "marketCap"].includes(field));
     setCurrentPage(1);
   }
 
@@ -278,12 +279,6 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             ? valueA.localeCompare(valueB)
             : valueB.localeCompare(valueA);
             
-        case "created_time":
-          valueA = a.created_time ? new Date(a.created_time).getTime() : 0;
-          valueB = b.created_time ? new Date(b.created_time).getTime() : 0;
-          return sortDirection === "asc" 
-            ? valueA - valueB
-            : valueB - valueA;
             
         case "researchScore":
           const scoreA = getResearchScore(a.symbol || '');
@@ -351,8 +346,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             className="px-3 py-2 bg-dashGreen-dark border border-dashBlack rounded-md text-dashYellow-light focus:outline-none focus:ring-2 focus:ring-dashYellow"
           >
             <option value="marketCap">Market Cap</option>
-            <option value="num_holders">Holders</option>
-            <option value="created_time">Created Date</option>
+            
             <option value="symbol">Token</option>
             <option value="researchScore">Research Score</option>
             <option value="change24h">24h %Gain</option>
@@ -389,7 +383,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                 <th className="text-left py-3 px-4 text-dashYellow cursor-pointer" onClick={() => handleSort("symbol")}>
                   <div className="flex items-center gap-1">Token {renderSortIndicator("symbol")}</div>
                 </th>
-                <th className="text-left py-3 px-4 text-dashYellow">Actions</th>
+                <th className="text-left py-3 px-4 text-dashYellow w-[60px]">Actions</th>
                 <th
                   className="text-left py-3 px-4 text-dashYellow cursor-pointer"
                   onClick={() => handleSort("marketCap")}
@@ -401,18 +395,6 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                   onClick={() => handleSort("change24h")}
                 >
                   <div className="flex items-center gap-1">24h %Gain {renderSortIndicator("change24h")}</div>
-                </th>
-                <th
-                  className="text-left py-3 px-4 text-dashYellow cursor-pointer"
-                  onClick={() => handleSort("num_holders")}
-                >
-                  <div className="flex items-center gap-1">Holders {renderSortIndicator("num_holders")}</div>
-                </th>
-                <th
-                  className="text-left py-3 px-4 text-dashYellow cursor-pointer"
-                  onClick={() => handleSort("created_time")}
-                >
-                  <div className="flex items-center gap-1">Created {renderSortIndicator("created_time")}</div>
                 </th>
                 <th 
                   className="text-left py-3 px-4 text-dashYellow cursor-pointer"
@@ -498,21 +480,17 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                             href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : "#"}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-3 py-1.5 bg-dashYellow text-dashBlack font-medium rounded-md hover:bg-dashYellow-dark transition-colors text-sm flex items-center justify-center min-w-[80px] border border-dashBlack"
+                            className="px-2 py-1.5 bg-dashYellow text-dashBlack font-medium rounded-md hover:bg-dashYellow-dark transition-colors text-sm flex items-center justify-center min-w-[60px] border border-dashBlack"
                           >
                             TRADE
                           </a>
                         </div>
                       </td>
-                      <td className="py-3 px-4">{formatCurrency(getTokenProperty(token, "marketCap", 0))}</td>
+                      <td className="py-3 px-4">{formatCurrency0(getTokenProperty(token, "marketCap", 0))}</td>
                       <td className="py-3 px-4">
                         <div className={`${token.change24h > 0 ? 'text-green-500' : token.change24h < 0 ? 'text-red-500' : ''}`}>
                           {getTokenProperty(token, "change24h", 0).toFixed(2)}%
                         </div>
-                      </td>
-                      <td className="py-3 px-4">{getTokenProperty(token, "num_holders", 0).toLocaleString()}</td>
-                      <td className="py-3 px-4">
-                        {token && token.created_time ? new Date(token.created_time).toLocaleDateString() : "N/A"}
                       </td>
                       <td className="py-3 px-4">
                         {isLoadingResearch ? (
@@ -533,7 +511,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                       </td>
                       {canonicalChecklist.map(label => {
                         const raw = (token as any)[label]
-                        const val = raw !== undefined && raw !== '' ? parseInt(raw) : null
+                        const val = raw !== undefined && raw !== '' ? valueToScore(raw, (gradeMaps as any)[label]) : null
                         const display = val === 2 ? 'Yes' : val === 1 ? 'No' : '-'
                         return (
                           <td key={label} className="py-3 px-4">{display}</td>
