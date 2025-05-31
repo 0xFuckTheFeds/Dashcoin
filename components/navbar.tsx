@@ -36,6 +36,9 @@ export function Navbar({ dashcStats }: NavbarProps) {
             <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
               Creator Wallets
             </NavLink>
+            <NavLink href="https://dashcoin-research.gitbook.io/dashcoin-research" active={false} external>
+              Founder's Guide
+            </NavLink>
           </nav>
         </div>
       </div>
@@ -51,7 +54,10 @@ export function Navbar({ dashcStats }: NavbarProps) {
           <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
             Creator Wallets
           </NavLink>
-        </nav>
+          <NavLink href="https://dashcoin-research.gitbook.io/dashcoin-research" active={false} external>
+            Founder's Guide
+          </NavLink>
+          </nav>
       </div>
     </header>
   );
@@ -61,12 +67,14 @@ interface NavLinkProps {
   href: string;
   active: boolean;
   children: React.ReactNode;
+  external?: boolean;
 }
 
-function NavLink({ href, active, children }: NavLinkProps) {
+function NavLink({ href, active, children, external = false }: NavLinkProps) {
   return (
     <Link
       href={href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className={`dashcoin-text text-lg ${
         active
           ? "text-dashYellow border-b-2 border-dashYellow"
