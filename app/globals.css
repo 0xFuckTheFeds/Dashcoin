@@ -253,3 +253,13 @@
   background: transparent !important;
   color: inherit !important;
 }
+
+/* Founders Guide adjustments */
+.founders-guide {
+  font-size: 125%;
+  line-height: 1.4;
+}
+
+.founders-guide p {
+  margin: 0.5rem 0;
+}
