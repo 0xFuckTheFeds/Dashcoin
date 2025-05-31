@@ -12,6 +12,7 @@ import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
+import { gradeMaps, valueToScore } from "@/lib/score"
 
 interface ResearchScoreData {
   symbol: string
@@ -117,7 +118,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         const filterVal = checklistFilters[label]
         if (!filterVal) return true
         const raw = research ? research[label] : null
-        const val = raw !== undefined && raw !== '' ? parseInt(raw) : null
+        const val = raw !== undefined && raw !== '' ? valueToScore(raw, (gradeMaps as any)[label]) : null
         if (filterVal === 'Yes') return val === 2
         if (filterVal === 'No') return val === 1
         if (filterVal === 'Unknown') return val !== 2 && val !== 1
@@ -533,7 +534,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                       </td>
                       {canonicalChecklist.map(label => {
                         const raw = (token as any)[label]
-                        const val = raw !== undefined && raw !== '' ? parseInt(raw) : null
+                        const val = raw !== undefined && raw !== '' ? valueToScore(raw, (gradeMaps as any)[label]) : null
                         const display = val === 2 ? 'Yes' : val === 1 ? 'No' : '-'
                         return (
                           <td key={label} className="py-3 px-4">{display}</td>
