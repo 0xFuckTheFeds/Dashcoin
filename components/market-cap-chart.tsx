@@ -98,8 +98,10 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         },
         plugins: {
           legend: {
+            position: "bottom",
             labels: {
               color: dashYellowLight,
+              boxWidth: 12,
             },
           },
           tooltip: {
@@ -150,7 +152,7 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         <DashcoinCardTitle>Market Cap & Holders Over Time</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
-        <div className="h-48 bg-[#13131A]">
+        <div className="h-64 bg-neutral-900 rounded-lg">
           <canvas ref={chartRef} />
         </div>
       </DashcoinCardContent>
