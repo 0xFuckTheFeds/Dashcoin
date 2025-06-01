@@ -41,6 +41,7 @@ The cache admin interface is available at `/admin/cache`. This interface allows 
 - `KV_REST_API_TOKEN`: Your Upstash Redis API token
 - `ENABLE_DUNE_API`: Set to `true` to enable real Dune API calls (default: `false`)
 - `VERCEL_ENV`: Automatically set by Vercel to indicate the environment
+- `GOOGLE_SHEETS_API_KEY`: Google Sheets API key for research data
 
 ## Cache Keys
 
@@ -74,3 +75,4 @@ The Vercel KV integration provides several environment variables:
 \`\`\`
 
 Let's also create a fallback mechanism in case Redis is not available:
+\n## License\n\nThis project is licensed under the [MIT License](LICENSE).\n

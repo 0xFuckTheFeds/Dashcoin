@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
 import { formatCurrency0 } from "@/lib/utils"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import { ChevronDown, ChevronUp, Search, Loader2, FileSearch, Filter } from "lucide-react"
@@ -12,7 +13,42 @@ import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
-import { gradeMaps, valueToScore } from "@/lib/score"
+
+const checklistOptions: Record<string, string[]> = {
+  'Team Doxxed': ['Legal Names', 'Pseudonymous', 'Unknown'],
+  'Twitter Activity Level': ['High', 'Medium', 'Low', 'Unknown'],
+  'Time Commitment': [
+    'Full-time (≥ 35 hrs/wk)',
+    'Part-time / side-project',
+    'Unknown',
+    'Abandoned',
+  ],
+  'Prior Founder Experience': [
+    'Two or more prior startups',
+    'One prior startup',
+    'None',
+    'Unknown',
+  ],
+  'Product Maturity': [
+    'Revenue-positive / paying customers',
+    'Live MVP',
+    'Prototype / pre-alpha',
+    'Unknown',
+  ],
+  'Funding Status': ['Venture Backed', 'Angel Investors', 'Bootstrapped', 'Unknown'],
+  'Token-Product Integration Depth': [
+    'Fully live',
+    'Concept only (white-paper / roadmap)',
+    'None',
+    'Unknown',
+  ],
+  'Social Reach & Engagement Index': [
+    'High ( ≥ 20 k followers )',
+    'Medium ( 5 k – 20 k followers )',
+    'Low ( < 5 k followers )',
+    'Unknown',
+  ],
+}
 
 interface ResearchScoreData {
   symbol: string
@@ -39,11 +75,15 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshCountdown, setRefreshCountdown] = useState(60)
-  const [checklistFilters, setChecklistFilters] = useState<Record<string, string>>(
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const [checklistFilters, setChecklistFilters] = useState<Record<string, string[]>>(
     () => {
-      const initial: Record<string, string> = {}
+      const initial: Record<string, string[]> = {}
       canonicalChecklist.forEach(label => {
-        initial[label] = ''
+        const key = label.replace(/\s+/g, '_').toLowerCase()
+        const paramVal = searchParams.get(key)
+        initial[label] = paramVal ? paramVal.split(',').map(v => decodeURIComponent(v)) : []
       })
       return initial
     }
@@ -64,6 +104,23 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [openChecklistFilter])
+
+  useEffect(() => {
+    const params = new URLSearchParams(Array.from(searchParams.entries()))
+    canonicalChecklist.forEach(label => {
+      const key = label.replace(/\s+/g, '_').toLowerCase()
+      const values = checklistFilters[label]
+      if (values && values.length) {
+        params.set(
+          key,
+          values.map(v => encodeURIComponent(v)).join(',')
+        )
+      } else {
+        params.delete(key)
+      }
+    })
+    router.replace(`?${params.toString()}`, { scroll: false })
+  }, [checklistFilters])
 
   useEffect(() => {
     const getResearchScores = async () => {
@@ -115,14 +172,10 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()
       )
       return canonicalChecklist.every(label => {
-        const filterVal = checklistFilters[label]
-        if (!filterVal) return true
-        const raw = research ? research[label] : null
-        const val = raw !== undefined && raw !== '' ? valueToScore(raw, (gradeMaps as any)[label]) : null
-        if (filterVal === 'Yes') return val === 2
-        if (filterVal === 'No') return val === 1
-        if (filterVal === 'Unknown') return val !== 2 && val !== 1
-        return true
+        const selected = checklistFilters[label]
+        if (!selected || selected.length === 0) return true
+        const raw = research ? research[label] : 'Unknown'
+        return selected.includes(raw || 'Unknown')
       })
     })
 
@@ -419,20 +472,38 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                     {openChecklistFilter === label && (
                       <div
                         ref={el => (checklistRefs.current[label] = el)}
-                        className="absolute z-10 left-0 top-full mt-1 bg-dashGreen-dark border border-dashBlack rounded-md"
+                        className="absolute z-10 left-0 top-full mt-1 bg-dashGreen-dark border border-dashBlack rounded-md p-2 space-y-1"
                       >
-                        {['', 'Yes', 'No', 'Unknown'].map(option => (
-                          <button
-                            key={option || 'All'}
-                            onClick={() => {
-                              setChecklistFilters(prev => ({ ...prev, [label]: option }))
-                              setOpenChecklistFilter(null)
-                            }}
-                            className="block px-3 py-1 text-left w-full hover:bg-dashGreen-light"
+                        {checklistOptions[label].map(option => (
+                          <label
+                            key={option}
+                            className="flex items-center gap-2 px-2 py-1 hover:bg-dashGreen-light"
                           >
-                            {option === '' ? 'All' : option}
-                          </button>
+                            <input
+                              type="checkbox"
+                              className="accent-dashYellow"
+                              checked={checklistFilters[label].includes(option)}
+                              onChange={() => {
+                                setChecklistFilters(prev => {
+                                  const current = new Set(prev[label])
+                                  if (current.has(option)) {
+                                    current.delete(option)
+                                  } else {
+                                    current.add(option)
+                                  }
+                                  return { ...prev, [label]: Array.from(current) }
+                                })
+                              }}
+                            />
+                            <span>{option}</span>
+                          </label>
                         ))}
+                        <button
+                          onClick={() => setChecklistFilters(prev => ({ ...prev, [label]: [] }))}
+                          className="block w-full text-left px-2 py-1 text-sm hover:bg-dashGreen-light"
+                        >
+                          Clear
+                        </button>
                       </div>
                     )}
                   </th>
