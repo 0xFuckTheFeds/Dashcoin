@@ -21,11 +21,11 @@ const config = {
       colors: {
         dashGreen: {
           DEFAULT: "#3a3a3a", // base grey
-          dark: "#1a1a1a", // near black
+          dark: "#1f2937", // deep slate
           light: "#4f4f4f",
           accent: "#656565",
           card: "#2b2b2b",
-          cardDark: "#161616",
+          cardDark: "#1e1e24",
         },
         dashYellow: {
           DEFAULT: "#f5f5f5", // off-white
@@ -36,7 +36,7 @@ const config = {
           DEFAULT: "#ff6666",
           dark: "#cc3333",
         },
-        dashBlack: "#000000",
+        dashBlack: "#27272A",
 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

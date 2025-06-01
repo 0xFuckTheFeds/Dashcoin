@@ -21,7 +21,6 @@ import { fetchDexscreenerTokenData } from "./actions/dexscreener-actions";
 import { formatCurrency } from "@/lib/utils";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
-import TokenTable from "@/components/token-table";
 import { Navbar } from "@/components/navbar";
 import { Twitter } from "lucide-react";
 
@@ -61,15 +60,17 @@ const MarketCapPieWrapper = async ({
   }
 };
 
-const TokenTableWrapper = async ({
+
+const TokenCardListWrapper = async ({
   tokenDataPromise,
 }: {
   tokenDataPromise: Promise<any>;
 }) => {
   try {
     const tokenData = await tokenDataPromise;
+    const TokenCardList = (await import("@/components/token-card-list")).default;
     return (
-      <TokenTable
+      <TokenCardList
         data={
           tokenData || {
             tokens: [],
@@ -82,7 +83,7 @@ const TokenTableWrapper = async ({
       />
     );
   } catch (error) {
-    console.error("Error in TokenTableWrapper:", error);
+    console.error("Error in TokenCardListWrapper:", error);
     return (
       <DashcoinCard className="p-8 flex items-center justify-center">
         <p className="text-center">Error loading token data</p>
@@ -228,7 +229,7 @@ export default async function Home() {
         }}
       />
 
-      <main className="container mx-auto px-4 py-4 space-y-6">
+      <main className="container mx-auto px-4 py-4 space-y-4">
 
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-0">
@@ -253,7 +254,7 @@ export default async function Home() {
         </div>
 
         {/* Token Table */}
-        <div className="mt-4">
+        <div className="mt-2">
           <h2 className="dashcoin-text text-3xl text-dashYellow mb-4">
             Top Tokens by Market Cap
           </h2>
@@ -267,7 +268,7 @@ export default async function Home() {
               </DashcoinCard>
             }
           >
-            <TokenTableWrapper tokenDataPromise={tokenDataPromise} />
+            <TokenCardListWrapper tokenDataPromise={tokenDataPromise} />
           </Suspense>
         </div>
 
