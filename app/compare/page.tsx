@@ -112,6 +112,8 @@ export default function ComparePage() {
   const [showToken1Suggestions, setShowToken1Suggestions] = useState(false);
   const [showToken2Suggestions, setShowToken2Suggestions] = useState(false);
 
+  const [useLogScale, setUseLogScale] = useState(false);
+
   const token1SuggestionsRef = useRef<HTMLDivElement>(null);
   const token2SuggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -255,6 +257,28 @@ export default function ComparePage() {
     setToken2Name(currentToken1Name);
   };
 
+  const exportCsv = () => {
+    if (!comparisonData.token1 || !comparisonData.token2) return;
+    const rows = [
+      ['Metric', comparisonData.token1.symbol, comparisonData.token2.symbol],
+      ['Market Cap', comparisonData.token1.marketCap, comparisonData.token2.marketCap],
+      ['Holders', comparisonData.token1.holders, comparisonData.token2.holders],
+      ['Volume', comparisonData.token1.volume24h, comparisonData.token2.volume24h],
+    ];
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'comparison.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportPng = () => {
+    window.print();
+  };
+
   const handleTokenSearch = (
     input: string, 
     nameSetter: React.Dispatch<React.SetStateAction<string>>,
@@ -356,6 +380,17 @@ export default function ComparePage() {
           <p className="text-xl max-w-3xl mx-auto">Compare any two tokens to analyze market cap, holders, and other metrics</p>
         </div>
 
+        <nav className="sticky top-16 z-30 bg-dashGreen-dark border-b border-dashGreen-light mb-4">
+          <div className="flex justify-center flex-wrap gap-4 py-2 text-sm">
+            <a href="#market-cap" className="hover:text-dashYellow">Market Cap</a>
+            <a href="#holders" className="hover:text-dashYellow">Holders</a>
+            <a href="#growth-rate" className="hover:text-dashYellow">Growth</a>
+            <a href="#metrics" className="hover:text-dashYellow">Metrics</a>
+            <Button size="sm" variant="outline" onClick={exportCsv}>CSV</Button>
+            <Button size="sm" variant="outline" onClick={exportPng}>PNG</Button>
+          </div>
+        </nav>
+
         <DashcoinCard className="mb-8">
           <DashcoinCardHeader><DashcoinCardTitle className="text-center">Enter Token Names to Compare</DashcoinCardTitle></DashcoinCardHeader>
           <DashcoinCardContent>
@@ -437,16 +472,21 @@ export default function ComparePage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <div className="flex flex-col gap-4">
+            <div id="comparison-cards" className="flex overflow-x-auto gap-4 snap-x snap-mandatory mb-8 pb-2">
+              <div id="market-cap" className="flex flex-col gap-4 min-w-[80vw] md:min-w-[500px] snap-center">
                 <DashcoinCard>
-                  <DashcoinCardHeader><DashcoinCardTitle className="flex items-center gap-2"><BarChart2 className="h-5 w-5" />Market Cap Comparison</DashcoinCardTitle></DashcoinCardHeader>
+                  <DashcoinCardHeader>
+                    <DashcoinCardTitle className="flex items-center gap-2"><BarChart2 className="h-5 w-5" />Market Cap Comparison</DashcoinCardTitle>
+                    <Button size="sm" variant="outline" className="ml-auto" onClick={() => setUseLogScale(v => !v)}>
+                      {useLogScale ? 'Linear' : 'Log'} Scale
+                    </Button>
+                  </DashcoinCardHeader>
                   <DashcoinCardContent>
                     <div className="h-80">
                       <ResponsiveContainer width="100%" height="100%">
                         <RechartsBarChart data={barChartData.slice(0,1)} margin={{ top: 20, right: 30, left: 50, bottom: 5 }}>
                           <XAxis dataKey="name" />
-                          <YAxis tickFormatter={formatNumber} />
+                          <YAxis tickFormatter={formatNumber} scale={useLogScale ? 'log' : 'linear'} domain={useLogScale ? [1, 'auto'] : undefined} />
                           <Tooltip 
                             content={<CustomTooltip />} 
                             cursor={false} 
@@ -470,15 +510,9 @@ export default function ComparePage() {
                     </div>
                   </DashcoinCardContent>
                 </DashcoinCard>
-                <GrowthStatCard 
-                  value={`+${formatNumber(comparisonData.token1.marketcapgrowthperday)} / day`}
-                  label={`${comparisonData.token1.name} has added +${formatNumber(comparisonData.token1.marketcapgrowthperday)} in marketcap per day since creation.`}
-                  className={`w-full min-h-[240px] mt-4 ${token1ScaleClass} ${token1AnimationClasses} transition-transform duration-300`}
-                  isWinner={token1IsWinner}
-                />
               </div>
 
-              <div className="flex flex-col gap-4">
+              <div id="holders" className="flex flex-col gap-4 min-w-[80vw] md:min-w-[500px] snap-center">
                 <DashcoinCard>
                   <DashcoinCardHeader><DashcoinCardTitle className="flex items-center gap-2"><Users className="h-5 w-5" />Holders Comparison</DashcoinCardTitle></DashcoinCardHeader>
                   <DashcoinCardContent>
@@ -486,7 +520,7 @@ export default function ComparePage() {
                       <ResponsiveContainer width="100%" height="100%">
                         <RechartsBarChart data={barChartData.slice(1,2)} margin={{ top: 20, right: 30, left: 50, bottom: 5 }}>
                           <XAxis dataKey="name" />
-                          <YAxis tickFormatter={formatNumber} />
+                          <YAxis tickFormatter={formatNumber} scale={useLogScale ? 'log' : 'linear'} domain={useLogScale ? [1, 'auto'] : undefined} />
                           <Tooltip 
                             content={<CustomTooltip />} 
                             cursor={false} 
@@ -504,16 +538,34 @@ export default function ComparePage() {
                     </div>
                   </DashcoinCardContent>
                 </DashcoinCard>
-                <GrowthStatCard 
-                  value={`+${formatNumber(comparisonData.token2.marketcapgrowthperday)} / day`}
-                  label={`${comparisonData.token2.name} has added +${formatNumber(comparisonData.token2.marketcapgrowthperday)} in marketcap per day since creation.`}
-                  className={`w-full min-h-[240px] mt-4 ${token2ScaleClass} ${token2AnimationClasses} transition-transform duration-300`}
-                  isWinner={token2IsWinner}
-                />
+              </div>
+
+              <div id="growth-rate" className="flex flex-col gap-4 min-w-[80vw] md:min-w-[500px] snap-center">
+                <DashcoinCard>
+                  <DashcoinCardHeader>
+                    <DashcoinCardTitle className="flex items-center gap-2"><BarChart2 className="h-5 w-5" />Market Cap Growth/Day</DashcoinCardTitle>
+                  </DashcoinCardHeader>
+                  <DashcoinCardContent>
+                    <div className="flex gap-4">
+                      <GrowthStatCard
+                        value={`+${formatNumber(comparisonData.token1.marketcapgrowthperday)} / day`}
+                        label={comparisonData.token1.name}
+                        className="flex-1"
+                        isWinner={token1IsWinner}
+                      />
+                      <GrowthStatCard
+                        value={`+${formatNumber(comparisonData.token2.marketcapgrowthperday)} / day`}
+                        label={comparisonData.token2.name}
+                        className="flex-1"
+                        isWinner={token2IsWinner}
+                      />
+                    </div>
+                  </DashcoinCardContent>
+                </DashcoinCard>
               </div>
             </div>
 
-            <DashcoinCard>
+            <DashcoinCard id="metrics" className="min-w-[80vw] md:min-w-[500px] snap-center">
               <DashcoinCardHeader><DashcoinCardTitle>Detailed Comparison</DashcoinCardTitle></DashcoinCardHeader>
               <DashcoinCardContent>
                 <div className="overflow-x-auto">
@@ -529,8 +581,8 @@ export default function ComparePage() {
                     <tbody>
                       <tr className="border-b border-dashGreen-light">
                         <td className="py-3 px-4">Market Cap</td>
-                        <td className="text-right py-3 px-4">${comparisonData.token1.marketCap.toLocaleString()}</td>
-                        <td className="text-right py-3 px-4">${comparisonData.token2.marketCap.toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token1.marketCap > comparisonData.token2.marketCap ? 'bg-dashGreen-light/30' : ''}`}>${comparisonData.token1.marketCap.toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token2.marketCap > comparisonData.token1.marketCap ? 'bg-dashGreen-light/30' : ''}`}>${comparisonData.token2.marketCap.toLocaleString()}</td>
                         {(() => {
                           const v1 = comparisonData.token1.marketCap;
                           const v2 = comparisonData.token2.marketCap;
@@ -545,8 +597,8 @@ export default function ComparePage() {
                       </tr>
                       <tr className="border-b border-dashGreen-light">
                         <td className="py-3 px-4">Holders</td>
-                        <td className="text-right py-3 px-4">{comparisonData.token1.holders.toLocaleString()}</td>
-                        <td className="text-right py-3 px-4">{comparisonData.token2.holders.toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token1.holders > comparisonData.token2.holders ? 'bg-dashGreen-light/30' : ''}`}>{comparisonData.token1.holders.toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token2.holders > comparisonData.token1.holders ? 'bg-dashGreen-light/30' : ''}`}>{comparisonData.token2.holders.toLocaleString()}</td>
                         {(() => {
                           const v1 = comparisonData.token1.holders;
                           const v2 = comparisonData.token2.holders;
@@ -561,8 +613,8 @@ export default function ComparePage() {
                       </tr>
                       <tr className="border-b border-dashGreen-light">
                         <td className="py-3 px-4">Total Volume</td>
-                        <td className="text-right py-3 px-4">${comparisonData.token1.volume24h.toLocaleString()}</td>
-                        <td className="text-right py-3 px-4">${comparisonData.token2.volume24h.toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token1.volume24h > comparisonData.token2.volume24h ? 'bg-dashGreen-light/30' : ''}`}>${comparisonData.token1.volume24h.toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token2.volume24h > comparisonData.token1.volume24h ? 'bg-dashGreen-light/30' : ''}`}>${comparisonData.token2.volume24h.toLocaleString()}</td>
                         {(() => {
                           const v1 = comparisonData.token1.volume24h;
                           const v2 = comparisonData.token2.volume24h;
@@ -585,8 +637,8 @@ export default function ComparePage() {
                       </tr>
                       <tr className="border-t border-dashGreen-light last:border-b-0">
                         <td className="py-3 px-4">MarketCap Growth/Day</td>
-                        <td className="text-right py-3 px-4">${comparisonData.token1.marketcapgrowthperday.toLocaleString()}</td>
-                        <td className="text-right py-3 px-4">${comparisonData.token2.marketcapgrowthperday.toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token1.marketcapgrowthperday > comparisonData.token2.marketcapgrowthperday ? 'bg-dashGreen-light/30' : ''}`}>${comparisonData.token1.marketcapgrowthperday.toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token2.marketcapgrowthperday > comparisonData.token1.marketcapgrowthperday ? 'bg-dashGreen-light/30' : ''}`}>${comparisonData.token2.marketcapgrowthperday.toLocaleString()}</td>
                         {(() => {
                           const v1 = comparisonData.token1.marketcapgrowthperday;
                           const v2 = comparisonData.token2.marketcapgrowthperday;
@@ -601,8 +653,8 @@ export default function ComparePage() {
                       </tr>
                       <tr className="border-t border-b border-dashGreen-light">
                         <td className="py-3 px-4">Market Cap per Holder</td>
-                        <td className="text-right py-3 px-4">${(comparisonData.token1.marketCap/comparisonData.token1.holders).toLocaleString()}</td>
-                        <td className="text-right py-3 px-4">${(comparisonData.token2.marketCap/comparisonData.token2.holders).toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token1.marketCap/comparisonData.token1.holders > comparisonData.token2.marketCap/comparisonData.token2.holders ? 'bg-dashGreen-light/30' : ''}`}>${(comparisonData.token1.marketCap/comparisonData.token1.holders).toLocaleString()}</td>
+                        <td className={`text-right py-3 px-4 ${comparisonData.token2.marketCap/comparisonData.token2.holders > comparisonData.token1.marketCap/comparisonData.token1.holders ? 'bg-dashGreen-light/30' : ''}`}>${(comparisonData.token2.marketCap/comparisonData.token2.holders).toLocaleString()}</td>
                         {(() => {
                           const v1 = comparisonData.token1.marketCap/comparisonData.token1.holders;
                           const v2 = comparisonData.token2.marketCap/comparisonData.token2.holders;
@@ -628,10 +680,13 @@ export default function ComparePage() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <DashcoinLogo size={32} />
           <p className="text-sm opacity-80">© 2025 Dashcoin. All rights reserved.</p>
-          <a href={dashcoinXLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-dashYellow hover:text-dashYellow-dark transition-colors px-4 py-2 border border-dashYellow rounded-md">
-            <Twitter className="h-5 w-5" />
-            <span className="dashcoin-text">Follow on X</span>
-          </a>
+          <div className="flex gap-4">
+            <Button size="sm" variant="outline" onClick={() => setIsComparing(false)}>Compare Again</Button>
+            <a href={dashcoinXLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-dashYellow hover:text-dashYellow-dark transition-colors px-4 py-2 border border-dashYellow rounded-md">
+              <Twitter className="h-5 w-5" />
+              <span className="dashcoin-text">Follow on X</span>
+            </a>
+          </div>
         </div>
       </footer>
     </div>
