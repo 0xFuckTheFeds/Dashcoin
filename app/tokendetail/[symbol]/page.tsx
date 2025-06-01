@@ -49,11 +49,16 @@ interface TokenResearchData {
 async function fetchTokenResearch(
   tokenSymbol: string,
 ): Promise<TokenResearchData | null> {
-  const API_KEY = "AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk";
+  const API_KEY = process.env.GOOGLE_SHEETS_API_KEY;
   const SHEET_ID = "1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0";
   const SHEET_NAME = "Dashcoin Scoring";
   const RANGE = `${SHEET_NAME}!A1:T200`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+
+  if (!API_KEY) {
+    console.error("GOOGLE_SHEETS_API_KEY is not set");
+    return null;
+  }
 
   try {
     const response = await fetch(url);
@@ -120,6 +125,7 @@ export default function TokenResearchPage({
     null,
   );
   const [hasScore, setHasScore] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const formattedDuneLastRefresh = duneLastRefresh
     ? duneLastRefresh.toLocaleString(undefined, {
@@ -152,9 +158,17 @@ export default function TokenResearchPage({
       try {
         const data = await fetchTokenResearch(symbol);
         setResearchData(data);
-        setHasScore(true);
+        setHasScore(!!data);
+        if (!data) {
+          setErrorMessage(
+            "Failed to fetch research data. Check GOOGLE_SHEETS_API_KEY."
+          );
+        } else {
+          setErrorMessage(null);
+        }
       } catch (error) {
         console.error(`Error fetching research data for ${symbol}:`, error);
+        setErrorMessage("Error fetching research data.");
       } finally {
         setIsLoading(false);
       }
@@ -438,8 +452,8 @@ export default function TokenResearchPage({
             No Research Available
           </h2>
           <p className="mt-4 text-dashYellow-light">
-            Research data is not yet available for {symbol}. Check back later or
-            try another token.
+            {errorMessage ||
+              `Research data is not yet available for ${symbol}. Check back later or try another token.`}
           </p>
         </DashcoinCard>
       ) : (
