@@ -231,27 +231,6 @@ export default async function Home() {
 
       <main className="container mx-auto px-4 py-4 space-y-4">
 
-        {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-0">
-          <Suspense
-            fallback={
-              <DashcoinCard className="h-48 flex items-center justify-center">
-                <p>Loading chart...</p>
-              </DashcoinCard>
-            }
-          >
-            <MarketCapChartWrapper marketCapTimeDataPromise={marketCapTimeDataPromise} />
-          </Suspense>
-          <Suspense
-            fallback={
-              <DashcoinCard className="h-48 flex items-center justify-center">
-                <p>Loading chart...</p>
-              </DashcoinCard>
-            }
-          >
-            <MarketCapPieWrapper tokenMarketCapsPromise={tokenMarketCapsPromise} />
-          </Suspense>
-        </div>
 
         {/* Token Table */}
         <div className="mt-2">
@@ -306,6 +285,28 @@ export default async function Home() {
               </div>
             </DashcoinCardContent>
           </DashcoinCard>
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-0">
+          <Suspense
+            fallback={
+              <DashcoinCard className="h-48 flex items-center justify-center">
+                <p>Loading chart...</p>
+              </DashcoinCard>
+            }
+          >
+            <MarketCapChartWrapper marketCapTimeDataPromise={marketCapTimeDataPromise} />
+          </Suspense>
+          <Suspense
+            fallback={
+              <DashcoinCard className="h-48 flex items-center justify-center">
+                <p>Loading chart...</p>
+              </DashcoinCard>
+            }
+          >
+            <MarketCapPieWrapper tokenMarketCapsPromise={tokenMarketCapsPromise} />
+          </Suspense>
         </div>
 
       </main>
