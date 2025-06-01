@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Twitter, BarChart2, Users, ArrowRight, InfoIcon, Loader2, ArrowLeftRight } from "lucide-react";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { GrowthStatCard } from "@/components/ui/growth-stat-card";
+import { FounderMetadataCard } from "@/components/founder-metadata-card";
+import { fetchTokenResearch } from "@/app/actions/googlesheet-action";
 
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -30,6 +32,12 @@ interface ComparisonTokenData {
   volume24h: number;
   launchDate: string;
   marketcapgrowthperday: number;
+}
+
+interface ResearchScoreData {
+  symbol: string;
+  score: number | null;
+  [key: string]: any;
 }
 
 const formatNumber = (num: number): string => {
@@ -114,10 +122,12 @@ export default function ComparePage() {
 
   const [useLogScale, setUseLogScale] = useState(false);
 
+  const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
+
   const token1SuggestionsRef = useRef<HTMLDivElement>(null);
   const token2SuggestionsRef = useRef<HTMLDivElement>(null);
 
-  
+
   useEffect(() => {
     async function fetchTokens() {
       try {
@@ -137,6 +147,14 @@ export default function ComparePage() {
       }
     }
     fetchTokens();
+  }, []);
+
+  useEffect(() => {
+    const loadResearch = async () => {
+      const data = await fetchTokenResearch();
+      setResearchScores(data);
+    };
+    loadResearch();
   }, []);
 
   // Auto compare the top two tokens by market cap on initial load
@@ -201,6 +219,9 @@ export default function ComparePage() {
       marketcapgrowthperday
     };
   };
+
+  const getResearch = (symbol: string): ResearchScoreData | undefined =>
+    researchScores.find(r => r.symbol.toUpperCase() === symbol.toUpperCase());
 
   const handleCompare = () => {
     setIsLoading(true);
@@ -371,6 +392,9 @@ export default function ComparePage() {
     }
   }
 
+  const research1 = comparisonData.token1 ? getResearch(comparisonData.token1.symbol) : undefined;
+  const research2 = comparisonData.token2 ? getResearch(comparisonData.token2.symbol) : undefined;
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -385,6 +409,7 @@ export default function ComparePage() {
             <a href="#market-cap" className="hover:text-dashYellow">Market Cap</a>
             <a href="#holders" className="hover:text-dashYellow">Holders</a>
             <a href="#growth-rate" className="hover:text-dashYellow">Growth</a>
+            <a href="#metadata" className="hover:text-dashYellow">Founder Data</a>
             <a href="#metrics" className="hover:text-dashYellow">Metrics</a>
             <Button size="sm" variant="outline" onClick={exportCsv}>CSV</Button>
             <Button size="sm" variant="outline" onClick={exportPng}>PNG</Button>
@@ -563,6 +588,28 @@ export default function ComparePage() {
                   </DashcoinCardContent>
                 </DashcoinCard>
               </div>
+            </div>
+
+            <div id="metadata" className="flex flex-col gap-4 min-w-[80vw] md:min-w-[500px] snap-center">
+              <DashcoinCard>
+                <DashcoinCardHeader>
+                  <DashcoinCardTitle className="flex items-center gap-2"><InfoIcon className="h-5 w-5" />Founder & Project Metadata</DashcoinCardTitle>
+                </DashcoinCardHeader>
+                <DashcoinCardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FounderMetadataCard
+                      name={comparisonData.token1.name}
+                      symbol={comparisonData.token1.symbol}
+                      data={research1}
+                    />
+                    <FounderMetadataCard
+                      name={comparisonData.token2.name}
+                      symbol={comparisonData.token2.symbol}
+                      data={research2}
+                    />
+                  </div>
+                </DashcoinCardContent>
+              </DashcoinCard>
             </div>
 
             <DashcoinCard id="metrics" className="min-w-[80vw] md:min-w-[500px] snap-center">
