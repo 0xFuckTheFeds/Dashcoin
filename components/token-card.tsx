@@ -40,10 +40,12 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   return (
     <DashcoinCard className="p-4 flex flex-col gap-3">
       <div className="flex justify-between items-start">
-        <div>
-          <p className="text-lg font-bold text-dashYellow">{tokenSymbol}</p>
-          {token.name && <p className="text-sm opacity-70">{token.name}</p>}
-        </div>
+        <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
+          <div>
+            <p className="text-lg font-bold text-dashYellow">{tokenSymbol}</p>
+            {token.name && <p className="text-sm opacity-70">{token.name}</p>}
+          </div>
+        </Link>
         {researchScore !== null && (
           <span className="px-2 py-1 rounded-full bg-blue-600 text-sm font-medium">
             {researchScore.toFixed(1)}
