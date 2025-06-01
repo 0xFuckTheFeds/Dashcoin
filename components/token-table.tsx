@@ -4,7 +4,29 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { formatCurrency0 } from "@/lib/utils"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
-import { ChevronDown, ChevronUp, Search, Loader2, FileSearch, Filter } from "lucide-react"
+import {
+  ChevronDown,
+  ChevronUp,
+  Search,
+  Loader2,
+  FileSearch,
+  Filter,
+  FlaskConical,
+  Twitter,
+  Users,
+  User,
+  Clock,
+  Medal,
+  Package,
+  Layers,
+  TrendingUp,
+} from "lucide-react"
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip"
 import { fetchPaginatedTokens } from "@/app/actions/dune-actions"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
@@ -14,6 +36,17 @@ import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { researchFilterOptions } from "@/data/research-filter-options"
 import { useRouter, useSearchParams } from "next/navigation"
+
+const checklistIcons: Record<string, JSX.Element> = {
+  "Team Doxxed": <User className="h-4 w-4" />,
+  "Twitter Activity Level": <Twitter className="h-4 w-4" />,
+  "Time Commitment": <Clock className="h-4 w-4" />,
+  "Prior Founder Experience": <Medal className="h-4 w-4" />,
+  "Product Maturity": <Package className="h-4 w-4" />,
+  "Funding Status": <TrendingUp className="h-4 w-4" />,
+  "Token-Product Integration Depth": <Layers className="h-4 w-4" />,
+  "Social Reach & Engagement Index": <Users className="h-4 w-4" />,
+}
 
 interface ResearchScoreData {
   symbol: string
@@ -414,26 +447,34 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                 >
                   <div className="flex items-center gap-1">24h %Gain {renderSortIndicator("change24h")}</div>
                 </th>
-                <th 
+                <th
                   className="text-left py-3 px-4 text-dashYellow cursor-pointer"
                   onClick={() => handleSort("researchScore")}
                 >
                   <div className="flex items-center gap-1">
-                    Research Score {renderSortIndicator("researchScore")}
+                    <FlaskConical className="h-4 w-4" />
+                    {renderSortIndicator("researchScore")}
                   </div>
                 </th>
                 {canonicalChecklist.map(label => (
                   <th key={label} className="relative text-left py-3 px-4 text-dashYellow">
-                    <div className="flex items-center gap-1">
-                      {label}
-                      <Filter
-                        className="h-7 w-7 cursor-pointer"
-                        onClick={e => {
-                          e.stopPropagation()
-                          setOpenChecklistFilter(prev => (prev === label ? null : label))
-                        }}
-                      />
-                    </div>
+                    <TooltipProvider delayDuration={0}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-1 cursor-pointer">
+                            {checklistIcons[label]}
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>{label}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <Filter
+                      className="h-5 w-5 ml-1 cursor-pointer inline"
+                      onClick={e => {
+                        e.stopPropagation()
+                        setOpenChecklistFilter(prev => (prev === label ? null : label))
+                      }}
+                    />
                     {openChecklistFilter === label && (
                       <div
                         ref={el => (checklistRefs.current[label] = el)}
@@ -493,7 +534,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                   return (
                     <tr
                       key={index}
-                      className="border-b border-dashGreen-light hover:bg-dashGreen-card dark:hover:bg-dashGreen-cardDark"
+                      className="border-b border-dashGreen-light odd:bg-neutral-800 even:bg-neutral-900 hover:bg-neutral-700 cursor-pointer"
+                      onClick={() => router.push(`/tokendetail/${tokenSymbol}`)}
                     >
                       <td className="py-3 px-4">
                         <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
@@ -503,19 +545,19 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                               <CopyAddress
                                 address={tokenAddress}
                                 showBackground={false}
-                                className="text-xs opacity-80 hover:opacity-100"
+                                className="hidden md:inline text-xs opacity-70 hover:opacity-100"
                               />
                             )}
                           </div>
                         </Link>
                       </td>
                       <td className="py-3 px-4">
-                        <div className="flex gap-2">
+                        <div className="flex justify-end">
                           <a
                             href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : "#"}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-2 py-1.5 bg-dashYellow text-dashBlack font-medium rounded-md hover:bg-dashYellow-dark transition-colors text-sm flex items-center justify-center min-w-[60px] border border-dashBlack"
+                            className="px-3 py-1.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-500 transition-colors text-sm min-w-[72px]"
                           >
                             TRADE
                           </a>

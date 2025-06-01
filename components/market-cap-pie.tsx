@@ -120,7 +120,7 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
         <DashcoinCardTitle>Market Cap Distribution</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
-        <div className="h-48 bg-[#13131A]">
+        <div className="h-64 bg-neutral-900 rounded-lg">
           <canvas ref={chartRef} />
         </div>
       </DashcoinCardContent>

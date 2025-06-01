@@ -228,7 +228,7 @@ export default async function Home() {
         }}
       />
 
-      <main className="container mx-auto px-4 py-4 space-y-6">
+      <main className="container mx-auto px-4 py-4 space-y-4">
 
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-0">
@@ -253,7 +253,7 @@ export default async function Home() {
         </div>
 
         {/* Token Table */}
-        <div className="mt-4">
+        <div className="mt-2">
           <h2 className="dashcoin-text text-3xl text-dashYellow mb-4">
             Top Tokens by Market Cap
           </h2>
