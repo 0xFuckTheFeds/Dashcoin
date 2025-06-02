@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Twitter, BarChart2, Users, ArrowRight, InfoIcon, Loader2, ArrowLeftRight } from "lucide-react";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { GrowthStatCard } from "@/components/ui/growth-stat-card";
+import { FounderMetadataGrid } from "@/components/founder-metadata-grid";
+import { fetchTokenResearch } from "@/app/actions/googlesheet-action";
 
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -30,6 +32,12 @@ interface ComparisonTokenData {
   volume24h: number;
   launchDate: string;
   marketcapgrowthperday: number;
+}
+
+interface ResearchScoreData {
+  symbol: string;
+  score: number | null;
+  [key: string]: any;
 }
 
 const formatNumber = (num: number): string => {
@@ -112,6 +120,9 @@ export default function ComparePage() {
   const [showToken1Suggestions, setShowToken1Suggestions] = useState(false);
   const [showToken2Suggestions, setShowToken2Suggestions] = useState(false);
 
+  const [researchData, setResearchData] = useState<ResearchScoreData[]>([]);
+  const [comparisonResearch, setComparisonResearch] = useState<{token1: ResearchScoreData | null, token2: ResearchScoreData | null}>({ token1: null, token2: null });
+
   const [useLogScale, setUseLogScale] = useState(false);
 
   const token1SuggestionsRef = useRef<HTMLDivElement>(null);
@@ -139,6 +150,18 @@ export default function ComparePage() {
     fetchTokens();
   }, []);
 
+  useEffect(() => {
+    async function loadResearch() {
+      try {
+        const data = await fetchTokenResearch();
+        setResearchData(data);
+      } catch (err) {
+        console.error('Error fetching research data:', err);
+      }
+    }
+    loadResearch();
+  }, []);
+
   // Auto compare the top two tokens by market cap on initial load
   useEffect(() => {
     if (
@@ -156,10 +179,13 @@ export default function ComparePage() {
       if (topTwo.length === 2) {
         const token1Data = convertTokenData(topTwo[0]);
         const token2Data = convertTokenData(topTwo[1]);
+        const r1 = researchData.find(r => r.symbol.toUpperCase() === (topTwo[0].symbol || '').toUpperCase()) || null;
+        const r2 = researchData.find(r => r.symbol.toUpperCase() === (topTwo[1].symbol || '').toUpperCase()) || null;
 
         setToken1Name(topTwo[0].token);
         setToken2Name(topTwo[1].token);
         setComparisonData({ token1: token1Data, token2: token2Data });
+        setComparisonResearch({ token1: r1, token2: r2 });
         setIsComparing(true);
       }
     }
@@ -234,7 +260,10 @@ export default function ComparePage() {
       console.log('TOKEN! ---------------------------->', token1Data)
       console.log("TOKEN2---------------->", token2Data);
 
+      const r1 = researchData.find(r => r.symbol.toUpperCase() === (token1.symbol || '').toUpperCase()) || null;
+      const r2 = researchData.find(r => r.symbol.toUpperCase() === (token2.symbol || '').toUpperCase()) || null;
       setComparisonData({ token1: token1Data, token2: token2Data });
+      setComparisonResearch({ token1: r1, token2: r2 });
       setIsComparing(true);
     } catch (err) {
       console.error('Error during comparison:', err);
@@ -251,6 +280,8 @@ export default function ComparePage() {
       token1: prevData.token2,
       token2: prevData.token1
     }));
+
+    setComparisonResearch(prev => ({ token1: prev.token2, token2: prev.token1 }));
 
     const currentToken1Name = token1Name;
     setToken1Name(token2Name);
@@ -670,6 +701,15 @@ export default function ComparePage() {
                     </tbody>
                   </table>
                 </div>
+              </DashcoinCardContent>
+            </DashcoinCard>
+
+            <DashcoinCard className="min-w-[80vw] md:min-w-[500px] snap-center">
+              <DashcoinCardHeader>
+                <DashcoinCardTitle>Founder & Project Metadata</DashcoinCardTitle>
+              </DashcoinCardHeader>
+              <DashcoinCardContent>
+                <FounderMetadataGrid token1={comparisonResearch.token1} token2={comparisonResearch.token2} />
               </DashcoinCardContent>
             </DashcoinCard>
           </>
