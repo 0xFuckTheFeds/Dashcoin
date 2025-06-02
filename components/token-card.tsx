@@ -38,7 +38,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   const change24h = token.change24h || 0
 
   return (
-    <DashcoinCard className="p-4 flex flex-col gap-3">
+    <DashcoinCard className="p-5 flex flex-col gap-4">
       <div className="flex justify-between items-start">
         <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
           <div>
@@ -53,14 +53,17 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
         )}
       </div>
 
-      <div className="flex justify-between text-sm">
-        <div>
-          <p className="opacity-70">Market Cap</p>
-          <p>{formatCurrency0(token.marketCap || 0)}</p>
-        </div>
-        <div className={`text-right ${change24h > 0 ? 'text-green-500' : change24h < 0 ? 'text-red-500' : ''}`}> 
-          <p className="opacity-70">24h %</p>
-          <p>{change24h.toFixed(2)}%</p>
+      <div className="flex items-start justify-between text-sm">
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="opacity-70">Market Cap</p>
+            <p>{formatCurrency0(token.marketCap || 0)}</p>
+          </div>
+          <span className="opacity-50">|</span>
+          <div className={`${change24h > 0 ? 'text-green-500' : change24h < 0 ? 'text-red-500' : ''}`}>
+            <p className="opacity-70">24h %</p>
+            <p>{change24h.toFixed(2)}%</p>
+          </div>
         </div>
       </div>
 
@@ -91,7 +94,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
           href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : '#'}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-500"
+          className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 hover:shadow-md"
         >
           TRADE
         </a>

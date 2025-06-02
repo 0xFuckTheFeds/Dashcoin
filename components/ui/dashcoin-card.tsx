@@ -2,8 +2,13 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const DashcoinCard = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("card-with-border p-6 shadow-xl", className)} {...props} />
+  ({ className, style, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn("card-with-border p-6", className)}
+      style={{ boxShadow: "0px 2px 8px rgba(0,0,0,0.15)", ...(style || {}) }}
+      {...props}
+    />
   ),
 )
 DashcoinCard.displayName = "DashcoinCard"
