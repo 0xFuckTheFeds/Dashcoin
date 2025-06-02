@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Twitter, BarChart2, Users, ArrowRight, InfoIcon, Loader2, ArrowLeftRight } from "lucide-react";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { GrowthStatCard } from "@/components/ui/growth-stat-card";
+import { FounderMetadataCard } from "@/components/founder-metadata-card";
+import { fetchTokenResearch } from "@/app/actions/googlesheet-action";
 
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -30,6 +32,12 @@ interface ComparisonTokenData {
   volume24h: number;
   launchDate: string;
   marketcapgrowthperday: number;
+}
+
+interface ResearchScoreData {
+  symbol: string;
+  score: number | null;
+  [key: string]: any;
 }
 
 const formatNumber = (num: number): string => {
@@ -114,10 +122,12 @@ export default function ComparePage() {
 
   const [useLogScale, setUseLogScale] = useState(false);
 
+  const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
+
   const token1SuggestionsRef = useRef<HTMLDivElement>(null);
   const token2SuggestionsRef = useRef<HTMLDivElement>(null);
 
-  
+
   useEffect(() => {
     async function fetchTokens() {
       try {
@@ -137,6 +147,14 @@ export default function ComparePage() {
       }
     }
     fetchTokens();
+  }, []);
+
+  useEffect(() => {
+    const loadResearch = async () => {
+      const data = await fetchTokenResearch();
+      setResearchScores(data);
+    };
+    loadResearch();
   }, []);
 
   // Auto compare the top two tokens by market cap on initial load
@@ -202,6 +220,9 @@ export default function ComparePage() {
     };
   };
 
+  const getResearch = (symbol: string): ResearchScoreData | undefined =>
+    researchScores.find(r => r.symbol.toUpperCase() === symbol.toUpperCase());
+
   const handleCompare = () => {
     setIsLoading(true);
     setError(null);
@@ -257,27 +278,6 @@ export default function ComparePage() {
     setToken2Name(currentToken1Name);
   };
 
-  const exportCsv = () => {
-    if (!comparisonData.token1 || !comparisonData.token2) return;
-    const rows = [
-      ['Metric', comparisonData.token1.symbol, comparisonData.token2.symbol],
-      ['Market Cap', comparisonData.token1.marketCap, comparisonData.token2.marketCap],
-      ['Holders', comparisonData.token1.holders, comparisonData.token2.holders],
-      ['Volume', comparisonData.token1.volume24h, comparisonData.token2.volume24h],
-    ];
-    const csv = rows.map(r => r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'comparison.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const exportPng = () => {
-    window.print();
-  };
 
   const handleTokenSearch = (
     input: string, 
@@ -371,6 +371,9 @@ export default function ComparePage() {
     }
   }
 
+  const research1 = comparisonData.token1 ? getResearch(comparisonData.token1.symbol) : undefined;
+  const research2 = comparisonData.token2 ? getResearch(comparisonData.token2.symbol) : undefined;
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -380,16 +383,7 @@ export default function ComparePage() {
           <p className="text-xl max-w-3xl mx-auto">Compare any two tokens to analyze market cap, holders, and other metrics</p>
         </div>
 
-        <nav className="sticky top-16 z-30 bg-dashGreen-dark border-b border-dashGreen-light mb-4">
-          <div className="flex justify-center flex-wrap gap-4 py-2 text-sm">
-            <a href="#market-cap" className="hover:text-dashYellow">Market Cap</a>
-            <a href="#holders" className="hover:text-dashYellow">Holders</a>
-            <a href="#growth-rate" className="hover:text-dashYellow">Growth</a>
-            <a href="#metrics" className="hover:text-dashYellow">Metrics</a>
-            <Button size="sm" variant="outline" onClick={exportCsv}>CSV</Button>
-            <Button size="sm" variant="outline" onClick={exportPng}>PNG</Button>
-          </div>
-        </nav>
+        {/* navigation links removed per design feedback */}
 
         <DashcoinCard className="mb-8">
           <DashcoinCardHeader><DashcoinCardTitle className="text-center">Enter Token Names to Compare</DashcoinCardTitle></DashcoinCardHeader>
@@ -563,6 +557,28 @@ export default function ComparePage() {
                   </DashcoinCardContent>
                 </DashcoinCard>
               </div>
+            </div>
+
+            <div id="metadata" className="flex flex-col gap-4 min-w-[80vw] md:min-w-[500px] snap-center">
+              <DashcoinCard>
+                <DashcoinCardHeader>
+                  <DashcoinCardTitle className="flex items-center gap-2"><InfoIcon className="h-5 w-5" />Founder & Project Metadata</DashcoinCardTitle>
+                </DashcoinCardHeader>
+                <DashcoinCardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FounderMetadataCard
+                      name={comparisonData.token1.name}
+                      symbol={comparisonData.token1.symbol}
+                      data={research1}
+                    />
+                    <FounderMetadataCard
+                      name={comparisonData.token2.name}
+                      symbol={comparisonData.token2.symbol}
+                      data={research2}
+                    />
+                  </div>
+                </DashcoinCardContent>
+              </DashcoinCard>
             </div>
 
             <DashcoinCard id="metrics" className="min-w-[80vw] md:min-w-[500px] snap-center">
