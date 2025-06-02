@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { DashcStatsBar, DashcStatsBarProps } from "@/components/dashc-stats-bar";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface NavbarProps {
   dashcStats?: DashcStatsBarProps;
@@ -40,6 +41,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
               Founder's Guide
             </NavLink>
           </nav>
+          <ThemeToggle />
         </div>
       </div>
       {/* Mobile Navigation */}

@@ -20,23 +20,23 @@ const config = {
     extend: {
       colors: {
         dashGreen: {
-          DEFAULT: "#3a3a3a", // base grey
-          dark: "#1f2937", // deep slate
-          light: "#4f4f4f",
-          accent: "#656565",
-          card: "#2b2b2b",
-          cardDark: "#1e1e24",
+          DEFAULT: "hsl(var(--dashGreen))",
+          dark: "hsl(var(--dashGreen-dark))",
+          light: "hsl(var(--dashGreen-light))",
+          accent: "hsl(var(--dashGreen-accent))",
+          card: "hsl(var(--dashGreen-card))",
+          cardDark: "hsl(var(--dashGreen-cardDark))",
         },
         dashYellow: {
-          DEFAULT: "#f5f5f5", // off-white
-          light: "#fafafa",
-          dark: "#e5e5e5",
+          DEFAULT: "hsl(var(--dashYellow))",
+          light: "hsl(var(--dashYellow-light))",
+          dark: "hsl(var(--dashYellow-dark))",
         },
         dashRed: {
-          DEFAULT: "#ff6666",
-          dark: "#cc3333",
+          DEFAULT: "hsl(var(--dashRed))",
+          dark: "hsl(var(--dashRed-dark))",
         },
-        dashBlack: "#27272A",
+        dashBlack: "hsl(var(--dashBlack))",
 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

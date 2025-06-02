@@ -6,55 +6,61 @@
 
 @layer base {
   :root {
-    --background: 240 16% 9%; /* #13131A */
-    --foreground: 240 25% 92%; /* #E6E6F0 */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
 
-    --card: 240 17% 13%; /* #1B1B26 */
-    --card-foreground: 240 25% 92%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
 
-    --popover: 240 17% 13%;
-    --popover-foreground: 240 25% 92%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 240 25% 92%;
-    --primary-foreground: 240 16% 9%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 17% 13%;
-    --secondary-foreground: 240 25% 92%;
+    --secondary: 0 0% 100%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 240 17% 20%;
-    --muted-foreground: 240 9% 66%; /* #A0A0B0 */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 30%;
 
-    --accent: 33 93% 54%; /* Bitcoin Orange */
-    --accent-foreground: 240 16% 9%;
+    --accent: 33 93% 54%;
+    --accent-foreground: 0 0% 0%;
 
-    --destructive: 359 79% 58%; /* Bright Red */
-    --destructive-foreground: 240 25% 92%;
+    --destructive: 359 79% 58%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 240 17% 20%;
-    --input: 240 17% 20%;
-    --ring: 240 25% 92%;
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --ring: 0 0% 89%;
 
     --radius: 0.75rem;
 
-    --dashcoin-yellow: #E6E6F0;
-    --dashcoin-yellow-dark: #E6E6F0;
-    --dashcoin-yellow-light: #E6E6F0;
-    --dashcoin-green: #13131A;
-    --dashcoin-green-dark: #13131A;
-    --dashcoin-green-light: #1B1B26;
-    --dashcoin-green-accent: #1B1B26;
+    --dashcoin-yellow: #ffffff;
+    --dashcoin-yellow-dark: #f5f5f5;
+    --dashcoin-yellow-light: #f5f5f5;
+    --dashcoin-green: #ffffff;
+    --dashcoin-green-dark: #f5f5f5;
+    --dashcoin-green-light: #e5e5e5;
+    --dashcoin-green-accent: #f0f0f0;
+    --dashcoin-green-card: #ffffff;
+    --dashcoin-green-card-dark: #f5f5f5;
     --dashcoin-black: #000000;
     --dashcoin-red: #E84042;
+    --dashcoin-red-dark: #cc3333;
 
     --dashGreen: var(--dashcoin-green);
     --dashGreen-dark: var(--dashcoin-green-dark);
     --dashGreen-light: var(--dashcoin-green-light);
     --dashGreen-accent: var(--dashcoin-green-accent);
+    --dashGreen-card: var(--dashcoin-green-card);
+    --dashGreen-cardDark: var(--dashcoin-green-card-dark);
     --dashYellow: var(--dashcoin-yellow);
     --dashYellow-dark: var(--dashcoin-yellow-dark);
     --dashYellow-light: var(--dashcoin-yellow-light);
     --dashBlack: var(--dashcoin-black);
     --dashRed: var(--dashcoin-red);
+    --dashRed-dark: var(--dashcoin-red-dark);
   }
 
   body {
@@ -86,6 +92,18 @@
     --border: 240 17% 20%;
     --input: 240 17% 20%;
     --ring: 240 25% 92%;
+    --dashcoin-yellow: #E6E6F0;
+    --dashcoin-yellow-dark: #E6E6F0;
+    --dashcoin-yellow-light: #E6E6F0;
+    --dashcoin-green: #13131A;
+    --dashcoin-green-dark: #13131A;
+    --dashcoin-green-light: #1B1B26;
+    --dashcoin-green-accent: #1B1B26;
+    --dashcoin-green-card: #1B1B26;
+    --dashcoin-green-card-dark: #1e1e24;
+    --dashcoin-black: #000000;
+    --dashcoin-red: #E84042;
+    --dashcoin-red-dark: #cc3333;
   }
 }
 
