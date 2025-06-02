@@ -38,22 +38,22 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   const change24h = token.change24h || 0
 
   return (
-    <DashcoinCard className="p-5 flex flex-col gap-4">
+    <DashcoinCard className="p-8 flex flex-col gap-6">
       <div className="flex justify-between items-start">
         <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
           <div>
-            <p className="text-lg font-bold text-dashYellow">{tokenSymbol}</p>
-            {token.name && <p className="text-sm opacity-70">{token.name}</p>}
+            <p className="text-2xl font-bold text-dashYellow">{tokenSymbol}</p>
+            {token.name && <p className="text-lg opacity-70">{token.name}</p>}
           </div>
         </Link>
         {researchScore !== null && (
-          <span className="px-2 py-1 rounded-full bg-blue-600 text-sm font-medium">
+          <span className="px-3 py-1 rounded-full bg-blue-600 text-base font-medium">
             {researchScore.toFixed(1)}
           </span>
         )}
       </div>
 
-      <div className="flex items-start justify-between text-sm">
+      <div className="flex items-start justify-between text-base">
         <div className="flex items-center gap-3">
           <div>
             <p className="opacity-70">Market Cap</p>
@@ -68,15 +68,15 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
       </div>
 
       <div>
-        <p className="text-sm font-medium mb-1 text-dashYellow">Traits</p>
-        <div className="flex flex-wrap gap-1">
+        <p className="text-base font-medium mb-2 text-dashYellow">Traits</p>
+        <div className="flex flex-wrap gap-1.5">
           {canonicalChecklist.map(label => {
             const value = (token as any)[label]
             return (
               <TooltipProvider delayDuration={0} key={label}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className={`flex items-center gap-1 px-1.5 py-0.5 rounded ${badgeColor(value)} text-xs`}>
+                    <span className={`flex items-center gap-1 px-2 py-0.5 rounded ${badgeColor(value)} text-sm`}>
                       {checklistIcons[label]}
                       <span>{value || '-'}</span>
                     </span>
@@ -89,17 +89,17 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
         </div>
       </div>
 
-      <div className="flex justify-end mt-auto">
-        <a
-          href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : '#'}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 hover:shadow-md"
-        >
-          TRADE
-        </a>
-        <Link href={`/tokendetail/${tokenSymbol}`} className="ml-2 text-dashYellow hover:text-dashYellow-dark flex items-center">
-          <FileSearch className="h-4 w-4" />
+        <div className="flex justify-end mt-auto">
+          <a
+            href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md text-base hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 hover:shadow-md"
+          >
+            TRADE
+          </a>
+          <Link href={`/tokendetail/${tokenSymbol}`} className="ml-2 text-dashYellow hover:text-dashYellow-dark flex items-center">
+            <FileSearch className="h-4 w-4" />
         </Link>
       </div>
     </DashcoinCard>
