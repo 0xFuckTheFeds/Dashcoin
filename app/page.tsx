@@ -220,7 +220,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overview-page">
       {/* Use the new Navbar component */}
       <Navbar
         dashcStats={{

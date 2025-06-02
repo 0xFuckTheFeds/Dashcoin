@@ -253,3 +253,8 @@
   background: transparent !important;
   color: inherit !important;
 }
+
+/* Increase font size on overview page */
+.overview-page * {
+  font-size: 130% !important;
+}

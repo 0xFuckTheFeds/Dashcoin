@@ -78,8 +78,7 @@ export default function TokenCardList({ data }: { data: PaginatedTokenResponse |
 
   return (
     <div
-      className="grid gap-4"
-      style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
     >
       {tokensWithData.map((token, idx) => {
         const researchScore = token.score ?? null
