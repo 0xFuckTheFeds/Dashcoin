@@ -231,6 +231,16 @@ export default async function Home() {
 
       <main className="container mx-auto px-4 py-4 space-y-4">
 
+        {/* Welcome Blurb */}
+        <section className="animate-appear">
+          <DashcoinCard className="bg-white text-black dark:bg-[#111] dark:text-[#f5f5f5] text-center shadow-sm">
+            <h1 className="text-4xl font-bold mb-2">Welcome to Dashcoin Research</h1>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              Your command center for real-time data, token comparisons, and alpha across the Believe coin ecosystem. We surface the signal—so you can trade smarter.
+            </p>
+          </DashcoinCard>
+        </section>
+
 
         {/* Token Table */}
         <div className="mt-2">
