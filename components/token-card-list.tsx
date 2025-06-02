@@ -6,7 +6,7 @@ import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { TokenCard } from "./token-card"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
-import { Loader2 } from "lucide-react"
+import { Loader2, Search } from "lucide-react"
 
 interface ResearchScoreData {
   symbol: string
@@ -23,6 +23,7 @@ export default function TokenCardList({ data }: { data: PaginatedTokenResponse |
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([])
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
   const [isLoading, setIsLoading] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
     const loadResearch = async () => {
@@ -62,7 +63,16 @@ export default function TokenCardList({ data }: { data: PaginatedTokenResponse |
   const getResearch = (symbol: string): ResearchScoreData | undefined =>
     researchScores.find(r => r.symbol.toUpperCase() === symbol.toUpperCase())
 
-  const tokensWithData = tokens.map(t => {
+  const filteredTokens = tokens.filter(t => {
+    if (searchTerm.trim() === "") return true
+    const term = searchTerm.toLowerCase()
+    const symbolMatch = t.symbol ? t.symbol.toLowerCase().includes(term) : false
+    const nameMatch = t.name ? t.name.toLowerCase().includes(term) : false
+    const descriptionMatch = t.description ? t.description.toLowerCase().includes(term) : false
+    return symbolMatch || nameMatch || descriptionMatch
+  })
+
+  const tokensWithData = filteredTokens.map(t => {
     const dex = dexscreenerData[t.token] || {}
     const research = getResearch(t.symbol || "") || {}
     return { ...t, ...dex, ...research, marketCap: dex.marketCap ?? t.marketCap }
@@ -77,14 +87,28 @@ export default function TokenCardList({ data }: { data: PaginatedTokenResponse |
   }
 
   return (
-    <div
-      className="grid gap-4"
-      style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}
-    >
-      {tokensWithData.map((token, idx) => {
-        const researchScore = token.score ?? null
-        return <TokenCard key={idx} token={token} researchScore={researchScore} />
-      })}
+    <div>
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-dashYellow-light opacity-70" />
+        <input
+          type="text"
+          placeholder="Search tokens..."
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 bg-dashGreen-dark border border-dashBlack rounded-md text-dashYellow-light placeholder:text-dashYellow-light/50 focus:outline-none focus:ring-2 focus:ring-dashYellow"
+        />
+      </div>
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}
+      >
+        {tokensWithData.map((token, idx) => {
+          const researchScore = token.score ?? null
+          return (
+            <TokenCard key={idx} token={token} researchScore={researchScore} />
+          )
+        })}
+      </div>
     </div>
   )
 }
