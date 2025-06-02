@@ -36,6 +36,9 @@ export function Navbar({ dashcStats }: NavbarProps) {
             <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
               Creator Wallets
             </NavLink>
+            <NavLink href="/dev" active={pathname === "/dev"}>
+              Meet the Dev
+            </NavLink>
             <NavLink href="https://dashcoin-research.gitbook.io/dashcoin-research" active={false} external>
               Founder's Guide
             </NavLink>
@@ -53,6 +56,9 @@ export function Navbar({ dashcStats }: NavbarProps) {
           </NavLink>
           <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
             Creator Wallets
+          </NavLink>
+          <NavLink href="/dev" active={pathname === "/dev"}>
+            Meet the Dev
           </NavLink>
           <NavLink href="https://dashcoin-research.gitbook.io/dashcoin-research" active={false} external>
             Founder's Guide
