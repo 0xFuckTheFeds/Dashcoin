@@ -12,7 +12,6 @@ import { MarketCapPie } from "@/components/market-cap-pie";
 import {
   fetchMarketCapOverTime,
   fetchMarketStats,
-  fetchPaginatedTokens,
   fetchTokenMarketCaps,
   fetchTotalMarketCap,
   getTimeUntilNextDuneRefresh,
@@ -61,29 +60,12 @@ const MarketCapPieWrapper = async ({
 };
 
 
-const TokenCardListWrapper = async ({
-  tokenDataPromise,
-}: {
-  tokenDataPromise: Promise<any>;
-}) => {
+const TokenSearchListWrapper = async () => {
   try {
-    const tokenData = await tokenDataPromise;
-    const TokenCardList = (await import("@/components/token-card-list")).default;
-    return (
-      <TokenCardList
-        data={
-          tokenData || {
-            tokens: [],
-            page: 1,
-            pageSize: 10,
-            totalTokens: 0,
-            totalPages: 1,
-          }
-        }
-      />
-    );
+    const TokenSearchList = (await import("@/components/token-search-list")).default;
+    return <TokenSearchList />;
   } catch (error) {
-    console.error("Error in TokenCardListWrapper:", error);
+    console.error("Error loading TokenSearchList:", error);
     return (
       <DashcoinCard className="p-8 flex items-center justify-center">
         <p className="text-center">Error loading token data</p>
@@ -114,13 +96,6 @@ export default async function Home() {
       coinLaunches: 0,
     };
   });
-
-  const tokenDataPromise = fetchPaginatedTokens(1, 10, "marketCap", "desc").then(data => {
-    return data;
-  }).catch((error) => {
-    console.error("error.fetching tokens makret cap", error);
-    return {}
-    });
 
   const marketCapTimeDataPromise = fetchMarketCapOverTime().catch((error) => {
     console.error("Error fetching market cap over time:", error);
@@ -257,7 +232,7 @@ export default async function Home() {
               </DashcoinCard>
             }
           >
-            <TokenCardListWrapper tokenDataPromise={tokenDataPromise} />
+            <TokenSearchListWrapper />
           </Suspense>
         </div>
 
