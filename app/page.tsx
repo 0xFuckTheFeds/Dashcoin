@@ -12,7 +12,7 @@ import { MarketCapPie } from "@/components/market-cap-pie";
 import {
   fetchMarketCapOverTime,
   fetchMarketStats,
-  fetchPaginatedTokens,
+  fetchAllTokensFromDune,
   fetchTokenMarketCaps,
   fetchTotalMarketCap,
   getTimeUntilNextDuneRefresh,
@@ -115,11 +115,13 @@ export default async function Home() {
     };
   });
 
-  const tokenDataPromise = fetchPaginatedTokens(1, 10, "marketCap", "desc").then(data => {
-    return data;
-  }).catch((error) => {
-    console.error("error.fetching tokens makret cap", error);
-    return {}
+  const tokenDataPromise = fetchAllTokensFromDune()
+    .then(data => {
+      return data;
+    })
+    .catch(error => {
+      console.error("error.fetching tokens makret cap", error);
+      return [];
     });
 
   const marketCapTimeDataPromise = fetchMarketCapOverTime().catch((error) => {
