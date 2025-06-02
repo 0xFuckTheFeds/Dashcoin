@@ -4,9 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/navbar";
 import { DashcoinCard, DashcoinCardContent, DashcoinCardHeader, DashcoinCardTitle } from "@/components/ui/dashcoin-card";
 import { Button } from "@/components/ui/button";
-import { Twitter, BarChart2, Users, ArrowRight, InfoIcon, Loader2, ArrowLeftRight } from "lucide-react";
+import { Twitter, BarChart2, Users, InfoIcon, Loader2, ArrowLeftRight } from "lucide-react";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { GrowthStatCard } from "@/components/ui/growth-stat-card";
+import { FounderMetadataGrid } from "@/components/founder-metadata-grid";
+import { fetchTokenResearch } from "@/app/actions/googlesheet-action";
 
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -30,6 +32,12 @@ interface ComparisonTokenData {
   volume24h: number;
   launchDate: string;
   marketcapgrowthperday: number;
+}
+
+interface ResearchScoreData {
+  symbol: string;
+  score: number | null;
+  [key: string]: any;
 }
 
 const formatNumber = (num: number): string => {
@@ -114,10 +122,12 @@ export default function ComparePage() {
 
   const [useLogScale, setUseLogScale] = useState(false);
 
+  const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
+
   const token1SuggestionsRef = useRef<HTMLDivElement>(null);
   const token2SuggestionsRef = useRef<HTMLDivElement>(null);
 
-  
+
   useEffect(() => {
     async function fetchTokens() {
       try {
@@ -137,6 +147,14 @@ export default function ComparePage() {
       }
     }
     fetchTokens();
+  }, []);
+
+  useEffect(() => {
+    const loadResearch = async () => {
+      const data = await fetchTokenResearch();
+      setResearchScores(data);
+    };
+    loadResearch();
   }, []);
 
   // Auto compare the top two tokens by market cap on initial load
@@ -201,6 +219,9 @@ export default function ComparePage() {
       marketcapgrowthperday
     };
   };
+
+  const getResearch = (symbol: string): ResearchScoreData | undefined =>
+    researchScores.find(r => r.symbol.toUpperCase() === symbol.toUpperCase());
 
   const handleCompare = () => {
     setIsLoading(true);
@@ -371,6 +392,9 @@ export default function ComparePage() {
     }
   }
 
+  const research1 = comparisonData.token1 ? getResearch(comparisonData.token1.symbol) : undefined;
+  const research2 = comparisonData.token2 ? getResearch(comparisonData.token2.symbol) : undefined;
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -380,16 +404,7 @@ export default function ComparePage() {
           <p className="text-xl max-w-3xl mx-auto">Compare any two tokens to analyze market cap, holders, and other metrics</p>
         </div>
 
-        <nav className="sticky top-16 z-30 bg-dashGreen-dark border-b border-dashGreen-light mb-4">
-          <div className="flex justify-center flex-wrap gap-4 py-2 text-sm">
-            <a href="#market-cap" className="hover:text-dashYellow">Market Cap</a>
-            <a href="#holders" className="hover:text-dashYellow">Holders</a>
-            <a href="#growth-rate" className="hover:text-dashYellow">Growth</a>
-            <a href="#metrics" className="hover:text-dashYellow">Metrics</a>
-            <Button size="sm" variant="outline" onClick={exportCsv}>CSV</Button>
-            <Button size="sm" variant="outline" onClick={exportPng}>PNG</Button>
-          </div>
-        </nav>
+        {/* Navigation links removed per design update */}
 
         <DashcoinCard className="mb-8">
           <DashcoinCardHeader><DashcoinCardTitle className="text-center">Enter Token Names to Compare</DashcoinCardTitle></DashcoinCardHeader>
@@ -563,6 +578,13 @@ export default function ComparePage() {
                   </DashcoinCardContent>
                 </DashcoinCard>
               </div>
+            </div>
+
+            <div id="metadata" className="min-w-[80vw] md:min-w-[500px] snap-center">
+              <FounderMetadataGrid
+                token1={{ name: comparisonData.token1.name, symbol: comparisonData.token1.symbol, data: research1 }}
+                token2={{ name: comparisonData.token2.name, symbol: comparisonData.token2.symbol, data: research2 }}
+              />
             </div>
 
             <DashcoinCard id="metrics" className="min-w-[80vw] md:min-w-[500px] snap-center">
