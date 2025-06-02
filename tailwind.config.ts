@@ -78,7 +78,14 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Inter", ...fontFamily.sans],
+        sans: [
+          "Avenir Next",
+          "Avenir",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
+          ...fontFamily.sans,
+        ],
       },
       keyframes: {
         "accordion-down": {
