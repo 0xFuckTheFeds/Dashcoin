@@ -40,6 +40,7 @@ The cache admin interface is available at `/admin/cache`. This interface allows 
 - `KV_REST_API_URL`: Your Upstash Redis REST API URL (starts with https://)
 - `KV_REST_API_TOKEN`: Your Upstash Redis API token
 - `ENABLE_DUNE_API`: Set to `true` to enable real Dune API calls (default: `false`)
+- `NEXT_PUBLIC_DASHC_MINT_ADDRESS`: Solana mint address of the Dashcoin token used for gating the DASHC Alpha Group page
 - `VERCEL_ENV`: Automatically set by Vercel to indicate the environment
 
 ## Cache Keys
