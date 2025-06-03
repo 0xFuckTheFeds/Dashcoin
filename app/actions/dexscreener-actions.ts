@@ -440,3 +440,89 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
     return tokenData || {}
   }
 }
+
+import type { TokenData, PaginatedTokenResponse } from "@/types/dune";
+import { DEFAULT_TOKENS } from "@/data/defaultTokens";
+
+export async function fetchDefaultTokens(): Promise<TokenData[]> {
+  const addresses = DEFAULT_TOKENS.map(t => t.address);
+  const map = await batchFetchTokensData(addresses);
+  const result: TokenData[] = [];
+  DEFAULT_TOKENS.forEach(t => {
+    const data = map.get(t.address);
+    if (data && data.pairs && data.pairs.length > 0) {
+      const pair = data.pairs[0];
+      result.push({
+        token: t.address,
+        symbol: t.symbol,
+        name: pair.baseToken?.name || t.symbol,
+        vol_usd: pair.volume?.h24 || 0,
+        txs: (pair.txns?.h24?.buys || 0) + (pair.txns?.h24?.sells || 0),
+        created_time: new Date(pair.pairCreatedAt).toISOString(),
+        price: Number.parseFloat(pair.priceUsd || "0"),
+        marketCap: pair.fdv || 0,
+        change24h: pair.priceChange?.h24 || 0,
+        change1h: pair.priceChange?.h1 || 0,
+        liquidity: pair.liquidity?.usd || 0,
+        buys: pair.txns?.h24?.buys || 0,
+        sells: pair.txns?.h24?.sells || 0,
+        volume24h: pair.volume?.h24 || 0,
+        description: pair.baseToken?.name || t.symbol,
+      });
+    } else {
+      result.push({
+        token: t.address,
+        symbol: t.symbol,
+        vol_usd: 0,
+        txs: 0,
+        created_time: new Date().toISOString(),
+        price: 0,
+        marketCap: 0,
+        change24h: 0,
+        change1h: 0,
+        liquidity: 0,
+        buys: 0,
+        sells: 0,
+        volume24h: 0,
+        description: t.symbol,
+        name: t.symbol,
+      });
+    }
+  });
+  return result;
+}
+
+export async function fetchPaginatedTokens(
+  page = 1,
+  pageSize = 10,
+  sortField: keyof TokenData = "marketCap",
+  sortDirection: "asc" | "desc" = "desc",
+  searchTerm = "",
+): Promise<PaginatedTokenResponse> {
+  const allTokens = await fetchDefaultTokens();
+  let filtered = searchTerm.trim()
+    ? allTokens.filter(t =>
+        (t.symbol && t.symbol.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (t.name && t.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (t.description && t.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : allTokens;
+
+  const totalTokens = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(totalTokens / pageSize));
+  const sorted = [...filtered].sort((a, b) => {
+    const aVal = (a as any)[sortField] ?? 0;
+    const bVal = (b as any)[sortField] ?? 0;
+    return sortDirection === "asc" ? aVal - bVal : bVal - aVal;
+  });
+  const startIndex = (page - 1) * pageSize;
+  const pageTokens = sorted.slice(startIndex, startIndex + pageSize);
+  return { tokens: pageTokens, page, pageSize, totalTokens, totalPages };
+}
+
+export async function fetchTokenDetails(symbol: string): Promise<TokenData | null> {
+  const tokens = await fetchDefaultTokens();
+  return (
+    tokens.find(t => t.symbol.toLowerCase() === symbol.toLowerCase()) || null
+  );
+}

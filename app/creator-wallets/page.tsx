@@ -1,9 +1,9 @@
 import { Navbar } from "@/components/navbar";
-import { fetchAllTokensFromDune } from "../actions/dune-actions";
+import { fetchDefaultTokens } from "../actions/dexscreener-actions";
 import { fetchCreatorWalletLinks } from "../actions/googlesheet-action";
 
 export default async function CreatorWalletsPage() {
-  const tokens = await fetchAllTokensFromDune();
+  const tokens = await fetchDefaultTokens();
   const walletData = await fetchCreatorWalletLinks();
 
   const walletMap = new Map(

@@ -9,10 +9,7 @@ import {
   DashcoinCardContent,
 } from "@/components/ui/dashcoin-card";
 import { DexscreenerChart } from "@/components/dexscreener-chart";
-import {
-  fetchTokenDetails,
-  getTimeUntilNextDuneRefresh,
-} from "@/app/actions/dune-actions";
+import { fetchTokenDetails } from "@/app/actions/dexscreener-actions";
 import {
   fetchDexscreenerTokenData,
   getTimeUntilNextDexscreenerRefresh,
@@ -29,25 +26,10 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
   const [tokenData, setTokenData] = useState<any>(null);
   const [dexscreenerData, setDexscreenerData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [duneLastRefresh, setDuneLastRefresh] = useState<Date | null>(null);
-  const [duneNextRefresh, setDuneNextRefresh] = useState<Date | null>(null);
-  const [duneTimeRemaining, setDuneTimeRemaining] = useState<number>(0);
   const [dexLastRefresh, setDexLastRefresh] = useState<Date | null>(null);
   const [dexNextRefresh, setDexNextRefresh] = useState<Date | null>(null);
   const [dexTimeRemaining, setDexTimeRemaining] = useState<number>(0);
 
-  const formattedDuneLastRefresh = duneLastRefresh
-    ? duneLastRefresh.toLocaleString(undefined, {
-        dateStyle: "short",
-        timeStyle: "medium",
-      })
-    : "N/A";
-  const formattedDuneNextRefresh = duneNextRefresh
-    ? duneNextRefresh.toLocaleString(undefined, {
-        dateStyle: "short",
-        timeStyle: "medium",
-      })
-    : "N/A";
   const formattedDexLastRefresh = dexLastRefresh
     ? dexLastRefresh.toLocaleString(undefined, {
         dateStyle: "short",
@@ -64,25 +46,16 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
   useEffect(() => {
     async function loadData() {
       try {
-        const duneTokenData = await fetchTokenDetails(symbol);
-        if (!duneTokenData) {
+        const tokenInfo = await fetchTokenDetails(symbol);
+        if (!tokenInfo) {
           notFound();
         }
 
-        setTokenData(duneTokenData);
+        setTokenData(tokenInfo);
 
-        const duneCache = await getTimeUntilNextDuneRefresh();
-        const dexCache = duneTokenData?.token
-          ? await getTimeUntilNextDexscreenerRefresh(
-              `token:${duneTokenData.token}`,
-            )
+        const dexCache = tokenInfo?.token
+          ? await getTimeUntilNextDexscreenerRefresh(`token:${tokenInfo.token}`)
           : { timeRemaining: 0, lastRefreshTime: null };
-
-        setDuneLastRefresh(duneCache.lastRefreshTime);
-        setDuneNextRefresh(
-          new Date(duneCache.lastRefreshTime.getTime() + 1 * 60 * 60 * 1000),
-        );
-        setDuneTimeRemaining(duneCache.timeRemaining);
 
         if (dexCache.lastRefreshTime) {
           setDexLastRefresh(dexCache.lastRefreshTime);
@@ -92,8 +65,8 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
           setDexTimeRemaining(dexCache.timeRemaining);
         }
 
-        if (duneTokenData && duneTokenData.token) {
-          const dexData = await fetchDexscreenerTokenData(duneTokenData.token);
+        if (tokenInfo && tokenInfo.token) {
+          const dexData = await fetchDexscreenerTokenData(tokenInfo.token);
           if (dexData && dexData.pairs && dexData.pairs.length > 0) {
             setDexscreenerData(dexData.pairs[0]);
           }
@@ -329,20 +302,11 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
                 )}
               </div>
               <div className="mt-4 pt-4 border-t border-dashGreen-light">
-                <p className="text-xs opacity-70 mb-1">
-                  Data Refresh Information:
-                </p>
-                <div className="grid grid-cols-2 gap-2 text-xs opacity-70">
-                  <div>
-                    <p>Dune data last updated:</p>
-                    <p className="font-mono">{formattedDuneLastRefresh}</p>
-                    <p>Next refresh: {formattedDuneNextRefresh}</p>
-                  </div>
-                  <div>
-                    <p>DEX data last updated:</p>
-                    <p className="font-mono">{formattedDexLastRefresh}</p>
-                    <p>Next refresh: {formattedDexNextRefresh}</p>
-                  </div>
+                <p className="text-xs opacity-70 mb-1">Data Refresh Information:</p>
+                <div className="text-xs opacity-70">
+                  <p>DEX data last updated:</p>
+                  <p className="font-mono">{formattedDexLastRefresh}</p>
+                  <p>Next refresh: {formattedDexNextRefresh}</p>
                 </div>
               </div>
             </DashcoinCardContent>

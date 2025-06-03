@@ -27,7 +27,7 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "@/components/ui/tooltip"
-import { fetchPaginatedTokens } from "@/app/actions/dune-actions"
+import { fetchPaginatedTokens } from "@/app/actions/dexscreener-actions"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"

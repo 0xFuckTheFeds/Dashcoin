@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { fetchAllTokensFromDune } from '@/app/actions/dune-actions';
+import { fetchDefaultTokens } from '@/app/actions/dexscreener-actions';
 
 export async function GET() {
   try {
-    const tokens = await fetchAllTokensFromDune();
+    const tokens = await fetchDefaultTokens();
     return NextResponse.json(tokens);
   } catch (error) {
     console.error('Error fetching tokens:', error);
