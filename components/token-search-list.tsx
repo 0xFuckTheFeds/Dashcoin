@@ -61,9 +61,6 @@ export default function TokenSearchList() {
     loadTokens();
   }, [fetchDexData]);
 
-  useEffect(() => {
-    fetchDexData(paginatedTokens);
-  }, [paginatedTokens, fetchDexData]);
 
   useEffect(() => {
     const loadResearch = async () => {
@@ -110,6 +107,10 @@ export default function TokenSearchList() {
     const start = (currentPage - 1) * pageSize;
     return filteredTokens.slice(start, start + pageSize);
   }, [filteredTokens, currentPage, pageSize]);
+
+  useEffect(() => {
+    fetchDexData(paginatedTokens);
+  }, [paginatedTokens, fetchDexData]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
