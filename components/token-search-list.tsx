@@ -22,6 +22,8 @@ export default function TokenSearchList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOption, setSortOption] = useState("default");
+  const [marketCapFilter, setMarketCapFilter] = useState("all");
   const fetchDexData = useCallback(async (tokenList: TokenData[]) => {
     const addresses = tokenList.map(t => t.token).filter(Boolean);
     if (!addresses.length) return;
@@ -89,24 +91,51 @@ export default function TokenSearchList() {
     });
   }, [tokens, researchScores, dexscreenerData]);
 
-  const filteredTokens = useMemo(() => {
-    if (!searchTerm.trim()) return tokensWithData;
-    const term = searchTerm.toLowerCase();
-    return tokensWithData.filter(t => {
-      return (
-        (t.symbol && t.symbol.toLowerCase().includes(term)) ||
-        (t.name && t.name.toLowerCase().includes(term)) ||
-        (t.description && t.description.toLowerCase().includes(term))
-      );
-    });
-  }, [tokensWithData, searchTerm]);
+  const processedTokens = useMemo(() => {
+    let result = tokensWithData;
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(t => {
+        return (
+          (t.symbol && t.symbol.toLowerCase().includes(term)) ||
+          (t.name && t.name.toLowerCase().includes(term)) ||
+          (t.description && t.description.toLowerCase().includes(term))
+        );
+      });
+    }
 
-  const totalPages = Math.max(1, Math.ceil(filteredTokens.length / pageSize));
+    if (marketCapFilter !== "all") {
+      result = result.filter(t => {
+        const mc = t.marketCap || 0;
+        switch (marketCapFilter) {
+          case "above5m":
+            return mc >= 5000000;
+          case "1to5m":
+            return mc >= 1000000 && mc < 5000000;
+          case "500kto1m":
+            return mc >= 500000 && mc < 1000000;
+          case "100kto500k":
+            return mc >= 100000 && mc < 500000;
+          default:
+            return true;
+        }
+      });
+    }
+
+    if (sortOption === "marketcap_desc") {
+      result = [...result].sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0));
+    } else if (sortOption === "marketcap_asc") {
+      result = [...result].sort((a, b) => (a.marketCap || 0) - (b.marketCap || 0));
+    }
+    return result;
+  }, [tokensWithData, searchTerm, sortOption, marketCapFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(processedTokens.length / pageSize));
 
   const paginatedTokens = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
-    return filteredTokens.slice(start, start + pageSize);
-  }, [filteredTokens, currentPage, pageSize]);
+    return processedTokens.slice(start, start + pageSize);
+  }, [processedTokens, currentPage, pageSize]);
 
   useEffect(() => {
     fetchDexData(paginatedTokens);
@@ -133,7 +162,7 @@ export default function TokenSearchList() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-4 items-center">
         <input
           type="text"
           placeholder="Search tokens..."
@@ -156,12 +185,46 @@ export default function TokenSearchList() {
           <option value={20}>20 per page</option>
           <option value={50}>50 per page</option>
         </select>
+        <div className="flex items-center gap-2">
+          <label htmlFor="sort" className="text-sm text-dashYellow-light">Sort by</label>
+          <select
+            id="sort"
+            value={sortOption}
+            onChange={e => {
+              setSortOption(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
+          >
+            <option value="default">Default order</option>
+            <option value="marketcap_desc">Market Cap: High to Low</option>
+            <option value="marketcap_asc">Market Cap: Low to High</option>
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="filter" className="text-sm text-dashYellow-light">Filter by Market Cap</label>
+          <select
+            id="filter"
+            value={marketCapFilter}
+            onChange={e => {
+              setMarketCapFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
+          >
+            <option value="all">All</option>
+            <option value="above5m">Above $5M</option>
+            <option value="1to5m">$1M – $5M</option>
+            <option value="500kto1m">$500K – $1M</option>
+            <option value="100kto500k">$100K – $500K</option>
+          </select>
+        </div>
       </div>
 
       {paginatedTokens.length === 0 ? (
         <DashcoinCard className="p-8 text-center">No tokens found.</DashcoinCard>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
           {paginatedTokens.map((token, idx) => (
             <TokenCard
               key={idx}

@@ -38,7 +38,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   const change24h = token.change24h || 0
 
   return (
-    <DashcoinCard className="p-8 flex flex-col gap-6">
+    <DashcoinCard className="p-6 sm:p-8 flex flex-col gap-4 sm:gap-6 h-full bg-gradient-to-br from-white via-white to-green-50 rounded-xl shadow">
       <div className="flex justify-between items-start">
         <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
           <div>
