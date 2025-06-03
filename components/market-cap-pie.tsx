@@ -89,8 +89,13 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+          title: {
+            display: true,
+            text: `Top ${topTokens.length} Tokens by Market Cap`,
+            color: dashYellowLight,
+          },
           legend: {
-            position: "right",
+            position: "bottom",
             labels: {
               color: dashYellowLight,
               font: {
@@ -120,8 +125,11 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
         <DashcoinCardTitle>Market Cap Distribution</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
-        <div className="h-64 bg-neutral-900 rounded-lg">
-          <canvas ref={chartRef} />
+        {(!data || data.length === 0) && (
+          <p className="text-center py-12">No market cap data available.</p>
+        )}
+        <div className="min-h-[300px] h-64 bg-white dark:bg-neutral-900 rounded-lg mt-4">
+          <canvas ref={chartRef} className="w-full h-full" />
         </div>
       </DashcoinCardContent>
     </DashcoinCard>
