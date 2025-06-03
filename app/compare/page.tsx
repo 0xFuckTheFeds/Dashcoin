@@ -126,6 +126,9 @@ export default function ComparePage() {
 
   const [useLogScale, setUseLogScale] = useState(false);
 
+  const [token1Logo, setToken1Logo] = useState<string | null>(null);
+  const [token2Logo, setToken2Logo] = useState<string | null>(null);
+
   const token1SuggestionsRef = useRef<HTMLDivElement>(null);
   const token2SuggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -183,6 +186,14 @@ export default function ComparePage() {
         const r1 = researchData.find(r => r.symbol.toUpperCase() === (topTwo[0].symbol || '').toUpperCase()) || null;
         const r2 = researchData.find(r => r.symbol.toUpperCase() === (topTwo[1].symbol || '').toUpperCase()) || null;
 
+        Promise.all([
+          fetchLogoUrl(topTwo[0].token),
+          fetchLogoUrl(topTwo[1].token),
+        ]).then(([logo1, logo2]) => {
+          setToken1Logo(logo1);
+          setToken2Logo(logo2);
+        });
+
         setToken1Name(topTwo[0].token);
         setToken2Name(topTwo[1].token);
         setComparisonData({ token1: token1Data, token2: token2Data });
@@ -229,7 +240,23 @@ export default function ComparePage() {
     };
   };
 
-  const handleCompare = () => {
+  const fetchLogoUrl = async (address: string): Promise<string | null> => {
+    try {
+      const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (data && data.pairs && data.pairs.length > 0) {
+        const pair = data.pairs[0];
+        return pair?.info?.imageUrl || pair?.baseToken?.imageUrl || null;
+      }
+      return null;
+    } catch (err) {
+      console.error('Error fetching logo:', err);
+      return null;
+    }
+  };
+
+  const handleCompare = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -257,6 +284,13 @@ export default function ComparePage() {
       }
       const token1Data = convertTokenData(token1);
       const token2Data = convertTokenData(token2);
+
+      const [logo1, logo2] = await Promise.all([
+        fetchLogoUrl(token1Data.address),
+        fetchLogoUrl(token2Data.address),
+      ]);
+      setToken1Logo(logo1);
+      setToken2Logo(logo2);
 
       console.log('TOKEN! ---------------------------->', token1Data)
       console.log("TOKEN2---------------->", token2Data);
@@ -289,27 +323,6 @@ export default function ComparePage() {
     setToken2Name(currentToken1Name);
   };
 
-  const exportCsv = () => {
-    if (!comparisonData.token1 || !comparisonData.token2) return;
-    const rows = [
-      ['Metric', comparisonData.token1.symbol, comparisonData.token2.symbol],
-      ['Market Cap', comparisonData.token1.marketCap, comparisonData.token2.marketCap],
-      ['Holders', comparisonData.token1.holders, comparisonData.token2.holders],
-      ['Volume', comparisonData.token1.volume24h, comparisonData.token2.volume24h],
-    ];
-    const csv = rows.map(r => r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'comparison.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const exportPng = () => {
-    window.print();
-  };
 
   const handleSwapInputs = () => {
     setToken1Name(token2Name);
@@ -407,15 +420,6 @@ export default function ComparePage() {
           <p className="text-xl max-w-3xl mx-auto">Compare any two tokens to analyze market cap, holders, and other metrics</p>
         </div>
 
-        <nav className="sticky top-16 z-30 bg-dashGreen-dark border-b border-dashGreen-light mb-4">
-          <div className="flex justify-center flex-wrap gap-4 py-2 text-sm">
-            <a href="#market-cap" className="hover:text-dashYellow">Market Cap</a>
-            <a href="#holders" className="hover:text-dashYellow">Holders</a>
-            <a href="#growth-rate" className="hover:text-dashYellow">Growth</a>
-            <a href="#metrics" className="hover:text-dashYellow">Metrics</a>
-          </div>
-        </nav>
-
         <DashcoinCard className="mb-8">
           <DashcoinCardHeader><DashcoinCardTitle className="text-center">Enter Token Names to Compare</DashcoinCardTitle></DashcoinCardHeader>
           <DashcoinCardContent>
@@ -487,6 +491,7 @@ export default function ComparePage() {
                 name={comparisonData.token1.name}
                 symbol={comparisonData.token1.symbol}
                 address={comparisonData.token1.address}
+                logoUrl={token1Logo || undefined}
               />
               <button
                 onClick={handleReverseCompare}
@@ -499,6 +504,7 @@ export default function ComparePage() {
                 name={comparisonData.token2.name}
                 symbol={comparisonData.token2.symbol}
                 address={comparisonData.token2.address}
+                logoUrl={token2Logo || undefined}
               />
             </div>
 
@@ -701,17 +707,6 @@ export default function ComparePage() {
               </DashcoinCardContent>
             </DashcoinCard>
 
-            <DashcoinCard className="min-w-[80vw] md:min-w-[500px] snap-center">
-              <DashcoinCardHeader>
-                <DashcoinCardTitle>Export This Comparison</DashcoinCardTitle>
-              </DashcoinCardHeader>
-              <DashcoinCardContent>
-                <div className="flex gap-4">
-                  <Button variant="outline" onClick={exportCsv}>CSV</Button>
-                  <Button variant="outline" onClick={exportPng}>PNG</Button>
-                </div>
-              </DashcoinCardContent>
-            </DashcoinCard>
 
             <DashcoinCard className="min-w-[80vw] md:min-w-[500px] snap-center">
               <DashcoinCardHeader>
