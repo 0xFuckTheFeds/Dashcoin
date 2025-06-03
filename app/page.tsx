@@ -211,12 +211,12 @@ export default async function Home() {
           <div className="absolute inset-0 opacity-20 animate-pulse bg-[url('/api/placeholder/800/200')] bg-repeat" />
           <div className="relative z-10 text-center text-white px-6 py-4">
             <h1
-              className="font-bold mb-4 text-4xl sm:text-5xl md:text-6xl lg:text-[9rem]"
+              className="font-bold mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-[4.5rem]"
             >
               Welcome to Dashcoin Research
             </h1>
             <p
-              className="opacity-90 text-lg sm:text-xl md:text-2xl lg:text-[4.5rem]"
+              className="opacity-90 text-sm sm:text-base md:text-lg lg:text-[2.25rem]"
             >
               Your command center for real-time data, token comparisons, and alpha across the Believe coin ecosystem. We surface the signal—so you can trade smarter.
             </p>
