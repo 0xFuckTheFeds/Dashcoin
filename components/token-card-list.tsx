@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
+import { parseNumber } from "@/lib/utils"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { TokenCard } from "./token-card"
@@ -44,9 +45,9 @@ export default function TokenCardList({ data }: { data: PaginatedTokenResponse |
           const p = d.pairs[0]
           // Normalize numeric values from API
           result[addr] = {
-            volume24h: Number(p.volume?.h24) || 0,
-            change24h: Number(p.priceChange?.h24) || 0,
-            marketCap: Number(p.fdv) || 0,
+            volume24h: parseNumber(p.volume?.h24),
+            change24h: parseNumber(p.priceChange?.h24),
+            marketCap: parseNumber(p.fdv),
           }
         }
       })

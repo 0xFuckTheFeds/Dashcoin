@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import type { TokenData } from "@/types/dune";
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action";
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions";
+import { parseNumber } from "@/lib/utils";
 import { TokenCard } from "./token-card";
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import { Loader2 } from "lucide-react";
@@ -34,9 +35,9 @@ export default function TokenSearchList() {
           const p = d.pairs[0];
           // Normalize numeric values from API
           result[addr] = {
-            volume24h: Number(p.volume?.h24) || 0,
-            change24h: Number(p.priceChange?.h24) || 0,
-            marketCap: Number(p.fdv) || 0,
+            volume24h: parseNumber(p.volume?.h24),
+            change24h: parseNumber(p.priceChange?.h24),
+            marketCap: parseNumber(p.fdv),
           };
         }
       });

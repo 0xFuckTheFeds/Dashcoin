@@ -108,3 +108,14 @@ export function hexToRgba(hex: string, alpha: number): string {
   const b = bigint & 255
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
+
+export function parseNumber(value: any): number {
+  if (value === null || value === undefined) return 0
+  if (typeof value === 'number') return value
+  if (typeof value === 'string') {
+    const sanitized = value.replace(/[^0-9.-]+/g, '')
+    const parsed = parseFloat(sanitized)
+    return isNaN(parsed) ? 0 : parsed
+  }
+  return 0
+}

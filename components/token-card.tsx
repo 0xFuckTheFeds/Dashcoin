@@ -1,6 +1,6 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
-import { formatCurrency0 } from "@/lib/utils"
+import { formatCurrency0, parseNumber } from "@/lib/utils"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { valueToScore } from "@/lib/score"
 import {
@@ -36,7 +36,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   const tokenAddress = token.token || ""
   const tokenSymbol = token.symbol || "???"
   // Ensure change24h is treated as a number
-  const change24h = Number(token.change24h) || 0
+  const change24h = parseNumber(token.change24h)
 
   return (
     <DashcoinCard className="p-8 flex flex-col gap-6">

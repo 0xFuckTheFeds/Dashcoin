@@ -31,6 +31,7 @@ import { fetchPaginatedTokens } from "@/app/actions/dune-actions"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
+import { parseNumber } from "@/lib/utils"
 import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
@@ -219,10 +220,10 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
           const pair = data.pairs[0];
           // Normalize numeric values from API
           newDexData[address] = {
-            volume24h: Number(pair.volume?.h24) || 0,
-            change24h: Number(pair.priceChange?.h24) || 0,
-            changeM5: Number(pair.priceChange?.m5) || 0,
-            marketCap: Number(pair.fdv) || 0,
+            volume24h: parseNumber(pair.volume?.h24),
+            change24h: parseNumber(pair.priceChange?.h24),
+            changeM5: parseNumber(pair.priceChange?.m5),
+            marketCap: parseNumber(pair.fdv),
           };
         }
       });
