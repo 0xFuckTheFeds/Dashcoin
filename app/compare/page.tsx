@@ -406,16 +406,6 @@ export default function ComparePage() {
           <h1 className="dashcoin-title text-4xl md:text-5xl text-dashYellow mb-4">TOKEN COMPARISON</h1>
           <p className="text-xl max-w-3xl mx-auto">Compare any two tokens to analyze market cap, holders, and other metrics</p>
         </div>
-
-        <nav className="sticky top-16 z-30 bg-dashGreen-dark border-b border-dashGreen-light mb-4">
-          <div className="flex justify-center flex-wrap gap-4 py-2 text-sm">
-            <a href="#market-cap" className="hover:text-dashYellow">Market Cap</a>
-            <a href="#holders" className="hover:text-dashYellow">Holders</a>
-            <a href="#growth-rate" className="hover:text-dashYellow">Growth</a>
-            <a href="#metrics" className="hover:text-dashYellow">Metrics</a>
-          </div>
-        </nav>
-
         <DashcoinCard className="mb-8">
           <DashcoinCardHeader><DashcoinCardTitle className="text-center">Enter Token Names to Compare</DashcoinCardTitle></DashcoinCardHeader>
           <DashcoinCardContent>
