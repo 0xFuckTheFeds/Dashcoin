@@ -22,7 +22,7 @@ export default function TokenSearchList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortOption, setSortOption] = useState("default");
+  const [sortOption, setSortOption] = useState("mc-desc");
   const [showFilter, setShowFilter] = useState(false);
   const [marketCapFilter, setMarketCapFilter] = useState("all");
   const fetchDexData = useCallback(async (tokenList: TokenData[]) => {
@@ -129,6 +129,10 @@ export default function TokenSearchList() {
       result = [...result].sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0));
     } else if (sortOption === "mc-asc") {
       result = [...result].sort((a, b) => (a.marketCap || 0) - (b.marketCap || 0));
+    } else if (sortOption === "rs-desc") {
+      result = [...result].sort((a, b) => (b.score || 0) - (a.score || 0));
+    } else if (sortOption === "change-desc") {
+      result = [...result].sort((a, b) => (b.change24h || 0) - (a.change24h || 0));
     }
 
     return result;
@@ -177,8 +181,12 @@ export default function TokenSearchList() {
           }}
           className="flex-grow px-3 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
         />
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <label className="text-sm text-dashYellow-light" htmlFor="sort-select">
+            Sort by
+          </label>
           <select
+            id="sort-select"
             value={sortOption}
             onChange={e => {
               setSortOption(e.target.value);
@@ -186,15 +194,15 @@ export default function TokenSearchList() {
             }}
             className="px-3 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
           >
-            <option value="default">Default order</option>
             <option value="mc-desc">Market Cap: High to Low</option>
-            <option value="mc-asc">Market Cap: Low to High</option>
+            <option value="rs-desc">Research Score: High to Low</option>
+            <option value="change-desc">24h % Change: High to Low</option>
           </select>
           <div className="relative">
             <button
               type="button"
               onClick={() => setShowFilter(p => !p)}
-              className="px-3 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
+              className="px-9 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
             >
               Filter
             </button>
