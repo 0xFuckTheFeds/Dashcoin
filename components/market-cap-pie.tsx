@@ -25,13 +25,16 @@ interface MarketCapPieProps {
 export function MarketCapPie({ data }: MarketCapPieProps) {
   const chartRef = useRef<HTMLCanvasElement>(null)
   const chartInstance = useRef<any>(null)
+  const hasData = data && data.length > 0
 
   useEffect(() => {
+    if (!hasData) return
+
     const script = document.createElement("script")
     script.src = "https://cdn.jsdelivr.net/npm/chart.js"
     script.async = true
     script.onload = () => {
-      if (chartRef.current && data.length > 0) {
+      if (chartRef.current) {
         createChart()
       }
     }
@@ -43,13 +46,13 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
         chartInstance.current.destroy()
       }
     }
-  }, [])
+  }, [hasData])
 
   useEffect(() => {
-    if (window.Chart && chartRef.current && data.length > 0) {
+    if (hasData && window.Chart && chartRef.current) {
       createChart()
     }
-  }, [data])
+  }, [data, hasData])
 
   const createChart = () => {
     if (chartInstance.current) {
@@ -76,7 +79,7 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
         {
           data: topTokens.map((item) => item.market_cap_usd || 0),
           backgroundColor: colors.slice(0, topTokens.length),
-          borderColor: "#2A2A35",
+          borderColor: "#ffffff",
           borderWidth: 2,
         },
       ],
@@ -88,9 +91,12 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: 16,
+        },
         plugins: {
           legend: {
-            position: "right",
+            position: "bottom",
             labels: {
               color: dashYellowLight,
               font: {
@@ -120,9 +126,15 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
         <DashcoinCardTitle>Market Cap Distribution</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
-        <div className="h-64 bg-neutral-900 rounded-lg">
-          <canvas ref={chartRef} />
-        </div>
+        {hasData ? (
+          <div className="min-h-[300px] p-4 bg-neutral-50 dark:bg-neutral-900 rounded-lg">
+            <canvas ref={chartRef} />
+          </div>
+        ) : (
+          <div className="min-h-[300px] flex items-center justify-center bg-neutral-50 dark:bg-neutral-900 rounded-lg">
+            <p>No market cap data available.</p>
+          </div>
+        )}
       </DashcoinCardContent>
     </DashcoinCard>
   )
