@@ -2,13 +2,21 @@
 
 import { useState, useEffect, useMemo } from "react";
 import type { TokenData } from "@/types/dune";
+import { fetchTokenResearch } from "@/app/actions/googlesheet-action";
 import { TokenCard } from "./token-card";
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import { Loader2 } from "lucide-react";
 
+interface ResearchScoreData {
+  symbol: string;
+  score: number | null;
+  [key: string]: any;
+}
+
 export default function TokenSearchList() {
   const [tokens, setTokens] = useState<TokenData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,17 +36,38 @@ export default function TokenSearchList() {
     loadTokens();
   }, []);
 
+  useEffect(() => {
+    const loadResearch = async () => {
+      try {
+        const data = await fetchTokenResearch();
+        setResearchScores(data);
+      } catch (err) {
+        console.error("Error fetching research data", err);
+      }
+    };
+    loadResearch();
+  }, []);
+
+  const tokensWithResearch = useMemo(() => {
+    return tokens.map(t => {
+      const research = researchScores.find(
+        r => r.symbol.toUpperCase() === (t.symbol || '').toUpperCase(),
+      ) || {};
+      return { ...t, ...research };
+    });
+  }, [tokens, researchScores]);
+
   const filteredTokens = useMemo(() => {
-    if (!searchTerm.trim()) return tokens;
+    if (!searchTerm.trim()) return tokensWithResearch;
     const term = searchTerm.toLowerCase();
-    return tokens.filter(t => {
+    return tokensWithResearch.filter(t => {
       return (
         (t.symbol && t.symbol.toLowerCase().includes(term)) ||
         (t.name && t.name.toLowerCase().includes(term)) ||
         (t.description && t.description.toLowerCase().includes(term))
       );
     });
-  }, [tokens, searchTerm]);
+  }, [tokensWithResearch, searchTerm]);
 
   const totalPages = Math.max(1, Math.ceil(filteredTokens.length / pageSize));
 
@@ -98,7 +127,11 @@ export default function TokenSearchList() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {paginatedTokens.map((token, idx) => (
-            <TokenCard key={idx} token={token} researchScore={null} />
+            <TokenCard
+              key={idx}
+              token={token}
+              researchScore={token.score ?? null}
+            />
           ))}
         </div>
       )}
