@@ -161,7 +161,7 @@ export default function TokenSearchList() {
       {paginatedTokens.length === 0 ? (
         <DashcoinCard className="p-8 text-center">No tokens found.</DashcoinCard>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto px-4 sm:px-8 lg:px-[20%]">
           {paginatedTokens.map((token, idx) => (
             <TokenCard
               key={idx}
