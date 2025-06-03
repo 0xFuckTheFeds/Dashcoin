@@ -1,193 +1,215 @@
-"use server"
+"use server";
 
-import { cache } from "react"
+import { cache } from "react";
+import { getFromCache, setInCache } from "@/lib/redis";
 
 export interface DexscreenerPair {
-  chainId: string
-  dexId: string
-  url: string
-  pairAddress: string 
+  chainId: string;
+  dexId: string;
+  url: string;
+  pairAddress: string;
   baseToken: {
-    address: string
-    name: string
-    symbol: string
-  }
+    address: string;
+    name: string;
+    symbol: string;
+  };
   quoteToken: {
-    address: string
-    name: string
-    symbol: string
-  }
-  priceNative: string
-  priceUsd: string
+    address: string;
+    name: string;
+    symbol: string;
+  };
+  priceNative: string;
+  priceUsd: string;
   txns: {
     m5: {
-      buys: number
-      sells: number
-    }
+      buys: number;
+      sells: number;
+    };
     h1: {
-      buys: number
-      sells: number
-    }
+      buys: number;
+      sells: number;
+    };
     h6: {
-      buys: number
-      sells: number
-    }
+      buys: number;
+      sells: number;
+    };
     h24: {
-      buys: number
-      sells: number
-    }
-  }
+      buys: number;
+      sells: number;
+    };
+  };
   volume: {
-    h24: number
-    h6: number
-    h1: number
-    m5: number
-  }
+    h24: number;
+    h6: number;
+    h1: number;
+    m5: number;
+  };
   priceChange: {
-    m5: number
-    h1: number
-    h6: number
-    h24: number
-  }
+    m5: number;
+    h1: number;
+    h6: number;
+    h24: number;
+  };
   liquidity: {
-    usd: number
-    base: number
-    quote: number
-  }
-  fdv: number
-  pairCreatedAt: number
+    usd: number;
+    base: number;
+    quote: number;
+  };
+  fdv: number;
+  pairCreatedAt: number;
 }
 
 export interface DexscreenerTokenResponse {
-  pairs: DexscreenerPair[]
-  pair?: DexscreenerPair
+  pairs: DexscreenerPair[];
+  pair?: DexscreenerPair;
 }
 
-const IS_PREVIEW = process.env.VERCEL_ENV === "preview" || process.env.ENABLE_DUNE_API === "false"
+const IS_PREVIEW =
+  process.env.VERCEL_ENV === "preview" ||
+  process.env.ENABLE_DUNE_API === "false";
 
-const dexscreenerCache = new Map<string, { data: any; timestamp: number }>()
-const CACHE_TTL = 5 * 60 * 1000 
-const apiCallTimes: number[] = []
-const MAX_CALLS_PER_MINUTE = 30 
+const dexscreenerCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000;
+const KV_PREFIX = "dexscreener:";
+const apiCallTimes: number[] = [];
+const MAX_CALLS_PER_MINUTE = 30;
 
 function checkRateLimit(): boolean {
-  const now = Date.now()
-  const recentCalls = apiCallTimes.filter((time) => now - time < 60000)
-  apiCallTimes.length = 0
-  apiCallTimes.push(...recentCalls)
+  const now = Date.now();
+  const recentCalls = apiCallTimes.filter((time) => now - time < 60000);
+  apiCallTimes.length = 0;
+  apiCallTimes.push(...recentCalls);
 
-  return apiCallTimes.length < MAX_CALLS_PER_MINUTE
+  return apiCallTimes.length < MAX_CALLS_PER_MINUTE;
 }
 
 async function waitForRateLimit(): Promise<void> {
   if (checkRateLimit()) {
-    return
+    return;
   }
 
-  const now = Date.now()
-  const oldestCall = apiCallTimes[0]
-  const timeToWait = 60000 - (now - oldestCall) + 1000 
+  const now = Date.now();
+  const oldestCall = apiCallTimes[0];
+  const timeToWait = 60000 - (now - oldestCall) + 1000;
 
-  await new Promise((resolve) => setTimeout(resolve, timeToWait))
-  return waitForRateLimit() 
+  await new Promise((resolve) => setTimeout(resolve, timeToWait));
+  return waitForRateLimit();
 }
 
-async function fetchWithRetry(url: string, maxRetries = 3, initialDelay = 1000): Promise<Response> {
-  await waitForRateLimit()
+async function fetchWithRetry(
+  url: string,
+  maxRetries = 3,
+  initialDelay = 1000,
+): Promise<Response> {
+  await waitForRateLimit();
 
-  let retries = 0
-  let delay = initialDelay
+  let retries = 0;
+  let delay = initialDelay;
 
   while (retries < maxRetries) {
     try {
-      apiCallTimes.push(Date.now())
-      const response = await fetch(url)
+      apiCallTimes.push(Date.now());
+      const response = await fetch(url);
 
       if (response.status === 429) {
-        await new Promise((resolve) => setTimeout(resolve, delay))
-        retries++
-        delay *= 2 
-        continue
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        retries++;
+        delay *= 2;
+        continue;
       }
 
-      return response
+      return response;
     } catch (error) {
-      console.error(`Fetch attempt ${retries + 1} failed:`, error)
-      if (retries >= maxRetries - 1) throw error
+      console.error(`Fetch attempt ${retries + 1} failed:`, error);
+      if (retries >= maxRetries - 1) throw error;
 
-      await new Promise((resolve) => setTimeout(resolve, delay))
-      retries++
-      delay *= 2 
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      retries++;
+      delay *= 2;
     }
   }
 
-  throw new Error(`Failed to fetch after ${maxRetries} retries`)
+  throw new Error(`Failed to fetch after ${maxRetries} retries`);
 }
 
-export async function getTimeUntilNextDexscreenerRefresh(cacheKey: string): Promise<{
-  timeRemaining: number
-  lastRefreshTime: Date | null
+export async function getTimeUntilNextDexscreenerRefresh(
+  cacheKey: string,
+): Promise<{
+  timeRemaining: number;
+  lastRefreshTime: Date | null;
 }> {
   if (IS_PREVIEW) {
-    const mockLastRefreshTime = new Date(Date.now() - 2 * 60 * 1000) 
-    const timeRemaining = 3 * 60 * 1000 
+    const mockLastRefreshTime = new Date(Date.now() - 2 * 60 * 1000);
+    const timeRemaining = 3 * 60 * 1000;
 
     return {
       timeRemaining,
       lastRefreshTime: mockLastRefreshTime,
-    }
+    };
   }
 
-  const now = Date.now()
-  const cachedData = dexscreenerCache.get(cacheKey)
+  const now = Date.now();
+  const cachedData = dexscreenerCache.get(cacheKey);
 
   if (!cachedData) {
     return {
       timeRemaining: 0,
       lastRefreshTime: null,
-    }
+    };
   }
 
-  const lastRefresh = new Date(cachedData.timestamp)
-  const timeRemaining = Math.max(0, cachedData.timestamp + CACHE_TTL - now)
+  const lastRefresh = new Date(cachedData.timestamp);
+  const timeRemaining = Math.max(0, cachedData.timestamp + CACHE_TTL - now);
 
   return {
     timeRemaining,
     lastRefreshTime: lastRefresh,
-  }
+  };
 }
 
 export const fetchDexscreenerTokenData = cache(
   async (tokenAddress: string): Promise<DexscreenerTokenResponse | null> => {
     if (!tokenAddress) {
-      return null
+      return null;
     }
 
-    const cacheKey = `token:${tokenAddress}`
-    const cachedData = dexscreenerCache.get(cacheKey)
+    const cacheKey = `token:${tokenAddress}`;
+    const kvKey = `${KV_PREFIX}${cacheKey}`;
+    const cachedData = dexscreenerCache.get(cacheKey);
 
     if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
-      return cachedData.data
+      return cachedData.data;
+    }
+
+    const kvData = await getFromCache<DexscreenerTokenResponse>(kvKey);
+    if (kvData) {
+      dexscreenerCache.set(cacheKey, { data: kvData, timestamp: Date.now() });
+      return kvData;
     }
 
     try {
-      const response = await fetchWithRetry(`https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`)
+      const response = await fetchWithRetry(
+        `https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`,
+      );
 
       if (!response.ok) {
-        console.error(`Error fetching Dexscreener data: ${response.statusText}`)
-        return null
+        console.error(
+          `Error fetching Dexscreener data: ${response.statusText}`,
+        );
+        return null;
       }
 
-      const data = await response.json()
-      dexscreenerCache.set(cacheKey, { data, timestamp: Date.now() })
+      const data = await response.json();
+      dexscreenerCache.set(cacheKey, { data, timestamp: Date.now() });
+      await setInCache(kvKey, data, CACHE_TTL);
 
-      return data
+      return data;
     } catch (error) {
-      console.error("Error fetching Dexscreener data:", error)
-      return null
+      console.error("Error fetching Dexscreener data:", error);
+      return null;
     }
   },
-)
+);
 
 export const fetchDexscreenerTokensData = cache(
   async (tokenAddress: string): Promise<DexscreenerTokenResponse | null> => {
@@ -196,141 +218,202 @@ export const fetchDexscreenerTokensData = cache(
     }
 
     const cacheKey = `token:${tokenAddress}`;
+    const kvKey = `${KV_PREFIX}${cacheKey}`;
     const cachedData = dexscreenerCache.get(cacheKey);
 
     if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
       return cachedData.data;
     }
 
+    const kvData = await getFromCache<DexscreenerTokenResponse>(kvKey);
+    if (kvData) {
+      dexscreenerCache.set(cacheKey, { data: kvData, timestamp: Date.now() });
+      return kvData;
+    }
+
     try {
-      const response = await fetchWithRetry(`https://api.dexscreener.com/tokens/v1/solana/${tokenAddress}`);
+      const response = await fetchWithRetry(
+        `https://api.dexscreener.com/tokens/v1/solana/${tokenAddress}`,
+      );
 
       if (!response.ok) {
-        console.error(`Error fetching Dexscreener data: ${response.statusText}`);
+        console.error(
+          `Error fetching Dexscreener data: ${response.statusText}`,
+        );
         return null;
       }
 
       const data = await response.json();
       dexscreenerCache.set(cacheKey, { data, timestamp: Date.now() });
+      await setInCache(kvKey, data, CACHE_TTL);
 
       return data;
     } catch (error) {
       console.error("Error fetching Dexscreener data:", error);
       return null;
     }
-  }
+  },
 );
 
 export async function batchFetchTokensData(
   tokenAddresses: string[],
 ): Promise<Map<string, DexscreenerTokenResponse | null>> {
   if (tokenAddresses.length === 0) return new Map();
-  
+
   const results = new Map<string, DexscreenerTokenResponse | null>();
-  const batchSize = 10;  
-  
-  for (let i = 0; i < tokenAddresses.length; i += batchSize) {
-    const batch = tokenAddresses.slice(i, i + batchSize);
-    const batchAddressString = batch.join(',');
+  const addressesToFetch: string[] = [];
+
+  for (const address of tokenAddresses) {
+    const cacheKey = `token:${address}`;
+    const kvKey = `${KV_PREFIX}${cacheKey}`;
+    const mem = dexscreenerCache.get(cacheKey);
+
+    if (mem && Date.now() - mem.timestamp < CACHE_TTL) {
+      results.set(address, mem.data);
+      continue;
+    }
+
+    const kvData = await getFromCache<DexscreenerTokenResponse>(kvKey);
+    if (kvData) {
+      dexscreenerCache.set(cacheKey, { data: kvData, timestamp: Date.now() });
+      results.set(address, kvData);
+    } else {
+      addressesToFetch.push(address);
+    }
+  }
+
+  const batchSize = 10;
+
+  for (let i = 0; i < addressesToFetch.length; i += batchSize) {
+    const batch = addressesToFetch.slice(i, i + batchSize);
+    const batchAddressString = batch.join(",");
 
     try {
       const url = `https://api.dexscreener.com/tokens/v1/solana/${batchAddressString}`;
       const response = await fetchWithRetry(url);
-      
+
       if (!response.ok) {
         console.error(`Error fetching batch data: ${response.statusText}`);
-        batch.forEach(address => results.set(address, null));
+        batch.forEach((address) => results.set(address, null));
         continue;
       }
-      
+
       const data = await response.json();
       if (Array.isArray(data)) {
         const groupedByToken: Record<string, DexscreenerPair[]> = {};
-        
-        data.forEach(pair => {
+
+        data.forEach((pair) => {
           const baseAddress = pair.baseToken.address;
           if (!groupedByToken[baseAddress]) {
             groupedByToken[baseAddress] = [];
           }
           groupedByToken[baseAddress].push(pair);
         });
-        
-        batch.forEach(address => {
+
+        batch.forEach((address) => {
           if (groupedByToken[address]) {
-            results.set(address, { pairs: groupedByToken[address] });
+            const dataObj = { pairs: groupedByToken[address] };
+            results.set(address, dataObj);
+            dexscreenerCache.set(`token:${address}`, {
+              data: dataObj,
+              timestamp: Date.now(),
+            });
+            setInCache(
+              `${KV_PREFIX}token:${address}`,
+              dataObj,
+              CACHE_TTL,
+            ).catch(() => {});
           } else {
             results.set(address, { pairs: [] });
           }
         });
       } else {
-        batch.forEach(address => results.set(address, null));
+        batch.forEach((address) => results.set(address, null));
       }
     } catch (error) {
-      console.error(`Error fetching batch for addresses ${batchAddressString}:`, error);
-      batch.forEach(address => results.set(address, null));
+      console.error(
+        `Error fetching batch for addresses ${batchAddressString}:`,
+        error,
+      );
+      batch.forEach((address) => results.set(address, null));
     }
-    
+
     if (i + batchSize < tokenAddresses.length) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
-  
+
   return results;
 }
 
-export const fetchDexscreenerPairData = cache(async (pairAddress: string): Promise<DexscreenerTokenResponse | null> => {
-  
-  const cacheKey = `pair:${pairAddress}`
-  const cachedData = dexscreenerCache.get(cacheKey)
+export const fetchDexscreenerPairData = cache(
+  async (pairAddress: string): Promise<DexscreenerTokenResponse | null> => {
+    const cacheKey = `pair:${pairAddress}`;
+    const kvKey = `${KV_PREFIX}${cacheKey}`;
+    const cachedData = dexscreenerCache.get(cacheKey);
 
-  if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
-    return cachedData.data
-  }
-
-  try {
-    const response = await fetchWithRetry(`https://api.dexscreener.com/latest/dex/pairs/solana/${pairAddress}`)
-
-    if (!response.ok) {
-      console.error(`Error fetching Dexscreener pair data: ${response.statusText}`)
-      return null
+    if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
+      return cachedData.data;
     }
 
-    const data = await response.json()
-    dexscreenerCache.set(cacheKey, { data, timestamp: Date.now() })
+    const kvData = await getFromCache<DexscreenerTokenResponse>(kvKey);
+    if (kvData) {
+      dexscreenerCache.set(cacheKey, { data: kvData, timestamp: Date.now() });
+      return kvData;
+    }
 
-    return data
-  } catch (error) {
-    console.error("Error fetching Dexscreener pair data:", error)
-    return null
-  }
-})
+    try {
+      const response = await fetchWithRetry(
+        `https://api.dexscreener.com/latest/dex/pairs/solana/${pairAddress}`,
+      );
+
+      if (!response.ok) {
+        console.error(
+          `Error fetching Dexscreener pair data: ${response.statusText}`,
+        );
+        return null;
+      }
+
+      const data = await response.json();
+      dexscreenerCache.set(cacheKey, { data, timestamp: Date.now() });
+      await setInCache(kvKey, data, CACHE_TTL);
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching Dexscreener pair data:", error);
+      return null;
+    }
+  },
+);
 
 export async function batchFetchTokenData(
   tokenAddresses: string[],
 ): Promise<Map<string, DexscreenerTokenResponse | null>> {
-  const results = new Map<string, DexscreenerTokenResponse | null>()
-  const batchSize = 5
+  const results = new Map<string, DexscreenerTokenResponse | null>();
+  const batchSize = 5;
   for (let i = 0; i < tokenAddresses.length; i += batchSize) {
-    const batch = tokenAddresses.slice(i, i + batchSize)
-    const batchPromises = batch.map((address) => fetchDexscreenerTokenData(address))
-    const batchResults = await Promise.all(batchPromises)
+    const batch = tokenAddresses.slice(i, i + batchSize);
+    const batchPromises = batch.map((address) =>
+      fetchDexscreenerTokenData(address),
+    );
+    const batchResults = await Promise.all(batchPromises);
 
     batch.forEach((address, index) => {
-      results.set(address, batchResults[index])
-    })
+      results.set(address, batchResults[index]);
+    });
 
     if (i + batchSize < tokenAddresses.length) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
 
-  return results
+  return results;
 }
 
 export async function enrichTokenDataWithDexscreener(tokenData: any) {
   try {
     if (!tokenData || !tokenData.token) {
-      return tokenData || {}
+      return tokenData || {};
     }
 
     if (tokenData.symbol === "GOON") {
@@ -344,7 +427,7 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
         buys: 1200,
         sells: 800,
         volume24h: 3500000,
-      }
+      };
     }
 
     if (tokenData.symbol === "DUPE") {
@@ -358,7 +441,7 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
         buys: 950,
         sells: 650,
         volume24h: 2800000,
-      }
+      };
     }
 
     if (tokenData.symbol === "WIF") {
@@ -372,7 +455,7 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
         buys: 1500,
         sells: 900,
         volume24h: 4200000,
-      }
+      };
     }
 
     if (tokenData.symbol === "BOME") {
@@ -386,7 +469,7 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
         buys: 800,
         sells: 1100,
         volume24h: 2100000,
-      }
+      };
     }
 
     if (tokenData.symbol === "BONK") {
@@ -400,12 +483,16 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
         buys: 2200,
         sells: 1100,
         volume24h: 5800000,
-      }
+      };
     }
 
-    const dexscreenerData = await fetchDexscreenerTokenData(tokenData.token)
+    const dexscreenerData = await fetchDexscreenerTokenData(tokenData.token);
 
-    if (!dexscreenerData || !dexscreenerData.pairs || dexscreenerData.pairs.length === 0) {
+    if (
+      !dexscreenerData ||
+      !dexscreenerData.pairs ||
+      dexscreenerData.pairs.length === 0
+    ) {
       return {
         ...tokenData,
         price: tokenData.price || 0,
@@ -416,10 +503,10 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
         buys: tokenData.buys || 0,
         sells: tokenData.sells || 0,
         volume24h: tokenData.vol_usd || 0,
-      }
+      };
     }
 
-    const pair = dexscreenerData.pairs[0]
+    const pair = dexscreenerData.pairs[0];
 
     return {
       ...tokenData,
@@ -434,9 +521,9 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
       pairAddress: pair.pairAddress,
       dexId: pair.dexId,
       dexUrl: pair.url,
-    }
+    };
   } catch (error) {
-    console.error("Error enriching token data with Dexscreener:", error)
-    return tokenData || {}
+    console.error("Error enriching token data with Dexscreener:", error);
+    return tokenData || {};
   }
 }
