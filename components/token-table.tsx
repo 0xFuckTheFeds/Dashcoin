@@ -217,11 +217,12 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
 
         if (data && data.pairs && data.pairs.length > 0) {
           const pair = data.pairs[0];
+          // Normalize numeric values from API
           newDexData[address] = {
-            volume24h: pair.volume?.h24 || 0,
-            change24h: pair.priceChange?.h24 || 0,
-            changeM5: pair.priceChange?.m5 || 0,
-            marketCap: pair.fdv || 0,
+            volume24h: Number(pair.volume?.h24) || 0,
+            change24h: Number(pair.priceChange?.h24) || 0,
+            changeM5: Number(pair.priceChange?.m5) || 0,
+            marketCap: Number(pair.fdv) || 0,
           };
         }
       });

@@ -32,10 +32,11 @@ export default function TokenSearchList() {
         const d = map.get(addr);
         if (d && d.pairs && d.pairs.length > 0) {
           const p = d.pairs[0];
+          // Normalize numeric values from API
           result[addr] = {
-            volume24h: p.volume?.h24 || 0,
-            change24h: p.priceChange?.h24 || 0,
-            marketCap: p.fdv || 0,
+            volume24h: Number(p.volume?.h24) || 0,
+            change24h: Number(p.priceChange?.h24) || 0,
+            marketCap: Number(p.fdv) || 0,
           };
         }
       });

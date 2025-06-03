@@ -35,7 +35,8 @@ export interface TokenCardProps {
 export function TokenCard({ token, researchScore }: TokenCardProps) {
   const tokenAddress = token.token || ""
   const tokenSymbol = token.symbol || "???"
-  const change24h = token.change24h || 0
+  // Ensure change24h is treated as a number
+  const change24h = Number(token.change24h) || 0
 
   return (
     <DashcoinCard className="p-8 flex flex-col gap-6">
