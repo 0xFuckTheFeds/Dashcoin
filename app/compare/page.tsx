@@ -701,17 +701,6 @@ export default function ComparePage() {
               </DashcoinCardContent>
             </DashcoinCard>
 
-            <DashcoinCard className="min-w-[80vw] md:min-w-[500px] snap-center">
-              <DashcoinCardHeader>
-                <DashcoinCardTitle>Export This Comparison</DashcoinCardTitle>
-              </DashcoinCardHeader>
-              <DashcoinCardContent>
-                <div className="flex gap-4">
-                  <Button variant="outline" onClick={exportCsv}>CSV</Button>
-                  <Button variant="outline" onClick={exportPng}>PNG</Button>
-                </div>
-              </DashcoinCardContent>
-            </DashcoinCard>
 
             <DashcoinCard className="min-w-[80vw] md:min-w-[500px] snap-center">
               <DashcoinCardHeader>
