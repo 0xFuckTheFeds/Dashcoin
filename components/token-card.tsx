@@ -43,11 +43,13 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
         <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
           <div>
             <p className="text-2xl font-bold text-dashYellow">{tokenSymbol}</p>
-            {token.name && <p className="text-lg opacity-70">{token.name}</p>}
+            {token.name && (
+              <p className="text-lg text-dashYellow-light">{token.name}</p>
+            )}
           </div>
         </Link>
         {researchScore !== null && (
-          <span className="px-3 py-1 rounded-full bg-blue-600 text-base font-medium">
+          <span className="px-3 py-1 rounded-full bg-dashGreen text-white text-base font-medium">
             {researchScore.toFixed(1)}
           </span>
         )}
@@ -56,13 +58,15 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
       <div className="flex items-start justify-between text-base">
         <div className="flex items-center gap-3">
           <div>
-            <p className="opacity-70">Market Cap</p>
-            <p>{formatCurrency0(token.marketCap || 0)}</p>
+            <p className="text-dashYellow-light">Market Cap</p>
+            <p className="font-bold text-dashYellow">
+              {formatCurrency0(token.marketCap || 0)}
+            </p>
           </div>
           <span className="opacity-50">|</span>
-          <div className={`${change24h > 0 ? 'text-green-500' : change24h < 0 ? 'text-red-500' : ''}`}>
-            <p className="opacity-70">24h %</p>
-            <p>{change24h.toFixed(2)}%</p>
+          <div className={`${change24h > 0 ? 'text-green-600' : change24h < 0 ? 'text-red-500' : ''}`}> 
+            <p className="text-dashYellow-light">24h %</p>
+            <p className={`font-bold ${change24h === 0 ? 'text-dashYellow' : ''}`}>{change24h.toFixed(2)}%</p>
           </div>
         </div>
       </div>
@@ -94,7 +98,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
             href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md text-base hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 hover:shadow-md"
+            className="px-4 py-2 bg-dashGreen text-white rounded-md text-base hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dashGreen-dark"
           >
             TRADE
           </a>

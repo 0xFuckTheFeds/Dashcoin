@@ -77,7 +77,7 @@ export default function TokenSearchList() {
             setSearchTerm(e.target.value);
             setCurrentPage(1);
           }}
-          className="flex-grow px-3 py-2 bg-dashGreen-dark border border-dashBlack rounded-md text-dashYellow-light focus:outline-none"
+          className="flex-grow px-3 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
         />
         <select
           value={pageSize}
@@ -85,7 +85,7 @@ export default function TokenSearchList() {
             setPageSize(Number(e.target.value));
             setCurrentPage(1);
           }}
-          className="px-3 py-2 bg-dashGreen-dark border border-dashBlack rounded-md text-dashYellow-light focus:outline-none"
+          className="px-3 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
         >
           <option value={10}>10 per page</option>
           <option value={20}>20 per page</option>
@@ -108,7 +108,7 @@ export default function TokenSearchList() {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 bg-dashGreen-dark border border-dashBlack rounded-md text-dashYellow-light disabled:opacity-50"
+            className="px-3 py-1 bg-dashGreen text-white rounded-md disabled:opacity-50 hover:shadow"
           >
             Prev
           </button>
@@ -118,7 +118,7 @@ export default function TokenSearchList() {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 bg-dashGreen-dark border border-dashBlack rounded-md text-dashYellow-light disabled:opacity-50"
+            className="px-3 py-1 bg-dashGreen text-white rounded-md disabled:opacity-50 hover:shadow"
           >
             Next
           </button>

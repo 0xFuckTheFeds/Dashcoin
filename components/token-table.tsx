@@ -557,7 +557,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                             href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : "#"}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-3 py-1.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-500 transition-colors text-sm min-w-[72px]"
+                            className="px-3 py-1.5 bg-dashGreen text-white font-medium rounded-md hover:shadow transition-colors text-sm min-w-[72px]"
                           >
                             TRADE
                           </a>
