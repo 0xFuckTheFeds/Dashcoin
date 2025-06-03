@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import type { TokenData } from "@/types/dune";
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action";
+import { batchFetchTokensData } from "@/app/actions/dexscreener-actions";
 import { TokenCard } from "./token-card";
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import { Loader2 } from "lucide-react";
@@ -17,9 +18,32 @@ export default function TokenSearchList() {
   const [tokens, setTokens] = useState<TokenData[]>([]);
   const [loading, setLoading] = useState(true);
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
+  const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const fetchDexData = useCallback(async (tokenList: TokenData[]) => {
+    const addresses = tokenList.map(t => t.token).filter(Boolean);
+    if (!addresses.length) return;
+    try {
+      const map = await batchFetchTokensData(addresses);
+      const result: Record<string, any> = {};
+      addresses.forEach(addr => {
+        const d = map.get(addr);
+        if (d && d.pairs && d.pairs.length > 0) {
+          const p = d.pairs[0];
+          result[addr] = {
+            volume24h: p.volume?.h24 || 0,
+            change24h: p.priceChange?.h24 || 0,
+            marketCap: p.fdv || 0,
+          };
+        }
+      });
+      setDexscreenerData(result);
+    } catch (err) {
+      console.error("Error fetching Dexscreener", err);
+    }
+  }, []);
 
   useEffect(() => {
     async function loadTokens() {
@@ -27,6 +51,7 @@ export default function TokenSearchList() {
         const res = await fetch("/api/tokens");
         const data = await res.json();
         setTokens(data || []);
+        fetchDexData(data || []);
       } catch (err) {
         console.error("Error fetching tokens", err);
       } finally {
@@ -34,7 +59,8 @@ export default function TokenSearchList() {
       }
     }
     loadTokens();
-  }, []);
+  }, [fetchDexData]);
+
 
   useEffect(() => {
     const loadResearch = async () => {
@@ -48,26 +74,32 @@ export default function TokenSearchList() {
     loadResearch();
   }, []);
 
-  const tokensWithResearch = useMemo(() => {
+  const tokensWithData = useMemo(() => {
     return tokens.map(t => {
       const research = researchScores.find(
         r => r.symbol.toUpperCase() === (t.symbol || '').toUpperCase(),
       ) || {};
-      return { ...t, ...research };
+      const dex = dexscreenerData[t.token] || {};
+      return {
+        ...t,
+        ...dex,
+        ...research,
+        marketCap: dex.marketCap ?? t.marketCap,
+      };
     });
-  }, [tokens, researchScores]);
+  }, [tokens, researchScores, dexscreenerData]);
 
   const filteredTokens = useMemo(() => {
-    if (!searchTerm.trim()) return tokensWithResearch;
+    if (!searchTerm.trim()) return tokensWithData;
     const term = searchTerm.toLowerCase();
-    return tokensWithResearch.filter(t => {
+    return tokensWithData.filter(t => {
       return (
         (t.symbol && t.symbol.toLowerCase().includes(term)) ||
         (t.name && t.name.toLowerCase().includes(term)) ||
         (t.description && t.description.toLowerCase().includes(term))
       );
     });
-  }, [tokensWithResearch, searchTerm]);
+  }, [tokensWithData, searchTerm]);
 
   const totalPages = Math.max(1, Math.ceil(filteredTokens.length / pageSize));
 
@@ -75,6 +107,10 @@ export default function TokenSearchList() {
     const start = (currentPage - 1) * pageSize;
     return filteredTokens.slice(start, start + pageSize);
   }, [filteredTokens, currentPage, pageSize]);
+
+  useEffect(() => {
+    fetchDexData(paginatedTokens);
+  }, [paginatedTokens, fetchDexData]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
