@@ -169,7 +169,8 @@ export default function ComparePage() {
       allTokens.length > 1 &&
       !isComparing &&
       token1Name === "" &&
-      token2Name === ""
+      token2Name === "" &&
+      researchData.length > 0
     ) {
       // Sort tokens client-side by market cap in descending order
       const sorted = [...allTokens].sort(
@@ -190,7 +191,7 @@ export default function ComparePage() {
         setIsComparing(true);
       }
     }
-  }, [allTokens]);
+  }, [allTokens, researchData]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -228,6 +229,14 @@ export default function ComparePage() {
       marketcapgrowthperday
     };
   };
+
+  // When research data loads or comparison tokens change, update the metadata
+  useEffect(() => {
+    if (!comparisonData.token1 || !comparisonData.token2 || researchData.length === 0) return;
+    const r1 = researchData.find(r => r.symbol.toUpperCase() === (comparisonData.token1?.symbol || '').toUpperCase()) || null;
+    const r2 = researchData.find(r => r.symbol.toUpperCase() === (comparisonData.token2?.symbol || '').toUpperCase()) || null;
+    setComparisonResearch({ token1: r1, token2: r2 });
+  }, [researchData, comparisonData]);
 
   const handleCompare = () => {
     setIsLoading(true);
