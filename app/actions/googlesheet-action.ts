@@ -70,6 +70,7 @@ interface WalletLinkData {
   symbol: string
   walletLink: string
   walletActivity: string
+  twitter: string
 }
 
 export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
@@ -102,7 +103,8 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
       return {
         symbol: (entry['Project'] || '').toString().toUpperCase(),
         walletLink: entry['Wallet Link'] || '',
-        walletActivity: entry['Wallet Comments'] || ''
+        walletActivity: entry['Wallet Comments'] || '',
+        twitter: entry['Twitter'] || ''
       }
     })
   } catch (err) {
