@@ -2,11 +2,17 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import type { TokenData } from "@/types/dune";
-import { fetchTokenResearch } from "@/app/actions/googlesheet-action";
+import {
+  fetchTokenResearch,
+  fetchCreatorWalletLinks,
+} from "@/app/actions/googlesheet-action";
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions";
 import { TokenCard } from "./token-card";
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
-import { Loader2 } from "lucide-react";
+import { Loader2, LayoutGrid, Table as TableIcon } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { DashcoinButton } from "@/components/ui/dashcoin-button";
+import { formatCurrency0 } from "@/lib/utils";
 
 interface ResearchScoreData {
   symbol: string;
@@ -19,6 +25,8 @@ export default function TokenSearchList() {
   const [loading, setLoading] = useState(true);
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({});
+  const [walletInfo, setWalletInfo] = useState<Record<string, { walletLink: string; twitter: string }>>({});
+  const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +47,7 @@ export default function TokenSearchList() {
             volume24h: p.volume?.h24 || 0,
             change24h: p.priceChange?.h24 || 0,
             marketCap: p.fdv || 0,
+            liquidity: p.liquidity?.usd || 0,
           };
         }
       });
@@ -77,20 +86,41 @@ export default function TokenSearchList() {
     loadResearch();
   }, []);
 
+  useEffect(() => {
+    const loadWallets = async () => {
+      try {
+        const data = await fetchCreatorWalletLinks();
+        const map: Record<string, { walletLink: string; twitter: string }> = {};
+        data.forEach(d => {
+          map[d.symbol.toUpperCase()] = {
+            walletLink: d.walletLink,
+            twitter: d.twitter,
+          };
+        });
+        setWalletInfo(map);
+      } catch (err) {
+        console.error("Error fetching wallet links", err);
+      }
+    };
+    loadWallets();
+  }, []);
+
   const tokensWithData = useMemo(() => {
     return tokens.map(t => {
-      const research = researchScores.find(
-        r => r.symbol.toUpperCase() === (t.symbol || '').toUpperCase(),
-      ) || {};
+      const sym = (t.symbol || '').toUpperCase();
+      const research =
+        researchScores.find(r => r.symbol.toUpperCase() === sym) || {};
       const dex = dexscreenerData[t.token] || {};
+      const wallet = walletInfo[sym] || { walletLink: '', twitter: '' };
       return {
         ...t,
         ...dex,
         ...research,
+        ...wallet,
         marketCap: dex.marketCap ?? t.marketCap,
       };
     });
-  }, [tokens, researchScores, dexscreenerData]);
+  }, [tokens, researchScores, dexscreenerData, walletInfo]);
 
   const filteredAndSortedTokens = useMemo(() => {
     let result = tokensWithData;
@@ -182,6 +212,19 @@ export default function TokenSearchList() {
           className="flex-grow px-3 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
         />
         <div className="flex gap-2 items-center">
+          <ToggleGroup
+            type="single"
+            value={viewMode}
+            onValueChange={val => val && setViewMode(val as 'card' | 'table')}
+            className="mr-2"
+          >
+            <ToggleGroupItem value="card" aria-label="Card view">
+              <LayoutGrid className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="table" aria-label="Table view">
+              <TableIcon className="h-4 w-4" />
+            </ToggleGroupItem>
+          </ToggleGroup>
           <label className="text-sm text-dashYellow-light" htmlFor="sort-select">
             Sort by
           </label>
@@ -288,15 +331,56 @@ export default function TokenSearchList() {
 
       {paginatedTokens.length === 0 ? (
         <DashcoinCard className="p-8 text-center">No tokens found.</DashcoinCard>
-      ) : (
+      ) : viewMode === 'card' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto px-4 sm:px-8 lg:px-[20%]">
           {paginatedTokens.map((token, idx) => (
-            <TokenCard
-              key={idx}
-              token={token}
-              researchScore={token.score ?? null}
-            />
+            <TokenCard key={idx} token={token} researchScore={token.score ?? null} />
           ))}
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-dashBlue-dark border-b border-dashBlack">
+                <th className="text-left py-2 px-4 text-dashYellow">Token</th>
+                <th className="text-left py-2 px-4 text-dashYellow">Market Cap</th>
+                <th className="text-left py-2 px-4 text-dashYellow">24h %</th>
+                <th className="text-left py-2 px-4 text-dashYellow">Liquidity</th>
+                <th className="text-left py-2 px-4 text-dashYellow">Research</th>
+                <th className="text-left py-2 px-4 text-dashYellow">Wallet</th>
+                <th className="text-left py-2 px-4 text-dashYellow">Twitter</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedTokens.map((token, idx) => (
+                <tr key={idx} className="border-b border-dashBlue-light hover:bg-dashBlue-dark">
+                  <td className="py-2 px-4 font-bold">{token.symbol}</td>
+                  <td className="py-2 px-4">{formatCurrency0(token.marketCap || 0)}</td>
+                  <td className="py-2 px-4">{(token.change24h || 0).toFixed(2)}%</td>
+                  <td className="py-2 px-4">{Math.round(token.liquidity || 0).toLocaleString()}</td>
+                  <td className="py-2 px-4">{token.score !== undefined && token.score !== null ? token.score.toFixed(1) : '-'}</td>
+                  <td className="py-2 px-4">
+                    {token.walletLink ? (
+                      <a href={token.walletLink} target="_blank" rel="noopener noreferrer">
+                        <DashcoinButton variant="outline" size="sm">Creator Wallet</DashcoinButton>
+                      </a>
+                    ) : (
+                      <span className="opacity-60">N/A</span>
+                    )}
+                  </td>
+                  <td className="py-2 px-4">
+                    {token.twitter ? (
+                      <a href={`${token.twitter.startsWith('http') ? token.twitter : `https://twitter.com/${token.twitter.replace('@','')}`}`} target="_blank" rel="noopener noreferrer">
+                        <DashcoinButton variant="outline" size="sm">Twitter</DashcoinButton>
+                      </a>
+                    ) : (
+                      <span className="opacity-60">N/A</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
