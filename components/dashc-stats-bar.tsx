@@ -10,13 +10,14 @@ interface DashcStatsBarProps {
 
 export function DashcStatsBar({ tradeLink, marketCap, contractAddress }: DashcStatsBarProps) {
   return (
-    <div className="flex flex-wrap justify-between items-center gap-1 bg-dashGreen-dark text-dashYellow-light rounded-lg border border-dashGreen-light py-1 px-2 w-full md:w-auto text-xs shadow-sm">
+    <div className="flex flex-wrap justify-between items-center gap-1 bg-dashGreen-light text-dashBlack rounded-lg border border-dashGreen-dark py-1 px-2 w-full md:w-auto text-xs shadow-sm">
       <div className="flex items-center gap-1">
         <span className="font-semibold">$DASHC</span>
         <CopyAddress
           address={contractAddress}
           displayLength={4}
-          className="text-dashYellow-light hover:text-white"
+          className="text-dashBlack"
+          iconClassName="text-dashBlack opacity-70 hover:opacity-100"
         />
       </div>
       <div className="flex flex-wrap gap-2 justify-center">
