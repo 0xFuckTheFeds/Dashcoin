@@ -33,12 +33,9 @@ interface ChecklistProps {
 export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistProps) {
   if (!data) return null;
   const score = Number(data["Score"]) || 0;
-  const borderColor =
-    score >= 70 ? "border-green-500" : score >= 40 ? "border-yellow-500" : "border-red-500";
-
   return (
     <DashcoinCard
-      className={`token-card relative p-10 rounded-2xl shadow-lg border-2 ${borderColor}`}
+      className="token-card relative p-10 rounded-2xl shadow-lg"
     >
       <div className="flex justify-center items-center gap-6 mb-4">
         <h2 className="text-2xl font-semibold text-dashYellow">Founder&apos;s Edge Checklist</h2>
@@ -57,7 +54,7 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
           return (
             <div
               key={label}
-              className="flex items-center gap-2 bg-zinc-800 rounded-full px-4 py-3"
+              className="flex items-center gap-2 bg-white text-black rounded-full px-4 py-3"
             >
               {getIcon(val)}
               <span className="text-base">{label}</span>

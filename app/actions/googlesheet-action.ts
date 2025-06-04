@@ -40,7 +40,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
 
     return structured.map((entry: any) => {
       const result: Record<string, any> = {
-        symbol: (entry['Project'] || '').toString().toUpperCase(),
+        symbol: (entry['Project'] || '').toString().trim().toUpperCase(),
         score:
           entry['Score'] !== undefined && entry['Score'] !== ''
             ? parseFloat(entry['Score'])
