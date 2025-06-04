@@ -2,6 +2,8 @@ import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import { CheckCircle, XCircle, MinusCircle } from "lucide-react";
 import React from "react";
 import { gradeMaps, valueToScore, computeFounderScore } from "@/lib/score";
+import { traitDescriptions } from "@/data/trait-descriptions";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const canonicalChecklist = [
   "Team Doxxed",
@@ -53,13 +55,17 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
           const raw = data[label];
           const val = valueToScore(raw, (gradeMaps as any)[label]);
           return (
-            <div
-              key={label}
-              className="flex items-center gap-2 bg-white text-black rounded-full px-4 py-3"
-            >
-              {getIcon(val)}
-              <span className="text-base">{label}</span>
-            </div>
+            <TooltipProvider delayDuration={0} key={label}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-2 bg-white text-black rounded-full px-4 py-3 cursor-help">
+                    {getIcon(val)}
+                    <span className="text-base">{label}</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>{traitDescriptions[label]}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           );
         })}
       </div>

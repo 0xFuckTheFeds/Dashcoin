@@ -1,6 +1,7 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { canonicalChecklist } from "@/components/founders-edge-checklist";
 import { gradeMaps, valueToScore } from "@/lib/score";
+import { traitDescriptions } from "@/data/trait-descriptions";
 
 interface ResearchData {
   symbol: string;
@@ -58,7 +59,7 @@ export function FounderMetadataGrid({ token1, token2 }: Props) {
                 <TooltipTrigger asChild>
                   <div className="px-2 font-medium cursor-help">{label}</div>
                 </TooltipTrigger>
-                <TooltipContent>{label}</TooltipContent>
+                <TooltipContent>{traitDescriptions[label]}</TooltipContent>
               </Tooltip>
             </TooltipProvider>
             <div className={`px-2 text-center rounded-md ${col1} ${classBest1} group-hover:bg-dashGreen-light/20`}>{val1 || '-'}</div>

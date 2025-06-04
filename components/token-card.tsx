@@ -1,5 +1,6 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
+import { traitDescriptions } from "@/data/trait-descriptions"
 
 import AnimatedMarketCap from "@/components/animated-marketcap"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
@@ -86,7 +87,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
                       <span>{value || '-'}</span>
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent>{label}</TooltipContent>
+                  <TooltipContent>{traitDescriptions[label]}</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             )

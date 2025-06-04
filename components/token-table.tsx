@@ -35,6 +35,7 @@ import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { researchFilterOptions } from "@/data/research-filter-options"
+import { traitDescriptions } from "@/data/trait-descriptions"
 import { useRouter, useSearchParams } from "next/navigation"
 
 const checklistIcons: Record<string, JSX.Element> = {
@@ -465,7 +466,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                             {checklistIcons[label]}
                           </div>
                         </TooltipTrigger>
-                        <TooltipContent>{label}</TooltipContent>
+                        <TooltipContent>{traitDescriptions[label]}</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                     <Filter
