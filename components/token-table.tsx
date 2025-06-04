@@ -56,14 +56,14 @@ interface ResearchScoreData {
 
 export default function TokenTable({ data }: { data: PaginatedTokenResponse | TokenData[] }) {
   const initialData = Array.isArray(data)
-    ? { tokens: data, page: 1, pageSize: 10, totalTokens: data.length, totalPages: Math.ceil(data.length / 10) }
+    ? { tokens: data, page: 1, pageSize: 12, totalTokens: data.length, totalPages: Math.ceil(data.length / 12) }
     : data
 
   const [searchTerm, setSearchTerm] = useState("")
   const [sortField, setSortField] = useState("marketCap")
   const [sortDirection, setSortDirection] = useState("desc")
   const [currentPage, setCurrentPage] = useState(initialData.page || 1)
-  const [itemsPerPage, setItemsPerPage] = useState(initialData.pageSize || 10)
+  const [itemsPerPage, setItemsPerPage] = useState(initialData.pageSize || 12)
   const [isLoading, setIsLoading] = useState(false)
   const [tokenData, setTokenData] = useState<PaginatedTokenResponse>(initialData)
   const [filteredTokens, setFilteredTokens] = useState<TokenData[]>(initialData.tokens || [])
@@ -418,9 +418,9 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             }}
             className="px-3 py-2 bg-dashGreen-dark border border-dashBlack rounded-md text-dashYellow-light focus:outline-none focus:ring-2 focus:ring-dashYellow"
           >
-            <option value="10">10 per page</option>
-            <option value="20">20 per page</option>
-            <option value="50">50 per page</option>
+            <option value="12">12 per page</option>
+            <option value="24">24 per page</option>
+            <option value="56">56 per page</option>
           </select>
         </div>
       </div>

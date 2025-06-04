@@ -20,7 +20,7 @@ export default function TokenSearchList() {
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
   const fetchDexData = useCallback(async (tokenList: TokenData[]) => {
     const addresses = tokenList.map(t => t.token).filter(Boolean);
@@ -152,9 +152,9 @@ export default function TokenSearchList() {
           }}
           className="px-3 py-2 bg-white border border-gray-300 rounded-md text-dashYellow-light focus:outline-none"
         >
-          <option value={10}>10 per page</option>
-          <option value={20}>20 per page</option>
-          <option value={50}>50 per page</option>
+          <option value={12}>12 per page</option>
+          <option value={24}>24 per page</option>
+          <option value={56}>56 per page</option>
         </select>
       </div>
 
