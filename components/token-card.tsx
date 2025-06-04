@@ -3,7 +3,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 
 import AnimatedMarketCap from "@/components/animated-marketcap"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
-import { valueToScore } from "@/lib/score"
+import { valueToScore, gradeMaps } from "@/lib/score"
 import {
   User,
   Twitter,
@@ -40,11 +40,22 @@ const shortLabels: Record<string, string> = {
   "Social Reach & Engagement Index": "Reach",
 }
 
-function cellColor(value: any): string {
-  const score = valueToScore(value)
+const negativeMap: Record<string, string[]> = {
+  "Twitter Activity Level": ["Low"],
+  "Time Commitment": ["Abandoned"],
+  "Product Maturity": ["Pre-Alpha or N/A"],
+  "Social Reach & Engagement Index": ["Low ( < 5 k followers )"],
+}
+
+function cellColor(label: string, value: any): string {
+  const negatives = negativeMap[label] || []
+  if (negatives.includes(String(value))) {
+    return "bg-red-600 text-white"
+  }
+  const score = valueToScore(value, (gradeMaps as any)[label])
   if (score === 2) return "bg-green-600 text-white"
-  if (score === 0) return "bg-yellow-500 text-black"
-  return "bg-red-600 text-white"
+  if (score === 1) return "bg-green-400 text-white"
+  return "bg-yellow-500 text-black"
 }
 
 function scoreColor(score: number | null): string {
@@ -107,7 +118,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span
-                      className={`flex flex-col items-center gap-1 p-2 rounded ${cellColor(value)} text-xs text-center`}
+                      className={`flex flex-col items-center gap-1 p-2 rounded ${cellColor(label, value)} text-xs text-center`}
                     >
                       {checklistIcons[label]}
                       <span>{shortLabels[label]}</span>
