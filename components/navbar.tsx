@@ -42,6 +42,9 @@ export function Navbar({ dashcStats }: NavbarProps) {
             <NavLink href="https://dashcoin-research.gitbook.io/dashcoin-research" active={false} external>
               Founder's Guide
             </NavLink>
+            <NavLink href="https://dashcoin-research-tg-gated.vercel.app/" active={false} external>
+              Join the Dashcoin Analyst Group
+            </NavLink>
           </nav>
         </div>
       </div>
@@ -62,6 +65,9 @@ export function Navbar({ dashcStats }: NavbarProps) {
           </NavLink>
           <NavLink href="https://dashcoin-research.gitbook.io/dashcoin-research" active={false} external>
             Founder's Guide
+          </NavLink>
+          <NavLink href="https://dashcoin-research-tg-gated.vercel.app/" active={false} external>
+            Join the Dashcoin Analyst Group
           </NavLink>
           </nav>
       </div>
