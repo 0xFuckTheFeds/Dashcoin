@@ -18,6 +18,7 @@ import {
 } from "./actions/dune-actions";
 import { fetchDexscreenerTokenData } from "./actions/dexscreener-actions";
 import { formatCurrency } from "@/lib/utils";
+import AnimatedMarketCap from "@/components/animated-marketcap";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
@@ -171,9 +172,7 @@ export default async function Home() {
     (timeRemaining % (60 * 60 * 1000)) / (60 * 1000)
   );
 
-  const formattedMarketCap = formatCurrency(
-    marketStats?.totalMarketCap || 0
-  );
+  const totalMarketCapValue = marketStats?.totalMarketCap || 0;
   const formattedVolume = formatCurrency(marketStats?.volume24h || 0);
   const formattedFeeEarnings = formatCurrency(marketStats?.feeEarnings24h || 0);
 
@@ -244,7 +243,9 @@ export default async function Home() {
               <DashcoinCardTitle>Total Market Cap of Believe Coins excluding Launchcoin</DashcoinCardTitle>
             </DashcoinCardHeader>
             <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">{formattedMarketCap}</p>
+              <p className="dashcoin-text text-3xl text-dashYellow">
+                <AnimatedMarketCap value={totalMarketCapValue} decimals={2} />
+              </p>
               <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
                 <p className="text-sm">From Dune Analytics</p>
               </div>
