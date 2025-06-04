@@ -38,7 +38,7 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
 
   return (
     <DashcoinCard
-      className={`relative bg-zinc-900 p-10 rounded-2xl shadow-lg ${borderColor}`}
+      className={`token-card relative p-10 rounded-2xl shadow-lg border-2 ${borderColor}`}
     >
       <div className="flex justify-center items-center gap-6 mb-4">
         <h2 className="text-2xl font-semibold text-dashYellow">Founder&apos;s Edge Checklist</h2>
