@@ -46,56 +46,16 @@ interface TokenResearchData {
   [key: string]: any;
 }
 
-async function fetchTokenResearch(
+async function fetchTokenResearchClient(
   tokenSymbol: string,
 ): Promise<TokenResearchData | null> {
-  const API_KEY = "AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk";
-  const SHEET_ID = "1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0";
-  const SHEET_NAME = "Dashcoin Scoring";
-  const RANGE = `${SHEET_NAME}!A1:T200`;
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
-
   try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (!data.values || data.values.length < 2) {
-      console.warn("No data found in Google Sheet");
-      return null;
-    }
-
-    const [header, ...rows] = data.values;
-
-    const canonicalMap: Record<string, string> = {
-      "Startup Experience": "Prior Founder Experience",
-      "Project Has Some Virality / Popularity":
-        "Social Reach & Engagement Index",
-    };
-
-    const structured = rows.map((row: any) => {
-      const entry: Record<string, any> = {};
-      header.forEach((key: string, i: number) => {
-        const trimmed = key.trim();
-        const canonical = canonicalMap[trimmed] || trimmed;
-        entry[canonical] = row[i] || "";
-      });
-      if (entry["Project"]) {
-        entry["Project"] = entry["Project"].toString().trim().toUpperCase();
-      }
-      return entry;
-    });
-
-    const normalizedSymbol = tokenSymbol.toUpperCase();
-    const tokenData = structured.find(
-      (entry: any) =>
-        entry["Project"] &&
-        entry["Project"].toString().toUpperCase() === normalizedSymbol &&
-        entry["Score"],
-    );
-
-    return tokenData || null;
+    const res = await fetch(`/api/research/${tokenSymbol}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data;
   } catch (err) {
-    console.error("Google Sheets API error:", err);
+    console.error("Error fetching research data:", err);
     return null;
   }
 }
@@ -150,9 +110,9 @@ export default function TokenResearchPage({
     const getResearchData = async () => {
       setIsLoading(true);
       try {
-        const data = await fetchTokenResearch(symbol);
+        const data = await fetchTokenResearchClient(symbol);
         setResearchData(data);
-        setHasScore(true);
+        setHasScore(!!data && !!data["Score"]);
       } catch (error) {
         console.error(`Error fetching research data for ${symbol}:`, error);
       } finally {
