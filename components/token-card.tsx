@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
 
@@ -42,14 +43,22 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   const change24h = token.change24h || 0
   const router = useRouter()
 
-  const handleCardClick = () => {
+  const handleCardClick = (
+    e?: React.MouseEvent<HTMLDivElement | HTMLSpanElement, MouseEvent>,
+  ) => {
+    if (e) {
+      const target = e.target as HTMLElement
+      if (target.closest('a')) {
+        return
+      }
+    }
     router.push(`/tokendetail/${tokenSymbol}`)
   }
 
   return (
     <DashcoinCard
       className="token-card p-8 flex flex-col gap-6 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
-      onClick={handleCardClick}
+      onClickCapture={handleCardClick}
     >
       <div className="flex justify-between items-start">
         <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
@@ -92,7 +101,10 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
               <TooltipProvider delayDuration={0} key={label}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className={`flex items-center gap-1 px-2 py-0.5 rounded ${badgeColor(value)} text-sm`}>
+                    <span
+                      className={`flex items-center gap-1 px-2 py-0.5 rounded ${badgeColor(value)} text-sm`}
+                      onClick={handleCardClick}
+                    >
                       {checklistIcons[label]}
                       <span>{value || '-'}</span>
                     </span>
