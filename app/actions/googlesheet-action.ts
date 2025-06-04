@@ -1,3 +1,5 @@
+import { gradeMaps, valueToScore } from '@/lib/score'
+
 interface ResearchScoreData {
   symbol: string
   score: number | null
@@ -39,12 +41,21 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
     });
 
     return structured.map((entry: any) => {
+      const explicit = entry['Score'] !== undefined && entry['Score'] !== ''
+        ? parseFloat(entry['Score'])
+        : NaN;
+      let score = explicit;
+      if (isNaN(score)) {
+        const traits = Object.keys(gradeMaps).filter(k => k !== 'default');
+        let total = 0;
+        traits.forEach(label => {
+          total += valueToScore(entry[label], gradeMaps[label]);
+        });
+        score = Math.round((total / (traits.length * 2)) * 100);
+      }
       const result: Record<string, any> = {
         symbol: (entry['Project'] || '').toString().trim().toUpperCase(),
-        score:
-          entry['Score'] !== undefined && entry['Score'] !== ''
-            ? parseFloat(entry['Score'])
-            : null,
+        score,
       };
       [
         'Team Doxxed',

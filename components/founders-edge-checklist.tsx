@@ -1,7 +1,7 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import { CheckCircle, XCircle, MinusCircle } from "lucide-react";
 import React from "react";
-import { gradeMaps, valueToScore } from "@/lib/score";
+import { gradeMaps, valueToScore, computeFounderScore } from "@/lib/score";
 
 export const canonicalChecklist = [
   "Team Doxxed",
@@ -32,16 +32,17 @@ interface ChecklistProps {
 
 export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistProps) {
   if (!data) return null;
-  const score = Number(data["Score"]) || 0;
+  const sheetScore = Number(data["Score"]);
+  const score = !isNaN(sheetScore) && sheetScore > 0 ? sheetScore : computeFounderScore(data);
   return (
     <DashcoinCard
       className="token-card relative p-10 rounded-2xl shadow-lg"
     >
       <div className="flex justify-center items-center gap-6 mb-4">
         <h2 className="text-2xl font-semibold text-dashYellow">Founder&apos;s Edge Checklist</h2>
-        <div className="bg-dashYellow text-black px-3 py-1 rounded-full text-sm font-semibold shadow flex items-center">
+        <div className="bg-dashGreen text-white px-3 py-1 rounded-full text-sm font-semibold shadow flex items-center">
           <span>
-            Score: <span className="font-bold">{score}</span> / 100
+            Founder Score: <span className="font-bold">{score}</span> / 100
           </span>
           {score >= 75 && <span className="ml-2 animate-bounce">🐸</span>}
         </div>
