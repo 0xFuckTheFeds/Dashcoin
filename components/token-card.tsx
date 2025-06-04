@@ -1,3 +1,5 @@
+"use client"
+
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
 
@@ -9,6 +11,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { FileSearch } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 const checklistIcons: Record<string, JSX.Element> = {
   "Team Doxxed": <User className="h-4 w-4" />,
@@ -37,9 +40,17 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   const tokenAddress = token.token || ""
   const tokenSymbol = token.symbol || "???"
   const change24h = token.change24h || 0
+  const router = useRouter()
+
+  const handleCardClick = () => {
+    router.push(`/tokendetail/${tokenSymbol}`)
+  }
 
   return (
-    <DashcoinCard className="token-card p-8 flex flex-col gap-6 transition-all duration-200 hover:-translate-y-0.5">
+    <DashcoinCard
+      className="token-card p-8 flex flex-col gap-6 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+      onClick={handleCardClick}
+    >
       <div className="flex justify-between items-start">
         <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
           <div>
@@ -99,11 +110,16 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
             href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : '#'}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={e => e.stopPropagation()}
             className="px-4 py-2 bg-dashGreen text-white rounded-md text-base hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dashGreen-dark"
           >
             TRADE
           </a>
-          <Link href={`/tokendetail/${tokenSymbol}`} className="ml-2 text-dashYellow hover:text-dashYellow-dark flex items-center">
+          <Link
+            href={`/tokendetail/${tokenSymbol}`}
+            className="ml-2 text-dashYellow hover:text-dashYellow-dark flex items-center"
+            onClick={e => e.stopPropagation()}
+          >
             <FileSearch className="h-4 w-4" />
         </Link>
       </div>
