@@ -1,4 +1,5 @@
 import { formatCurrency } from "@/lib/utils";
+import AnimatedMarketCap from "@/components/animated-marketcap";
 
 interface DashcStatsBarProps {
   tradeLink: string;
@@ -14,7 +15,9 @@ export function DashcStatsBar({ tradeLink, marketCap }: DashcStatsBarProps) {
       <div className="flex flex-wrap gap-2 justify-center text-dashBlack">
         <div className="text-center">
           <span className="opacity-70 font-medium">Market Cap</span>
-          <p className="font-medium">{formatCurrency(marketCap)}</p>
+          <p className="font-medium">
+            <AnimatedMarketCap value={marketCap} decimals={2} />
+          </p>
         </div>
       </div>
       <div>

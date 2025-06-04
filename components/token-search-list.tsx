@@ -13,6 +13,7 @@ import { Loader2, LayoutGrid, Table as TableIcon } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { DashcoinButton } from "@/components/ui/dashcoin-button";
 import { formatCurrency0 } from "@/lib/utils";
+import AnimatedMarketCap from "@/components/animated-marketcap";
 
 interface ResearchScoreData {
   symbol: string;
@@ -355,7 +356,9 @@ export default function TokenSearchList() {
               {paginatedTokens.map((token, idx) => (
                 <tr key={idx} className="border-b border-dashBlue-light hover:bg-dashBlue-dark">
                   <td className="py-2 px-4 font-bold">{token.symbol}</td>
-                  <td className="py-2 px-4">{formatCurrency0(token.marketCap || 0)}</td>
+                  <td className="py-2 px-4">
+                    <AnimatedMarketCap value={token.marketCap || 0} />
+                  </td>
                   <td className="py-2 px-4">{(token.change24h || 0).toFixed(2)}%</td>
                   <td className="py-2 px-4">{Math.round(token.liquidity || 0).toLocaleString()}</td>
                   <td className="py-2 px-4">{token.score !== undefined && token.score !== null ? token.score.toFixed(1) : '-'}</td>

@@ -1,6 +1,7 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
-import { formatCurrency0 } from "@/lib/utils"
+
+import AnimatedMarketCap from "@/components/animated-marketcap"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { valueToScore } from "@/lib/score"
 import {
@@ -60,7 +61,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
           <div>
             <p className="text-dashYellow-light">Market Cap</p>
             <p className="font-bold text-dashYellow">
-              {formatCurrency0(token.marketCap || 0)}
+              <AnimatedMarketCap value={token.marketCap || 0} />
             </p>
           </div>
           <span className="opacity-50">|</span>
