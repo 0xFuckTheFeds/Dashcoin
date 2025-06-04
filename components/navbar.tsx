@@ -36,6 +36,9 @@ export function Navbar({ dashcStats }: NavbarProps) {
             <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
               Creator Wallets
             </NavLink>
+            <NavLink href="/founders-edge" active={pathname === "/founders-edge"}>
+              Founder's Edge
+            </NavLink>
             <NavLink href="/founder-interviews" active={pathname === "/founder-interviews"}>
               Founder Interviews
             </NavLink>
@@ -56,6 +59,9 @@ export function Navbar({ dashcStats }: NavbarProps) {
           </NavLink>
           <NavLink href="/creator-wallets" active={pathname === "/creator-wallets"}>
             Creator Wallets
+          </NavLink>
+          <NavLink href="/founders-edge" active={pathname === "/founders-edge"}>
+            Founder's Edge
           </NavLink>
           <NavLink href="/founder-interviews" active={pathname === "/founder-interviews"}>
             Founder Interviews

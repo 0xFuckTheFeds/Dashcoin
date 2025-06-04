@@ -20,6 +20,7 @@ import {
   Package,
   Layers,
   TrendingUp,
+  Link as LinkIcon,
 } from "lucide-react"
 import {
   Tooltip,
@@ -46,6 +47,7 @@ const checklistIcons: Record<string, JSX.Element> = {
   "Funding Status": <TrendingUp className="h-4 w-4" />,
   "Token-Product Integration Depth": <Layers className="h-4 w-4" />,
   "Social Reach & Engagement Index": <Users className="h-4 w-4" />,
+  "Data Integration": <LinkIcon className="h-4 w-4" />,
 }
 
 interface ResearchScoreData {

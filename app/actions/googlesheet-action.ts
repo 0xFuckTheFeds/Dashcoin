@@ -55,6 +55,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
         'Funding Status',
         'Token-Product Integration Depth',
         'Social Reach & Engagement Index',
+        'Data Integration',
       ].forEach(label => {
         result[label] = entry[label] ?? '';
       });

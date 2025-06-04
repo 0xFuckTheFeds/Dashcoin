@@ -210,10 +210,15 @@ export default async function Home() {
         <section className="animate-appear">
           <DashcoinCard className="bg-white text-black dark:bg-[#111] dark:text-[#f5f5f5] text-center shadow-sm">
             <h1 className="text-4xl font-bold mb-2">Welcome to Dashcoin Research</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              Your command center for real-time data, token comparisons, and alpha across the Believe coin ecosystem. We surface the signal—so you can trade smarter.
-            </p>
-          </DashcoinCard>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Your command center for real-time data, token comparisons, and alpha across the Believe coin ecosystem. We surface the signal—so you can trade smarter.
+          </p>
+          <p className="mt-4">
+            <a href="/founders-edge" className="text-dashGreen hover:underline">
+              View the Founder's Edge Checklist
+            </a>
+          </p>
+        </DashcoinCard>
         </section>
 
 

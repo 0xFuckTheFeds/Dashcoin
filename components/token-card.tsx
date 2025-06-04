@@ -4,7 +4,15 @@ import { formatCurrency0 } from "@/lib/utils"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { valueToScore } from "@/lib/score"
 import {
-  User, Twitter, Clock, Medal, Package, Layers, TrendingUp, Users
+  User,
+  Twitter,
+  Clock,
+  Medal,
+  Package,
+  Layers,
+  TrendingUp,
+  Users,
+  Link as LinkIcon,
 } from "lucide-react"
 import Link from "next/link"
 import { FileSearch } from "lucide-react"
@@ -18,6 +26,7 @@ const checklistIcons: Record<string, JSX.Element> = {
   "Funding Status": <TrendingUp className="h-4 w-4" />,
   "Token-Product Integration Depth": <Layers className="h-4 w-4" />,
   "Social Reach & Engagement Index": <Users className="h-4 w-4" />,
+  "Data Integration": <LinkIcon className="h-4 w-4" />,
 }
 
 function badgeColor(value: any): string {
