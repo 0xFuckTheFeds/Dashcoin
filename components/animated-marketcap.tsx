@@ -25,7 +25,7 @@ export default function AnimatedMarketCap({ value, decimals = 0 }: AnimatedMarke
         return next;
       });
       setFlash(true);
-    }, 500);
+    }, 800);
     return () => clearInterval(interval);
   }, [base]);
 
