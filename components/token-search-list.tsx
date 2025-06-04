@@ -63,7 +63,6 @@ export default function TokenSearchList() {
         const res = await fetch("/api/tokens");
         const data = await res.json();
         setTokens(data || []);
-        fetchDexData(data || []);
       } catch (err) {
         console.error("Error fetching tokens", err);
       } finally {
@@ -71,7 +70,7 @@ export default function TokenSearchList() {
       }
     }
     loadTokens();
-  }, [fetchDexData]);
+  }, []);
 
 
   useEffect(() => {
