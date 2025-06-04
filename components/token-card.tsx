@@ -1,3 +1,5 @@
+"use client"
+
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
 
@@ -8,6 +10,7 @@ import {
   User, Twitter, Clock, Medal, Package, Layers, TrendingUp, Users
 } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { FileSearch } from "lucide-react"
 
 const checklistIcons: Record<string, JSX.Element> = {
@@ -34,12 +37,21 @@ export interface TokenCardProps {
 }
 
 export function TokenCard({ token, researchScore }: TokenCardProps) {
+  const router = useRouter()
   const tokenAddress = token.token || ""
   const tokenSymbol = token.symbol || "???"
   const change24h = token.change24h || 0
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement
+    if (target.closest('a,button')) {
+      return
+    }
+    router.push(`/tokendetail/${tokenSymbol}`)
+  }
+
   return (
-    <DashcoinCard className="token-card p-8 flex flex-col gap-6 transition-all duration-200 hover:-translate-y-0.5">
+    <DashcoinCard onClick={handleCardClick} className="token-card cursor-pointer p-8 flex flex-col gap-6 transition-all duration-200 hover:-translate-y-0.5">
       <div className="flex justify-between items-start">
         <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
           <div>
