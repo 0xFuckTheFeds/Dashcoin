@@ -5,7 +5,15 @@ import AnimatedMarketCap from "@/components/animated-marketcap"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { valueToScore } from "@/lib/score"
 import {
-  User, Twitter, Clock, Medal, Package, Layers, TrendingUp, Users
+  User,
+  Twitter,
+  Clock,
+  Medal,
+  Package,
+  Layers,
+  TrendingUp,
+  Users,
+  Award,
 } from "lucide-react"
 import Link from "next/link"
 import { FileSearch } from "lucide-react"
@@ -21,11 +29,28 @@ const checklistIcons: Record<string, JSX.Element> = {
   "Social Reach & Engagement Index": <Users className="h-4 w-4" />,
 }
 
-function badgeColor(value: any): string {
+const shortLabels: Record<string, string> = {
+  "Team Doxxed": "Legal Names",
+  "Twitter Activity Level": "Twitter",
+  "Time Commitment": "Commitment",
+  "Prior Founder Experience": "Experience",
+  "Product Maturity": "Maturity",
+  "Funding Status": "Funding",
+  "Token-Product Integration Depth": "Integration",
+  "Social Reach & Engagement Index": "Reach",
+}
+
+function cellColor(value: any): string {
   const score = valueToScore(value)
   if (score === 2) return "bg-green-600 text-white"
-  if (score === 1) return "bg-yellow-600 text-black"
-  return "bg-gray-600 text-white"
+  if (score === 0) return "bg-yellow-500 text-black"
+  return "bg-red-600 text-white"
+}
+
+function scoreColor(score: number | null): string {
+  if (score === null || isNaN(score)) return "bg-yellow-500 text-black"
+  if (score >= 70) return "bg-green-600 text-white"
+  return "bg-red-600 text-white"
 }
 
 export interface TokenCardProps {
@@ -74,23 +99,32 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
 
       <div>
         <p className="text-base font-medium mb-2 text-dashYellow">Traits</p>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="grid grid-cols-3 gap-2">
           {canonicalChecklist.map(label => {
             const value = (token as any)[label]
             return (
               <TooltipProvider delayDuration={0} key={label}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className={`flex items-center gap-1 px-2 py-0.5 rounded ${badgeColor(value)} text-sm`}>
+                    <span
+                      className={`flex flex-col items-center gap-1 p-2 rounded ${cellColor(value)} text-xs text-center`}
+                    >
                       {checklistIcons[label]}
-                      <span>{value || '-'}</span>
+                      <span>{shortLabels[label]}</span>
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent>{label}</TooltipContent>
+                  <TooltipContent>{`${label}: ${value || '-'}`}</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             )
           })}
+          <span
+            className={`flex flex-col items-center gap-1 p-2 rounded ${scoreColor(researchScore)} text-xs text-center`}
+          >
+            <Award className="h-4 w-4" />
+            <span>Score</span>
+            <span className="text-sm font-semibold">{researchScore !== null ? researchScore.toFixed(1) : '-'}</span>
+          </span>
         </div>
       </div>
 
