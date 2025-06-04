@@ -1,32 +1,9 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
 
 import AnimatedMarketCap from "@/components/animated-marketcap"
-import { canonicalChecklist } from "@/components/founders-edge-checklist"
-import { valueToScore } from "@/lib/score"
-import {
-  User, Twitter, Clock, Medal, Package, Layers, TrendingUp, Users
-} from "lucide-react"
+import { TraitsRadarChart } from "./traits-radar-chart"
 import Link from "next/link"
 import { FileSearch } from "lucide-react"
-
-const checklistIcons: Record<string, JSX.Element> = {
-  "Team Doxxed": <User className="h-4 w-4" />,
-  "Twitter Activity Level": <Twitter className="h-4 w-4" />,
-  "Time Commitment": <Clock className="h-4 w-4" />,
-  "Prior Founder Experience": <Medal className="h-4 w-4" />,
-  "Product Maturity": <Package className="h-4 w-4" />,
-  "Funding Status": <TrendingUp className="h-4 w-4" />,
-  "Token-Product Integration Depth": <Layers className="h-4 w-4" />,
-  "Social Reach & Engagement Index": <Users className="h-4 w-4" />,
-}
-
-function badgeColor(value: any): string {
-  const score = valueToScore(value)
-  if (score === 2) return "bg-green-600 text-white"
-  if (score === 1) return "bg-yellow-600 text-black"
-  return "bg-gray-600 text-white"
-}
 
 export interface TokenCardProps {
   token: Record<string, any>
@@ -74,24 +51,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
 
       <div>
         <p className="text-base font-medium mb-2 text-dashYellow">Traits</p>
-        <div className="flex flex-wrap gap-1.5">
-          {canonicalChecklist.map(label => {
-            const value = (token as any)[label]
-            return (
-              <TooltipProvider delayDuration={0} key={label}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className={`flex items-center gap-1 px-2 py-0.5 rounded ${badgeColor(value)} text-sm`}>
-                      {checklistIcons[label]}
-                      <span>{value || '-'}</span>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>{label}</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )
-          })}
-        </div>
+        <TraitsRadarChart token={token} />
       </div>
 
         <div className="flex justify-end mt-auto">
