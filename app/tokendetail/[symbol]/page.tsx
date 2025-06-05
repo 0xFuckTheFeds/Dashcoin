@@ -48,9 +48,11 @@ interface TokenResearchData {
 
 async function fetchTokenResearchClient(
   tokenSymbol: string,
+  ca?: string,
 ): Promise<TokenResearchData | null> {
   try {
-    const res = await fetch(`/api/research/${tokenSymbol}`);
+    const url = ca ? `/api/research/${tokenSymbol}?ca=${ca}` : `/api/research/${tokenSymbol}`;
+    const res = await fetch(url);
     if (!res.ok) return null;
     const data = await res.json();
     return data;
@@ -107,10 +109,10 @@ export default function TokenResearchPage({
     : "N/A";
 
   useEffect(() => {
-    const getResearchData = async () => {
+    const getResearchData = async (addr?: string) => {
       setIsLoading(true);
       try {
-        const data = await fetchTokenResearchClient(symbol);
+        const data = await fetchTokenResearchClient(symbol, addr);
         setResearchData(data);
         setHasScore(!!data && !!data["Score"]);
       } catch (error) {
@@ -122,6 +124,20 @@ export default function TokenResearchPage({
 
     getResearchData();
   }, [symbol]);
+
+  // Refetch research data using contract address when token data is available
+  useEffect(() => {
+    if (tokenData && tokenData.token) {
+      fetchTokenResearchClient(symbol, tokenData.token).then(data => {
+        if (data) {
+          setResearchData(data)
+          setHasScore(!!data["Score"])
+        }
+      }).catch(err => {
+        console.error(`Error fetching research data with CA for ${symbol}:`, err)
+      })
+    }
+  }, [tokenData, symbol])
 
   useEffect(() => {
     async function loadData() {

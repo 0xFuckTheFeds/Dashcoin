@@ -3,6 +3,7 @@ import { gradeMaps, valueToScore } from '@/lib/score'
 interface ResearchScoreData {
   symbol: string
   score: number | null
+  ca?: string
   [key: string]: any
 }
 
@@ -56,6 +57,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
       const result: Record<string, any> = {
         symbol: (entry['Project'] || '').toString().trim().toUpperCase(),
         score,
+        ca: (entry['CA'] || '').toString().trim(),
       };
       [
         'Team Doxxed',
@@ -79,6 +81,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
 
 interface WalletLinkData {
   symbol: string
+  ca?: string
   walletLink: string
   walletActivity: string
   twitter: string
@@ -113,6 +116,7 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
     return structured.map((entry: any) => {
       return {
         symbol: (entry['Project'] || '').toString().toUpperCase(),
+        ca: (entry['CA'] || '').toString().trim(),
         walletLink: entry['Wallet Link'] || '',
         walletActivity: entry['Wallet Comments'] || '',
         twitter: entry['Twitter'] || ''

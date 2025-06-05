@@ -18,6 +18,7 @@ import AnimatedMarketCap from "@/components/animated-marketcap";
 interface ResearchScoreData {
   symbol: string;
   score: number | null;
+  ca?: string;
   [key: string]: any;
 }
 
@@ -108,8 +109,12 @@ export default function TokenSearchList() {
   const tokensWithData = useMemo(() => {
     return tokens.map(t => {
       const sym = (t.symbol || '').toUpperCase();
-      const research =
-        researchScores.find(r => r.symbol.toUpperCase() === sym) || {};
+      const matches = researchScores.filter(r => r.symbol.toUpperCase() === sym);
+      let research: ResearchScoreData | {} = matches[0] || {};
+      if (matches.length > 1) {
+        const byCa = matches.find(r => r.ca && r.ca.toLowerCase() === t.token.toLowerCase());
+        if (byCa) research = byCa;
+      }
       const dex = dexscreenerData[t.token] || {};
       const wallet = walletInfo[sym] || { walletLink: '', twitter: '' };
       return {
