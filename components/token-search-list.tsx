@@ -12,11 +12,12 @@ import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import { Loader2, LayoutGrid, Table as TableIcon } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { DashcoinButton } from "@/components/ui/dashcoin-button";
-import { formatCurrency0 } from "@/lib/utils";
+import { formatCurrency0, findResearchEntry } from "@/lib/utils";
 import AnimatedMarketCap from "@/components/animated-marketcap";
 
 interface ResearchScoreData {
   symbol: string;
+  project: string;
   score: number | null;
   [key: string]: any;
 }
@@ -108,8 +109,7 @@ export default function TokenSearchList() {
   const tokensWithData = useMemo(() => {
     return tokens.map(t => {
       const sym = (t.symbol || '').toUpperCase();
-      const research =
-        researchScores.find(r => r.symbol.toUpperCase() === sym) || {};
+      const research = findResearchEntry(researchScores, sym, t.name || '') || {};
       const dex = dexscreenerData[t.token] || {};
       const wallet = walletInfo[sym] || { walletLink: '', twitter: '' };
       return {

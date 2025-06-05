@@ -2,6 +2,7 @@ import { gradeMaps, valueToScore } from '@/lib/score'
 
 interface ResearchScoreData {
   symbol: string
+  project: string
   score: number | null
   [key: string]: any
 }
@@ -53,8 +54,16 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
         });
         score = Math.round((total / (traits.length * 2)) * 100);
       }
+      const project = (entry['Project'] || '').toString().trim();
+      const rawSymbol =
+        entry['Symbol'] ||
+        entry['Ticker'] ||
+        entry['Token Symbol'] ||
+        entry['Symbol/Ticker'] ||
+        project;
       const result: Record<string, any> = {
-        symbol: (entry['Project'] || '').toString().trim().toUpperCase(),
+        symbol: rawSymbol.toString().trim().toUpperCase(),
+        project,
         score,
       };
       [

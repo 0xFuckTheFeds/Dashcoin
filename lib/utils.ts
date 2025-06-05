@@ -108,3 +108,25 @@ export function hexToRgba(hex: string, alpha: number): string {
   const b = bigint & 255
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
+
+export interface ResearchEntry {
+  symbol: string
+  project?: string
+  [key: string]: any
+}
+
+export function findResearchEntry(
+  research: ResearchEntry[],
+  symbol: string,
+  name?: string,
+): ResearchEntry | undefined {
+  const sym = symbol.toUpperCase()
+  const matches = research.filter(r => (r.symbol || '').toUpperCase() === sym)
+  if (matches.length <= 1) return matches[0]
+  if (name) {
+    const lower = name.toLowerCase()
+    const found = matches.find(m => (m.project || '').toLowerCase() === lower)
+    if (found) return found
+  }
+  return matches[0]
+}

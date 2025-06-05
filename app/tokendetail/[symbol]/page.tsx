@@ -48,9 +48,11 @@ interface TokenResearchData {
 
 async function fetchTokenResearchClient(
   tokenSymbol: string,
+  tokenName: string,
 ): Promise<TokenResearchData | null> {
   try {
-    const res = await fetch(`/api/research/${tokenSymbol}`);
+    const encoded = encodeURIComponent(tokenName);
+    const res = await fetch(`/api/research/${tokenSymbol}?name=${encoded}`);
     if (!res.ok) return null;
     const data = await res.json();
     return data;
@@ -110,7 +112,7 @@ export default function TokenResearchPage({
     const getResearchData = async () => {
       setIsLoading(true);
       try {
-        const data = await fetchTokenResearchClient(symbol);
+        const data = await fetchTokenResearchClient(symbol, tokenData?.name || '');
         setResearchData(data);
         setHasScore(!!data && !!data["Score"]);
       } catch (error) {
@@ -121,7 +123,7 @@ export default function TokenResearchPage({
     };
 
     getResearchData();
-  }, [symbol]);
+  }, [symbol, tokenData]);
 
   useEffect(() => {
     async function loadData() {
