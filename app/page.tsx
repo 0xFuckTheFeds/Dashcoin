@@ -22,7 +22,7 @@ import AnimatedMarketCap from "@/components/animated-marketcap";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
-import { Twitter } from "lucide-react";
+import { Twitter, TrendingUp, DollarSign, Activity, BarChart3, PieChart, Zap } from "lucide-react";
 
 const MarketCapChartWrapper = async ({
   marketCapTimeDataPromise,
@@ -35,9 +35,13 @@ const MarketCapChartWrapper = async ({
   } catch (error) {
     console.error("Error in MarketCapChartWrapper:", error);
     return (
-      <DashcoinCard className="h-48 flex items-center justify-center">
-        <p>Error loading chart data</p>
-      </DashcoinCard>
+      <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl h-48 flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-yellow-500/10 rounded-2xl opacity-50"></div>
+        <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+        <div className="relative z-10">
+          <p className="text-slate-400">Error loading chart data</p>
+        </div>
+      </div>
     );
   }
 };
@@ -53,13 +57,16 @@ const MarketCapPieWrapper = async ({
   } catch (error) {
     console.error("Error in MarketCapPieWrapper:", error);
     return (
-      <DashcoinCard className="h-48 flex items-center justify-center">
-        <p>Error loading chart data</p>
-      </DashcoinCard>
+      <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl h-48 flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-yellow-500/10 rounded-2xl opacity-50"></div>
+        <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+        <div className="relative z-10">
+          <p className="text-slate-400">Error loading chart data</p>
+        </div>
+      </div>
     );
   }
 };
-
 
 const TokenSearchListWrapper = async () => {
   try {
@@ -68,9 +75,13 @@ const TokenSearchListWrapper = async () => {
   } catch (error) {
     console.error("Error loading TokenSearchList:", error);
     return (
-      <DashcoinCard className="p-8 flex items-center justify-center">
-        <p className="text-center">Error loading token data</p>
-      </DashcoinCard>
+      <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-yellow-500/10 rounded-2xl opacity-50"></div>
+        <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+        <div className="relative z-10">
+          <p className="text-center text-slate-400">Error loading token data</p>
+        </div>
+      </div>
     );
   }
 };
@@ -80,10 +91,12 @@ export default async function Home() {
   if (!hasDuneApiKey) {
     return <EnvSetup />;
   }
+  
   const dashcoinCA = "7gkgsqE2Uip7LUyrqEi8fyLPNSbn7GYu9yFgtxZwYUVa";
   const dashcoinTradeLink =
     "https://axiom.trade/meme/Fjq9SmWmtnETAVNbir1eXhrVANi1GDoHEA4nb4tNn7w6/@dashc";
   const dashcoinXLink = "https://x.com/dune_dashcoin";
+  
   const marketStatsPromise = fetchMarketStats().then(data => {
     return data;
   }).catch((error) => {
@@ -190,127 +203,273 @@ export default async function Home() {
     dashcVolume = pair.volume?.h24 || 0;
     dashcChange24h = pair.priceChange?.h24 || 0;
     dashcLiquidity = pair.liquidity?.usd || 0;
-    // pair address and timestamp are available but unused in this view
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Use the new Navbar component */}
-      <Navbar
-        dashcStats={{
-          tradeLink: dashcoinTradeLink,
-          marketCap: dashcMarketCap,
-          contractAddress: dashcoinCA,
-        }}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/20 to-slate-900 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 pointer-events-none opacity-20">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-emerald-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></div>
+      </div>
 
-      <main className="container mx-auto px-4 py-4 space-y-4">
+      {/* Grid pattern overlay */}
+      <div className="fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none"></div>
 
-        {/* Welcome Blurb */}
-        <section className="animate-appear">
-          <DashcoinCard className="bg-white text-black dark:bg-[#111] dark:text-[#f5f5f5] text-center shadow-sm">
-            <h1 className="text-4xl font-bold mb-2">Welcome to Dashcoin Research</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              Your command center for real-time data, token comparisons, and alpha across the Believe coin ecosystem. We surface the signal—so you can trade smarter.
-            </p>
-          </DashcoinCard>
+      {/* Enhanced Navbar */}
+      <div className="relative z-50">
+        <Navbar
+          dashcStats={{
+            tradeLink: dashcoinTradeLink,
+            marketCap: dashcMarketCap,
+            contractAddress: dashcoinCA,
+          }}
+        />
+      </div>
+
+      <main className="relative z-10 container mx-auto px-4 py-8 space-y-8">
+        {/* Hero Welcome Section */}
+        <section className="animate-fade-in-up">
+          <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl relative overflow-hidden">
+            {/* Animated border glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-emerald-500/20 rounded-3xl opacity-50 animate-pulse"></div>
+            <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-3xl"></div>
+            
+            <div className="relative z-10 text-center py-16 px-8">
+              <div className="mb-6">
+                <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent mb-6">
+                  Dashcoin Research
+                </h1>
+                <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto rounded-full"></div>
+              </div>
+              <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                Your command center for real-time data, token comparisons, and alpha across the Believe coin ecosystem. 
+                <span className="text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text font-semibold"> We surface the signal—so you can trade smarter.</span>
+              </p>
+              
+              {/* Stats bar */}
+              <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div className="backdrop-blur-lg bg-white/5 rounded-2xl p-4 border border-white/10">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <TrendingUp className="w-5 h-5 text-emerald-400" />
+                    <span className="text-sm text-slate-400">Market Cap</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">
+                    <AnimatedMarketCap value={totalMarketCapValue} decimals={0} />
+                  </div>
+                </div>
+                <div className="backdrop-blur-lg bg-white/5 rounded-2xl p-4 border border-white/10">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <Activity className="w-5 h-5 text-blue-400" />
+                    <span className="text-sm text-slate-400">24h Volume</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{formattedVolume}</div>
+                </div>
+                <div className="backdrop-blur-lg bg-white/5 rounded-2xl p-4 border border-white/10">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <DollarSign className="w-5 h-5 text-purple-400" />
+                    <span className="text-sm text-slate-400">Creator Fees</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{formattedFeeEarnings}</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
-
-        {/* Token Table */}
-        <div className="mt-2">
-          <h2 className="dashcoin-text text-3xl text-dashYellow mb-4">
-            Top Tokens by Market Cap
-          </h2>
+        {/* Token Table Section */}
+        <section className="animate-fade-in-up delay-100">
+          <div className="mb-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg">
+                <BarChart3 className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                Top Tokens by Market Cap
+              </h2>
+            </div>
+            <div className="w-16 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full"></div>
+          </div>
+          
           <Suspense
             fallback={
-              <DashcoinCard className="p-8 flex items-center justify-center">
-                <p className="text-center">
-                  Loading token data... This may take a moment as we fetch data for the
-                  top tokens.
-                </p>
-              </DashcoinCard>
+              <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-emerald-500/10 rounded-2xl opacity-50"></div>
+                <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+                <div className="relative z-10 flex items-center space-x-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-400"></div>
+                  <p className="text-slate-300">
+                    Loading token data... This may take a moment as we fetch data for the top tokens.
+                  </p>
+                </div>
+              </div>
             }
           >
             <TokenSearchListWrapper />
           </Suspense>
-        </div>
+        </section>
 
-
-        {/* Market Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Total Market Cap of Believe Coins excluding Launchcoin</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">
-                <AnimatedMarketCap value={totalMarketCapValue} decimals={2} />
-              </p>
-              <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
-                <p className="text-sm">From Dune Analytics</p>
+        {/* Market Stats Cards */}
+        <section className="animate-fade-in-up delay-200">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Total Market Cap Card */}
+            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+              <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+              
+              <div className="relative z-10 p-8">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="p-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl">
+                    <TrendingUp className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Total Market Cap</h3>
+                    <p className="text-sm text-slate-400">Believe Coins excluding Launchcoin</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+                    <AnimatedMarketCap value={totalMarketCapValue} decimals={2} />
+                  </div>
+                  
+                  <div className="border-t border-white/10 pt-4">
+                    <div className="flex items-center space-x-2 text-sm text-slate-400 mb-2">
+                      <Zap className="w-4 h-4" />
+                      <span>From Dune Analytics</span>
+                    </div>
+                    <DashcoinCacheStatus
+                      lastUpdated={formattedLastRefresh}
+                      nextUpdate={formattedNextRefresh}
+                      hoursRemaining={hoursUntilRefresh}
+                      minutesRemaining={minutesUntilRefresh}
+                    />
+                  </div>
+                </div>
               </div>
-              <DashcoinCacheStatus
-                lastUpdated={formattedLastRefresh}
-                nextUpdate={formattedNextRefresh}
-                hoursRemaining={hoursUntilRefresh}
-                minutesRemaining={minutesUntilRefresh}
-              />
-            </DashcoinCardContent>
-          </DashcoinCard>
+            </div>
 
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Total Creator Fees</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p className="dashcoin-text text-3xl text-dashYellow">
-                {formattedFeeEarnings}
-              </p>
-              <div className="mt-2 pt-2 border-t border-dashGreen-light opacity-50">
-                <p className="text-sm">Estimated at 0.3% of volume</p>
+            {/* Creator Fees Card */}
+            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-red-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+              <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+              
+              <div className="relative z-10 p-8">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                    <DollarSign className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Total Creator Fees</h3>
+                    <p className="text-sm text-slate-400">24h Fee Generation</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    {formattedFeeEarnings}
+                  </div>
+                  
+                  <div className="border-t border-white/10 pt-4">
+                    <div className="flex items-center space-x-2 text-sm">
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                      <span className="text-slate-400">Estimated at 0.3% of volume</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </DashcoinCardContent>
-          </DashcoinCard>
-        </div>
+            </div>
+          </div>
+        </section>
 
-        {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-0">
-          <Suspense
-            fallback={
-              <DashcoinCard className="h-48 flex items-center justify-center">
-                <p>Loading chart...</p>
-              </DashcoinCard>
-            }
-          >
-            <MarketCapChartWrapper marketCapTimeDataPromise={marketCapTimeDataPromise} />
-          </Suspense>
-          <Suspense
-            fallback={
-              <DashcoinCard className="h-48 flex items-center justify-center">
-                <p>Loading chart...</p>
-              </DashcoinCard>
-            }
-          >
-            <MarketCapPieWrapper tokenMarketCapsPromise={tokenMarketCapsPromise} />
-          </Suspense>
-        </div>
+        {/* Charts Section */}
+        <section className="animate-fade-in-up delay-300">
+          <div className="mb-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                <PieChart className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                Market Analytics
+              </h2>
+            </div>
+            <div className="w-16 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+          </div>
 
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <Suspense
+              fallback={
+                <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl h-80 flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl opacity-50"></div>
+                  <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+                  <div className="relative z-10 flex items-center space-x-3">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-400"></div>
+                    <p className="text-slate-300">Loading chart...</p>
+                  </div>
+                </div>
+              }
+            >
+              <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden group hover:scale-[1.01] transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+                <div className="relative z-10">
+                  <MarketCapChartWrapper marketCapTimeDataPromise={marketCapTimeDataPromise} />
+                </div>
+              </div>
+            </Suspense>
+            
+            <Suspense
+              fallback={
+                <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl h-80 flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-purple-500/10 rounded-2xl opacity-50"></div>
+                  <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+                  <div className="relative z-10 flex items-center space-x-3">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-400"></div>
+                    <p className="text-slate-300">Loading chart...</p>
+                  </div>
+                </div>
+              }
+            >
+              <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden group hover:scale-[1.01] transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-purple-500/10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
+                <div className="relative z-10">
+                  <MarketCapPieWrapper tokenMarketCapsPromise={tokenMarketCapsPromise} />
+                </div>
+              </div>
+            </Suspense>
+          </div>
+        </section>
       </main>
 
-      <footer className="container mx-auto py-8 px-4 mt-12 border-t border-dashGreen-light">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <DashcoinLogo size={32} />
-          <p className="text-sm opacity-80">© 2025 Dashcoin. All rights reserved.</p>
-          <a
-            href={dashcoinXLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-dashYellow hover:text-dashYellow-dark transition-colors px-4 py-2 border border-dashYellow rounded-md"
-          >
-            <Twitter className="h-5 w-5" />
-            <span className="dashcoin-text">Follow on X</span>
-          </a>
+      {/* Enhanced Footer */}
+      <footer className="relative z-10 mt-20">
+        <div className="backdrop-blur-xl bg-white/5 border-t border-white/10">
+          <div className="container mx-auto py-8 px-4">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full blur-lg opacity-20 animate-pulse"></div>
+                  <DashcoinLogo size={40} />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">© 2025 Dashcoin. All rights reserved.</p>
+                  <p className="text-xs text-slate-500">Powered by Dune Analytics</p>
+                </div>
+              </div>
+              
+              <a
+                href={dashcoinXLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <Twitter className="h-5 w-5 text-white group-hover:rotate-12 transition-transform duration-300" />
+                <span className="text-white font-medium">Follow on X</span>
+              </a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
