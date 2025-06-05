@@ -51,7 +51,8 @@ const checklistIcons: Record<string, JSX.Element> = {
 interface ResearchScoreData {
   symbol: string
   score: number | null
-  [key: string]: any 
+  ca?: string
+  [key: string]: any
 }
 
 export default function TokenTable({ data }: { data: PaginatedTokenResponse | TokenData[] }) {
@@ -149,9 +150,13 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     }
 
     filtered = filtered.filter(token => {
-      const research = researchScores.find(
-        item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()
-      )
+      const sym = (token.symbol || '').toUpperCase()
+      const matches = researchScores.filter(r => r.symbol.toUpperCase() === sym)
+      let research = matches[0]
+      if (matches.length > 1) {
+        const byCa = matches.find(r => r.ca && r.ca.toLowerCase() === token.token.toLowerCase())
+        if (byCa) research = byCa
+      }
       return canonicalChecklist.every(label => {
         const selected = checklistFilters[label]
         if (!selected || selected.length === 0) return true
@@ -239,18 +244,28 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   }
   
     
-  const getResearchScore = (tokenSymbol: string): number | null => {
+  const getResearchScore = (tokenSymbol: string, tokenAddress?: string): number | null => {
     if (!tokenSymbol) return null;
-    
+
     const normalizedSymbol = tokenSymbol.toUpperCase();
-    const scoreData = researchScores.find(item => item.symbol.toUpperCase() === normalizedSymbol);
+    const matches = researchScores.filter(item => item.symbol.toUpperCase() === normalizedSymbol);
+    let scoreData = matches[0];
+    if (matches.length > 1 && tokenAddress) {
+      const byCa = matches.find(r => r.ca && r.ca.toLowerCase() === tokenAddress.toLowerCase());
+      if (byCa) scoreData = byCa;
+    }
     return scoreData?.score !== undefined ? scoreData.score : null;
   }
 
   const tokensWithDexData = filteredTokens.map(token => {
     const tokenAddress = getTokenProperty(token, "token", "");
     const dexData = tokenAddress && dexscreenerData[tokenAddress] ? dexscreenerData[tokenAddress] : {};
-    const research = researchScores.find(item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()) || {};
+    const matches = researchScores.filter(item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase());
+    let research: ResearchScoreData | {} = matches[0] || {};
+    if (matches.length > 1) {
+      const byCa = matches.find(r => r.ca && r.ca.toLowerCase() === tokenAddress.toLowerCase());
+      if (byCa) research = byCa;
+    }
 
     return {
       ...token,
@@ -332,8 +347,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             
             
         case "researchScore":
-          const scoreA = getResearchScore(a.symbol || '');
-          const scoreB = getResearchScore(b.symbol || '');
+          const scoreA = getResearchScore(a.symbol || '', a.token);
+          const scoreB = getResearchScore(b.symbol || '', b.token);
           
           if (scoreA === null && scoreB === null) return 0;
           if (scoreA === null) return sortDirection === "asc" ? -1 : 1;
@@ -529,7 +544,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                 tokensWithDexData.map((token: any , index: number) => {
                   const tokenAddress = getTokenProperty(token, "token", "")
                   const tokenSymbol = getTokenProperty(token, "symbol", "???")
-                  const researchScore = getResearchScore(tokenSymbol)
+                  const researchScore = getResearchScore(tokenSymbol, tokenAddress)
 
                   return (
                     <tr

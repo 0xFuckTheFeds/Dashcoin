@@ -11,6 +11,7 @@ import { Loader2 } from "lucide-react"
 interface ResearchScoreData {
   symbol: string
   score: number | null
+  ca?: string
   [key: string]: any
 }
 
@@ -59,12 +60,19 @@ export default function TokenCardList({ data }: { data: PaginatedTokenResponse |
     fetchDex(tokens)
   }, [tokens, fetchDex])
 
-  const getResearch = (symbol: string): ResearchScoreData | undefined =>
-    researchScores.find(r => r.symbol.toUpperCase() === symbol.toUpperCase())
+  const getResearch = (symbol: string, address: string): ResearchScoreData | undefined => {
+    const sym = symbol.toUpperCase()
+    const matches = researchScores.filter(r => r.symbol.toUpperCase() === sym)
+    if (matches.length > 1) {
+      const byCa = matches.find(r => r.ca && r.ca.toLowerCase() === address.toLowerCase())
+      return byCa || matches[0]
+    }
+    return matches[0]
+  }
 
   const tokensWithData = tokens.map(t => {
     const dex = dexscreenerData[t.token] || {}
-    const research = getResearch(t.symbol || "") || {}
+    const research = getResearch(t.symbol || "", t.token) || {}
     return { ...t, ...dex, ...research, marketCap: dex.marketCap ?? t.marketCap }
   })
 

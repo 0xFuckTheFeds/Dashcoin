@@ -38,6 +38,7 @@ interface ComparisonTokenData {
 interface ResearchScoreData {
   symbol: string;
   score: number | null;
+  ca?: string;
   [key: string]: any;
 }
 
@@ -181,8 +182,10 @@ export default function ComparePage() {
       if (topTwo.length === 2) {
         const token1Data = convertTokenData(topTwo[0]);
         const token2Data = convertTokenData(topTwo[1]);
-        const r1 = researchData.find(r => r.symbol.toUpperCase() === (topTwo[0].symbol || '').toUpperCase()) || null;
-        const r2 = researchData.find(r => r.symbol.toUpperCase() === (topTwo[1].symbol || '').toUpperCase()) || null;
+        const r1Matches = researchData.filter(r => r.symbol.toUpperCase() === (topTwo[0].symbol || '').toUpperCase());
+        const r2Matches = researchData.filter(r => r.symbol.toUpperCase() === (topTwo[1].symbol || '').toUpperCase());
+        const r1 = r1Matches.length > 1 ? r1Matches.find(r => r.ca && r.ca.toLowerCase() === topTwo[0].token.toLowerCase()) || r1Matches[0] : r1Matches[0] || null;
+        const r2 = r2Matches.length > 1 ? r2Matches.find(r => r.ca && r.ca.toLowerCase() === topTwo[1].token.toLowerCase()) || r2Matches[0] : r2Matches[0] || null;
 
         setToken1Name(topTwo[0].token);
         setToken2Name(topTwo[1].token);
@@ -233,8 +236,10 @@ export default function ComparePage() {
   // When research data loads or comparison tokens change, update the metadata
   useEffect(() => {
     if (!comparisonData.token1 || !comparisonData.token2 || researchData.length === 0) return;
-    const r1 = researchData.find(r => r.symbol.toUpperCase() === (comparisonData.token1?.symbol || '').toUpperCase()) || null;
-    const r2 = researchData.find(r => r.symbol.toUpperCase() === (comparisonData.token2?.symbol || '').toUpperCase()) || null;
+    const r1Matches = researchData.filter(r => r.symbol.toUpperCase() === (comparisonData.token1?.symbol || '').toUpperCase());
+    const r2Matches = researchData.filter(r => r.symbol.toUpperCase() === (comparisonData.token2?.symbol || '').toUpperCase());
+    const r1 = r1Matches.length > 1 ? r1Matches.find(r => r.ca && r.ca.toLowerCase() === (comparisonData.token1?.address || '').toLowerCase()) || r1Matches[0] : r1Matches[0] || null;
+    const r2 = r2Matches.length > 1 ? r2Matches.find(r => r.ca && r.ca.toLowerCase() === (comparisonData.token2?.address || '').toLowerCase()) || r2Matches[0] : r2Matches[0] || null;
     setComparisonResearch({ token1: r1, token2: r2 });
   }, [researchData, comparisonData]);
 
@@ -270,8 +275,10 @@ export default function ComparePage() {
       console.log('TOKEN! ---------------------------->', token1Data)
       console.log("TOKEN2---------------->", token2Data);
 
-      const r1 = researchData.find(r => r.symbol.toUpperCase() === (token1.symbol || '').toUpperCase()) || null;
-      const r2 = researchData.find(r => r.symbol.toUpperCase() === (token2.symbol || '').toUpperCase()) || null;
+      const r1Matches = researchData.filter(r => r.symbol.toUpperCase() === (token1.symbol || '').toUpperCase());
+      const r2Matches = researchData.filter(r => r.symbol.toUpperCase() === (token2.symbol || '').toUpperCase());
+      const r1 = r1Matches.length > 1 ? r1Matches.find(r => r.ca && r.ca.toLowerCase() === token1.token.toLowerCase()) || r1Matches[0] : r1Matches[0] || null;
+      const r2 = r2Matches.length > 1 ? r2Matches.find(r => r.ca && r.ca.toLowerCase() === token2.token.toLowerCase()) || r2Matches[0] : r2Matches[0] || null;
       setComparisonData({ token1: token1Data, token2: token2Data });
       setComparisonResearch({ token1: r1, token2: r2 });
       setIsComparing(true);
