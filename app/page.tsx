@@ -87,8 +87,20 @@ const TokenSearchListWrapper = async () => {
 };
 
 export default async function Home() {
-  const hasDuneApiKey = !!process.env.DUNE_API_KEY;
-  if (!hasDuneApiKey) {
+  // OPTION 1: Comment out or remove the environment check entirely
+  // const hasDuneApiKey = !!process.env.DUNE_API_KEY;
+  // if (!hasDuneApiKey) {
+  //   return <EnvSetup />;
+  // }
+  
+  // OPTION 2: Force it to true regardless of environment
+  // const hasDuneApiKey = true;
+  
+  // OPTION 3: Add a bypass flag or condition
+  const hasDuneApiKey = !!process.env.DUNE_API_KEY || process.env.NODE_ENV === 'development';
+  
+  // Only show EnvSetup in production when API key is truly missing
+  if (!hasDuneApiKey && process.env.NODE_ENV === 'production') {
     return <EnvSetup />;
   }
   
@@ -467,7 +479,7 @@ export default async function Home() {
               >
                 <Twitter className="h-5 w-5 text-white group-hover:rotate-12 transition-transform duration-300" />
                 <span className="text-white font-medium">Follow on X</span>
-              </a>
+                </a>
             </div>
           </div>
         </div>
