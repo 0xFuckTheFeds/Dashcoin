@@ -338,7 +338,7 @@ export default async function Home() {
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
-                <span>Start Trading</span>
+                <span>Download Chrome Extension</span>
                 <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
               
@@ -420,7 +420,7 @@ export default async function Home() {
                 </div>
               }
             >
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-96">
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full">
                 <MarketCapChartWrapper marketCapTimeDataPromise={marketCapTimeDataPromise} />
               </div>
             </Suspense>
@@ -435,7 +435,7 @@ export default async function Home() {
                 </div>
               }
             >
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-96">
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full">
                 <MarketCapPieWrapper tokenMarketCapsPromise={tokenMarketCapsPromise} />
               </div>
             </Suspense>

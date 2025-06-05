@@ -2,7 +2,31 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, Twitter } from "lucide-react";
+import { 
+  Loader2, 
+  ArrowLeft, 
+  Twitter, 
+  ExternalLink,
+  TrendingUp,
+  DollarSign,
+  Activity,
+  BarChart3,
+  Clock,
+  Target,
+  Sparkles,
+  ArrowUp,
+  ArrowDown,
+  Users,
+  Wallet,
+  Calendar,
+  Globe,
+  Shield,
+  Zap,
+  AlertCircle,
+  CheckCircle,
+  Copy,
+  Eye
+} from "lucide-react";
 import { DashcoinButton } from "@/components/ui/dashcoin-button";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import {
@@ -21,7 +45,6 @@ import {
   getTimeUntilNextDexscreenerRefresh,
 } from "@/app/actions/dexscreener-actions";
 import { formatCurrency } from "@/lib/utils";
-import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
@@ -60,6 +83,65 @@ async function fetchTokenResearchClient(
   }
 }
 
+// Enhanced Stats Card Component
+const StatsCard = ({ icon: Icon, title, value, change, changeType = "positive", subtitle, gradient }) => (
+  <div className="group relative">
+    <div className={`absolute inset-0 ${gradient || 'bg-gradient-to-r from-blue-500/20 to-purple-500/20'} rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl`}></div>
+    <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
+      <div className="flex items-start justify-between mb-4">
+        <div className={`p-2 ${gradient?.replace('/20', '') || 'bg-gradient-to-r from-blue-500 to-purple-500'} rounded-lg`}>
+          <Icon className="w-5 h-5 text-white" />
+        </div>
+        {change && (
+          <div className={`flex items-center gap-1 text-sm ${
+            changeType === 'positive' ? 'text-emerald-400' : 'text-red-400'
+          }`}>
+            {changeType === 'positive' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
+            <span>{change}</span>
+          </div>
+        )}
+      </div>
+      <div>
+        <p className="text-sm text-slate-400 mb-1">{title}</p>
+        <p className="text-2xl font-bold text-white mb-1">{value}</p>
+        {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
+      </div>
+    </div>
+  </div>
+);
+
+// Research Score Badge Component
+const ResearchScoreBadge = ({ score }) => {
+  const getScoreColor = (score) => {
+    if (score >= 8) return 'from-emerald-500 to-green-400';
+    if (score >= 6) return 'from-yellow-500 to-orange-400';
+    return 'from-red-500 to-pink-400';
+  };
+
+  const getScoreLabel = (score) => {
+    if (score >= 8) return 'Excellent';
+    if (score >= 6) return 'Good';
+    return 'Caution';
+  };
+
+  return (
+    <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-xl">
+      <div className={`p-2 bg-gradient-to-r ${getScoreColor(score)} rounded-lg`}>
+        <Target className="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <p className="text-sm text-slate-400">Research Score</p>
+        <div className="flex items-center gap-2">
+          <span className="text-2xl font-bold text-white">{score}/10</span>
+          <span className={`text-sm font-medium bg-gradient-to-r ${getScoreColor(score)} bg-clip-text text-transparent`}>
+            {getScoreLabel(score)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function TokenResearchPage({
   params,
 }: {
@@ -76,9 +158,7 @@ export default function TokenResearchPage({
   const [dexNextRefresh, setDexNextRefresh] = useState<Date | null>(null);
   const [dexTimeRemaining, setDexTimeRemaining] = useState<number>(0);
   const router = useRouter();
-  const [researchData, setResearchData] = useState<TokenResearchData | null>(
-    null,
-  );
+  const [researchData, setResearchData] = useState<TokenResearchData | null>(null);
   const [hasScore, setHasScore] = useState(false);
 
   const formattedDuneLastRefresh = duneLastRefresh
@@ -197,228 +277,544 @@ export default function TokenResearchPage({
     ? new Date(tokenData.created_time).toLocaleDateString()
     : "Unknown";
 
-
   return (
-    <div className="container mx-auto px-4 py-6">
-      <header className="container mx-auto py-6 px-4">
-        <div className="flex justify-between items-center">
-          <Link href="/">
-            <DashcoinLogo size={48} />
-          </Link>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-grey-950 to-slate-900 relative">
+      {/* Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-l from-purple-500/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-blue-500/5 to-transparent rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Navigation */}
+      <header className="relative z-50 border-b border-white/10 bg-white/5 backdrop-blur-xl">
+        <div className="container mx-auto py-4 px-4 max-w-7xl">
+          <div className="flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                <DashcoinLogo size={40} />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">Dashcoin Research</h1>
+                <p className="text-xs text-slate-400">Market Intelligence</p>
+              </div>
+            </Link>
+            
+            <div className="flex items-center gap-2 text-xs text-slate-400">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+              <span>Live Data</span>
+            </div>
+          </div>
         </div>
       </header>
-      <main className="container mx-auto px-4 py-6 space-y-8">
+
+      <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
+        {/* Back Navigation */}
         <Link
           href="/"
-          className="flex items-center gap-2 text-dashYellow-light hover:text-dashYellow"
+          className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-8 group"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
           Back to Dashboard
         </Link>
 
-        <div className="flex flex-col md:flex-row justify-start gap-6 items-start md:items-center">
-          <div className="flex justify-between text-center">
-            <div className="flex flex-col">
-              <h1 className="dashcoin-title text-3xl text-dashYellow">
+        {/* Hero Section */}
+        <section className="mb-12">
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* Token Header */}
+            <div className="flex-1">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-medium">
+                  <Sparkles className="w-4 h-4" />
+                  Token Analysis
+                </div>
+                {researchData && researchData.Score && (
+                  <ResearchScoreBadge score={Number(researchData.Score)} />
+                )}
+              </div>
+              
+              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
                 {tokenSymbol}
               </h1>
-              <p className="text-xs opacity-60 mt-1">Created: {createdTime}</p>
-            </div>
-          </div>
-          <DashcoinCard className="md:max-w-md mt-4 md:mt-0">
-            <DashcoinCardHeader>
-              <DashcoinCardTitle className="text-2xl">Creator Wallet Activity</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <p>{researchData?.["Wallet Comments"] || "No wallet activity available"}</p>
-              {researchData?.["Wallet Link"] ? (
+              
+              <div className="flex items-center gap-4 text-slate-400 mb-6">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>Created: {createdTime}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4" />
+                  <span>Active Trading</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-4">
                 <a
-                  href={researchData["Wallet Link"]}
+                  href={
+                    dexscreenerData?.url ||
+                    `https://axiom.trade/t/${tokenAddress}/dashc`
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-dashYellow-light flex items-center text-sm mt-2"
+                  className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
                 >
-                  Link to creator wallet <ExternalLink className="h-3 w-3 ml-1" />
+                  <TrendingUp className="w-5 h-5" />
+                  <span>Trade Now</span>
+                  <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
-              ) : null}
-            </DashcoinCardContent>
-          </DashcoinCard>
-          {researchData?.Twitter && (
-            <a
-              href={`${researchData.Twitter.replace("@", "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[#1DA1F2] hover:bg-[#1a91da] text-white px-4 py-2 rounded-md flex items-center transition-colors"
-            >
-              <Twitter className="h-4 w-4 mr-2" />
-              View on Twitter
-            </a>
-          )}
-          <div className="flex gap-2">
-            <a
-              href={
-                dexscreenerData?.url ||
-                `https://axiom.trade/t/${tokenAddress}/dashc`
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-dashYellow hover:text-dashYellow-dark font-medium dashcoin-text flex items-center px-4 py-2 text-lg"
-            >
-              Trade
-              <ExternalLink className="h-4 w-4 ml-1" />
-            </a>
-          </div>
-        </div>
+                
+                {researchData?.Twitter && (
+                  <a
+                    href={`${researchData.Twitter.replace("@", "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300"
+                  >
+                    <Twitter className="w-5 h-5" />
+                    <span>Follow</span>
+                    <ExternalLink className="w-4 h-4 opacity-60" />
+                  </a>
+                )}
+                
+                <button className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300">
+                  <Eye className="w-5 h-5" />
+                  <span>Add to Watchlist</span>
+                </button>
+              </div>
+            </div>
 
-        {researchData && (
-          <FoundersEdgeChecklist data={researchData} showLegend />
+            {/* Creator Wallet Card */}
+            {researchData?.["Wallet Comments"] && (
+              <div className="lg:max-w-md w-full">
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"></div>
+                  <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] transition-all duration-300">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+                        <Wallet className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-white">Creator Wallet</h3>
+                        <p className="text-sm text-slate-400">Activity Analysis</p>
+                      </div>
+                    </div>
+                    
+                    <p className="text-slate-300 mb-4 leading-relaxed">
+                      {researchData["Wallet Comments"]}
+                    </p>
+                    
+                    {researchData?.["Wallet Link"] && (
+                      <a
+                        href={researchData["Wallet Link"]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm transition-colors"
+                      >
+                        <span>View Wallet</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Research Analysis */}
+        {researchData && hasScore && (
+          <section className="mb-12">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-white">Founder's Edge Analysis</h2>
+                <p className="text-slate-400">Comprehensive research metrics and risk assessment</p>
+              </div>
+            </div>
+            
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+              <FoundersEdgeChecklist data={researchData} showLegend />
+            </div>
+          </section>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Trading Activity (24h)</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm opacity-80">Buys</p>
-                  <p className="text-xl font-bold text-dashGreen-accent">
-                    {buys.toLocaleString()}
-                  </p>
+        {/* Market Statistics */}
+        <section className="mb-12">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
+              <BarChart3 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold text-white">Market Performance</h2>
+              <p className="text-slate-400">Real-time trading metrics and price data</p>
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <StatsCard
+              icon={DollarSign}
+              title="Current Price"
+              value={`$${price.toFixed(6)}`}
+              change={`${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%`}
+              changeType={change24h >= 0 ? 'positive' : 'negative'}
+              subtitle="24h change"
+              gradient="bg-gradient-to-r from-emerald-500/20 to-blue-500/20"
+            />
+            
+            <StatsCard
+              icon={Activity}
+              title="24h Volume"
+              value={formatCurrency(volume24h)}
+              change={`${change1h >= 0 ? '+' : ''}${change1h.toFixed(2)}%`}
+              changeType={change1h >= 0 ? 'positive' : 'negative'}
+              subtitle="1h change"
+              gradient="bg-gradient-to-r from-blue-500/20 to-purple-500/20"
+            />
+            
+            <StatsCard
+              icon={Users}
+              title="Liquidity"
+              value={formatCurrency(liquidity)}
+              subtitle="Available liquidity"
+              gradient="bg-gradient-to-r from-purple-500/20 to-pink-500/20"
+            />
+            
+            <StatsCard
+              icon={Zap}
+              title="24h Transactions"
+              value={txs.toLocaleString()}
+              subtitle={`${buys} buys, ${sells} sells`}
+              gradient="bg-gradient-to-r from-orange-500/20 to-red-500/20"
+            />
+          </div>
+
+          {/* Trading Activity Detail */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
+              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="p-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl">
+                    <Activity className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Trading Activity</h3>
+                    <p className="text-slate-400">24-hour transaction breakdown</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm opacity-80">Sells</p>
-                  <p className="text-xl font-bold text-dashRed">
-                    {sells.toLocaleString()}
-                  </p>
+                
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-sm text-slate-400 mb-2">Buy Orders</p>
+                    <div className="flex items-center gap-3">
+                      <p className="text-3xl font-bold text-emerald-400">{buys.toLocaleString()}</p>
+                      <div className="flex items-center gap-1 text-emerald-400 text-sm">
+                        <ArrowUp className="w-4 h-4" />
+                        <span>Active</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-400 mb-2">Sell Orders</p>
+                    <div className="flex items-center gap-3">
+                      <p className="text-3xl font-bold text-red-400">{sells.toLocaleString()}</p>
+                      <div className="flex items-center gap-1 text-red-400 text-sm">
+                        <ArrowDown className="w-4 h-4" />
+                        <span>Active</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm opacity-80">Liquidity</p>
-                  <p className="text-xl font-bold">
-                    ${formatCurrency(liquidity)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm opacity-80">Price Change (1h)</p>
-                  <p
-                    className={`text-xl font-bold ${change1h >= 0 ? "text-dashGreen-accent" : "text-dashRed"}`}
-                  >
-                    {change1h >= 0 ? "+" : ""}
-                    {change1h.toFixed(2)}%
-                  </p>
+                
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-400">Buy/Sell Ratio</span>
+                    <span className="text-white font-medium">
+                      {sells > 0 ? (buys / sells).toFixed(2) : '∞'}:1
+                    </span>
+                  </div>
                 </div>
               </div>
-            </DashcoinCardContent>
-          </DashcoinCard>
+            </div>
 
-          <DashcoinCard>
-            <DashcoinCardHeader>
-              <DashcoinCardTitle>Token Details</DashcoinCardTitle>
-            </DashcoinCardHeader>
-            <DashcoinCardContent>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm opacity-80">Contract Address</span>
-                  {tokenAddress ? (
-                    <CopyAddress
-                      address={tokenAddress}
-                      showBackground={true}
-                      className="text-dashYellow-light hover:text-dashYellow"
-                    />
-                  ) : (
-                    <span className="text-sm">Not available</span>
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
+              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
+                    <Globe className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Token Details</h3>
+                    <p className="text-slate-400">Contract and trading information</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-slate-400">Contract Address</span>
+                    {tokenAddress ? (
+                      <CopyAddress
+                        address={tokenAddress}
+                        showBackground={true}
+                        className="text-blue-400 hover:text-blue-300"
+                      />
+                    ) : (
+                      <span className="text-sm text-slate-500">Not available</span>
+                    )}
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-400">Symbol</span>
+                    <span className="text-sm text-white font-medium">{tokenSymbol}</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-400">Created</span>
+                    <span className="text-sm text-white font-medium">{createdTime}</span>
+                  </div>
+                  
+                  {dexscreenerData?.dexId && (
+                    <div className="flex justify-between">
+                      <span className="text-sm text-slate-400">DEX</span>
+                      <span className="text-sm text-white font-medium">{dexscreenerData.dexId}</span>
+                    </div>
+                  )}
+                  
+                  {dexscreenerData?.pairAddress && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-400">Pair Address</span>
+                      <CopyAddress
+                        address={dexscreenerData.pairAddress}
+                        showBackground={true}
+                        className="text-blue-400 hover:text-blue-300"
+                      />
+                    </div>
                   )}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm opacity-80">Symbol</span>
-                  <span className="text-sm">{tokenSymbol}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm opacity-80">Created</span>
-                  <span className="text-sm">{createdTime}</span>
-                </div>
-                {dexscreenerData?.dexId && (
-                  <div className="flex justify-between">
-                    <span className="text-sm opacity-80">DEX</span>
-                    <span className="text-sm">{dexscreenerData.dexId}</span>
-                  </div>
-                )}
-                {dexscreenerData?.pairAddress && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm opacity-80">Pair Address</span>
-                    <CopyAddress
-                      address={dexscreenerData.pairAddress}
-                      showBackground={true}
-                      className="text-dashYellow-light hover:text-dashYellow"
-                    />
-                  </div>
-                )}
               </div>
-              <div className="mt-4 pt-4 border-t border-dashGreen-light">
-                <p className="text-xs opacity-70 mb-1">
-                  Data Refresh Information:
-                </p>
-                <div className="grid grid-cols-2 gap-2 text-xs opacity-70">
-                  <div>
-                    <p>Dune data last updated:</p>
-                    <p className="font-mono">{formattedDuneLastRefresh}</p>
-                    <p>Next refresh: {formattedDuneNextRefresh}</p>
-                  </div>
-                  <div>
-                    <p>DEX data last updated:</p>
-                    <p className="font-mono">{formattedDexLastRefresh}</p>
-                    <p>Next refresh: {formattedDexNextRefresh}</p>
-                  </div>
-                </div>
-              </div>
-            </DashcoinCardContent>
-          </DashcoinCard>
-        </div>
+            </div>
+          </div>
+        </section>
 
-        {/* Dexscreener Chart */}
+        {/* Price Chart */}
         {chartAddress && (
-          <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
+          <section className="mb-12">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-white">Price Chart</h2>
+                <p className="text-slate-400">Interactive trading view with technical analysis</p>
+              </div>
+            </div>
+            
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
+              <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
+            </div>
+          </section>
+        )}
+
+        {/* Data Refresh Status */}
+        <section>
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
+                <Clock className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Data Refresh Status</h3>
+                <p className="text-slate-400">Real-time data synchronization information</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+                  <h4 className="text-lg font-semibold text-white">Dune Analytics</h4>
+                </div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Last Update:</span>
+                    <span className="text-white font-mono">{formattedDuneLastRefresh}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Next Refresh:</span>
+                    <span className="text-white font-mono">{formattedDuneNextRefresh}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
+                  <h4 className="text-lg font-semibold text-white">DEX Data</h4>
+                </div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Last Update:</span>
+                    <span className="text-white font-mono">{formattedDexLastRefresh}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Next Refresh:</span>
+                    <span className="text-white font-mono">{formattedDexNextRefresh}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Loading States */}
+        {isLoading && (
+          <section className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 text-center">
+              <div className="flex flex-col items-center gap-4">
+                <div className="relative">
+                  <div className="w-16 h-16 border-4 border-blue-500/20 rounded-full"></div>
+                  <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin absolute top-0"></div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Loading Research Data</h3>
+                  <p className="text-slate-400">Analyzing {symbol} token metrics...</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* No Research Data State */}
+        {!isLoading && !hasScore && (
+          <section className="text-center py-20">
+            <div className="max-w-md mx-auto">
+              <div className="p-4 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                <AlertCircle className="w-10 h-10 text-yellow-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-4">Research Data Unavailable</h2>
+              <p className="text-slate-400 mb-8 leading-relaxed">
+                Comprehensive research analysis is not yet available for <strong>{symbol}</strong>. 
+                Our team is constantly expanding coverage of new tokens.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-300"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  <span>Browse Other Tokens</span>
+                </Link>
+                <button className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300">
+                  <Activity className="w-5 h-5" />
+                  <span>Request Analysis</span>
+                </button>
+              </div>
+            </div>
+          </section>
         )}
       </main>
 
+      {/* Enhanced Footer */}
+      <footer className="relative z-10 mt-20">
+        <div className="bg-white/5 backdrop-blur-xl border-t border-white/10">
+          <div className="container mx-auto py-12 px-4 max-w-7xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              {/* Brand Section */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-lg opacity-30 animate-pulse"></div>
+                    <DashcoinLogo size={40} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Dashcoin Research</h3>
+                    <p className="text-sm text-slate-400">Market Intelligence Platform</p>
+                  </div>
+                </div>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Providing comprehensive analytics and real-time insights for the Believe coin ecosystem.
+                </p>
+              </div>
 
-      {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="flex flex-col items-center">
-            <Loader2 className="h-8 w-8 animate-spin text-dashYellow" />
-            <p className="mt-4 text-dashYellow-light">
-              Loading research data...
-            </p>
-          </div>
-        </div>
-      ) : !hasScore ? (
-        <DashcoinCard className="p-8 text-center">
-          <h2 className="text-xl font-semibold text-dashYellow">
-            No Research Available
-          </h2>
-          <p className="mt-4 text-dashYellow-light">
-            Research data is not yet available for {symbol}. Check back later or
-            try another token.
-          </p>
-        </DashcoinCard>
-      ) : (
-        <div className="space-y-8"></div>
-      )}
+              {/* Quick Actions */}
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-white">Quick Actions</h4>
+                <div className="space-y-2">
+                  <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
+                    <BarChart3 className="w-4 h-4" />
+                    <span>Market Dashboard</span>
+                  </Link>
+                  <a href={
+                    dexscreenerData?.url ||
+                    `https://axiom.trade/t/${tokenAddress}/dashc`
+                  } target="_blank" rel="noopener noreferrer" 
+                     className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
+                    <TrendingUp className="w-4 h-4" />
+                    <span>Trade {tokenSymbol}</span>
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                  {researchData?.Twitter && (
+                    <a href={`${researchData.Twitter.replace("@", "")}`} target="_blank" rel="noopener noreferrer" 
+                       className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
+                      <Twitter className="w-4 h-4" />
+                      <span>Follow Project</span>
+                      <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  )}
+                </div>
+              </div>
 
-      <footer className="container mx-auto py-8 px-4 mt-12 border-t border-dashGreen-light">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <DashcoinLogo size={32} />
-          <p className="text-sm opacity-80">
-            © 2025 Dashcoin. All rights reserved.
-          </p>
-          <div className="flex gap-4">
-            <DashcoinButton variant="outline" size="sm">
-              Docs
-            </DashcoinButton>
-            <DashcoinButton variant="outline" size="sm">
-              GitHub
-            </DashcoinButton>
+              {/* Data Sources */}
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-white">Data Sources</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
+                    <div className="p-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg">
+                      <Zap className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-white font-medium text-sm">Real-time Analytics</p>
+                      <p className="text-slate-400 text-xs">Powered by Dune & DEX APIs</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <Clock className="w-3 h-3" />
+                    <span>Last updated: {formattedDuneLastRefresh}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Bar */}
+            <div className="border-t border-white/10 pt-8">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="text-center md:text-left">
+                  <p className="text-sm text-slate-400">© 2025 Dashcoin Research. All rights reserved.</p>
+                  <p className="text-xs text-slate-500">Advanced token analysis for the Believe ecosystem</p>
+                </div>
+                
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span>Live Data Active</span>
+                  </div>
+                  
+                  <Link
+                    href="/"
+                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
+                  >
+                    <BarChart3 className="h-4 w-4 text-white group-hover:rotate-12 transition-transform duration-300" />
+                    <span className="text-white font-medium text-sm">Dashboard</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </footer>

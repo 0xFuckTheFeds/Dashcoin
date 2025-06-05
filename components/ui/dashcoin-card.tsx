@@ -51,17 +51,8 @@ const DashcoinCacheStatus = React.forwardRef<
     minutesRemaining?: number
   }
 >(({ className, lastUpdated, nextUpdate, hoursRemaining, minutesRemaining, ...props }, ref) => (
-  <div ref={ref} className={cn("mt-2 pt-2 border-t border-dashGreen-light opacity-70 text-xs", className)} {...props}>
-    <div className="flex flex-col gap-0.5">
-      <p>Last updated: {lastUpdated}</p>
-      {hoursRemaining !== undefined && minutesRemaining !== undefined ? (
-        <p>
-          Next update in: {hoursRemaining}h {minutesRemaining}m
-        </p>
-      ) : (
-        <p>Next update: {nextUpdate}</p>
-      )}
-    </div>
+  <div ref={ref} className={cn("mt-2 pt-2 opacity-70 text-xs", className)} {...props}>
+
   </div>
 ))
 DashcoinCacheStatus.displayName = "DashcoinCacheStatus"
