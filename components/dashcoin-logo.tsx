@@ -5,28 +5,22 @@ interface DashcoinLogoProps {
   size?: number;
 }
 
-export function DashcoinLogo({ className = "", size = 40 }: DashcoinLogoProps) {
+export function DashcoinLogo({ className = "", size = 240 }: DashcoinLogoProps) {
   return (
     <div className={`relative ${className}`}>
       <div className="flex items-center gap-2">
         <div
-          className="relative w-10 h-10 rounded-full"
-          style={{ width: `${size}px`, height: `${size}px` }}
+          className="relative w-10 h-10 rounded-full mb-8"
+          style={{ width: `${size}px` }}
         >
           <Image
-            src="/images/Dashcoin%20Research%20Logo.png"
+            src="/images/dashcoin.png"
             alt="Dashcoin Research Logo"
             width={size}
             height={size}
-            className="rounded-full"
           />
         </div>
-        <span
-          className="dashcoin-title text-dashYellow-light text-2xl"
-          style={{ fontSize: `${size / 2}px` }}
-        >
-          Dashcoin Research
-        </span>
+
       </div>
     </div>
   );
