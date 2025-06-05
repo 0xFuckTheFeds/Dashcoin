@@ -318,8 +318,8 @@ export default async function Home() {
               Real-time Market Intelligence
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-6">
-              Internet Capital Markets
+            <h1 className="text-5xl md:text-6xl  font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-6">
+              Internet Capital Markets are the Future.
             </h1>
             
             <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
