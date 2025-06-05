@@ -15,9 +15,9 @@ export const interviews: Interview[] = [
   },
   {
     id: '2',
-    project: 'Unknown Title',
+    project: 'Giggles',
     youtubeId: 'K3D75w-GhiQ',
-    quote: 'Building the future of tokenized communities',
+    quote: 'Building the app for Gen Alpha Brainrot',
   },
   {
     id: '3',
