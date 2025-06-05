@@ -32,6 +32,7 @@ import {
   Zap,
   Search,
   Filter,
+  Chrome,
   ArrowUpRight,
   Clock,
   Users,
@@ -309,7 +310,7 @@ export default async function Home() {
         />
       </div>
 
-      <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl mt-16">
+      <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl mt-16 mt-16">
         {/* Hero Section - Redesigned */}
         <section className="mb-12">
           <div className="text-center mb-8">
@@ -318,7 +319,7 @@ export default async function Home() {
               Real-time Market Intelligence
             </div>
             
-            <h1 className="text-5xl md:text-6xl  font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-6">
+            <h1 className="text-5xl md:text-6xl  font-bold bg-gradient-to-r from-blue-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
               Internet Capital Markets are the Future.
             </h1>
             
@@ -339,7 +340,7 @@ export default async function Home() {
                 className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 <span>Download Chrome Extension</span>
-                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <Chrome className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
               
               <a

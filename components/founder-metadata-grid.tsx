@@ -38,9 +38,9 @@ export function FounderMetadataGrid({ token1, token2 }: Props) {
   return (
     <div className="divide-y divide-dashGreen-light">
       <div className="hidden md:grid grid-cols-3 font-semibold mb-2">
-        <div className="p-2">Trait</div>
-        <div className="p-2 text-center">{token1.symbol}</div>
-        <div className="p-2 text-center">{token2.symbol}</div>
+        <div className="p-2 text-gray-300">Trait</div>
+        <div className="p-2 text-center text-gray-300">{token1.symbol}</div>
+        <div className="p-2 text-center text-gray-300">{token2.symbol}</div>
       </div>
       {rows.map(({ label, val1, val2, score }) => {
         const s1 = score ? (typeof val1 === 'number' ? val1 : 0) : valueToScore(val1, (gradeMaps as any)[label] || gradeMaps.default);
@@ -56,7 +56,7 @@ export function FounderMetadataGrid({ token1, token2 }: Props) {
             <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="px-2 font-medium cursor-help">{label}</div>
+                  <div className="px-2 font-medium cursor-help text-gray-50">{label}</div>
                 </TooltipTrigger>
                 <TooltipContent>{label}</TooltipContent>
               </Tooltip>
