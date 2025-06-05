@@ -292,12 +292,8 @@ export default function TokenResearchPage({
           <div className="flex justify-between items-center">
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                <DashcoinLogo size={40} />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white">Dashcoin Research</h1>
-                <p className="text-xs text-slate-400">Market Intelligence</p>
+                <div className="absolute inset-0 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                <DashcoinLogo size={240} />
               </div>
             </Link>
             
@@ -497,7 +493,7 @@ export default function TokenResearchPage({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300">
+              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] h-full transition-all duration-300">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl">
                     <Activity className="w-6 h-6 text-white" />
@@ -729,13 +725,10 @@ export default function TokenResearchPage({
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-lg opacity-30 animate-pulse"></div>
-                    <DashcoinLogo size={40} />
+                    <div className="absolute inset-0 rounded-full blur-lg opacity-30 animate-pulse"></div>
+                    <DashcoinLogo size={240} />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white">Dashcoin Research</h3>
-                    <p className="text-sm text-slate-400">Market Intelligence Platform</p>
-                  </div>
+
                 </div>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Providing comprehensive analytics and real-time insights for the Believe coin ecosystem.

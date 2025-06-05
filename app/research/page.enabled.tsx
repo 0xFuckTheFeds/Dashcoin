@@ -901,8 +901,7 @@ export default function ResearchPage() {
       <footer className="py-6 px-6 border-t border-dashGreen-light">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center space-x-2">
-            <DashcoinLogo size={32} />
-            <span className="text-dashYellow-light font-bold">Dashcoin Research</span>
+            <DashcoinLogo size={242} />
           </div>
           <p className="text-sm opacity-80">© 2025 Dashcoin. All rights reserved.</p>
           <a

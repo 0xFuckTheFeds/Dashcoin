@@ -583,11 +583,7 @@ export default async function Home() {
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-lg opacity-30 animate-pulse"></div>
-                    <DashcoinLogo size={40} />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white">Dashcoin Research</h3>
-                    <p className="text-sm text-slate-400">Market Intelligence Platform</p>
+                    <DashcoinLogo size={240} />
                   </div>
                 </div>
                 <p className="text-slate-400 text-sm leading-relaxed">
