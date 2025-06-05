@@ -47,7 +47,6 @@ export default function EnvSetup() {
         {/* Logo with enhanced animation */}
         <div className={`mb-12 transform transition-all duration-1000 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full blur-xl opacity-20 animate-pulse"></div>
             <DashcoinLogo />
           </div>
         </div>
