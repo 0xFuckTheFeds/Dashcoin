@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import Image from "next/image";
 import type { TokenData } from "@/types/dune";
 import {
   fetchTokenResearch,
@@ -69,12 +70,13 @@ export default function TokenSearchList() {
       addresses.forEach(addr => {
         const d = map.get(addr);
         if (d && d.pairs && d.pairs.length > 0) {
-          const p = d.pairs[0];
+          const p = d.pairs[0] as any;
           result[addr] = {
             volume24h: p.volume?.h24 || 0,
             change24h: p.priceChange?.h24 || 0,
             marketCap: p.fdv || 0,
             liquidity: p.liquidity?.usd || 0,
+            logoUrl: p.baseToken?.imageUrl || p.info?.imageUrl || p.baseToken?.logoURI,
           };
         }
       });
@@ -143,6 +145,7 @@ export default function TokenSearchList() {
         ...research,
         ...wallet,
         marketCap: dex.marketCap ?? t.marketCap,
+        logoUrl: dex.logoUrl,
       };
     });
   }, [tokens, researchScores, dexscreenerData, walletInfo]);
@@ -434,12 +437,6 @@ export default function TokenSearchList() {
                   </th>
                   <th className="text-left py-4 px-6 text-slate-300 font-medium">
                     <div className="flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4" />
-                      Liquidity
-                    </div>
-                  </th>
-                  <th className="text-left py-4 px-6 text-slate-300 font-medium">
-                    <div className="flex items-center gap-2">
                       <Star className="w-4 h-4" />
                       Research
                     </div>
@@ -452,9 +449,19 @@ export default function TokenSearchList() {
                   <tr key={idx} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
                     <td className="py-4 px-6">
                       <Link href={`/tokendetail/${token.symbol}`} className="flex items-center gap-3 group-hover:text-teal-400 transition-colors">
-                        <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-xs">
-                          {(token.symbol || '').substring(0, 2)}
-                        </div>
+                        {token.logoUrl ? (
+                          <Image
+                            src={token.logoUrl}
+                            alt={`${token.symbol} logo`}
+                            width={32}
+                            height={32}
+                            className="w-8 h-8 rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-xs">
+                            {(token.symbol || '').substring(0, 2)}
+                          </div>
+                        )}
                         <div>
                           <div className="font-bold text-white">{token.symbol}</div>
                           {token.name && (
@@ -476,11 +483,6 @@ export default function TokenSearchList() {
                         {(token.change24h || 0) > 0 ? <TrendingUp className="w-3 h-3" /> : 
                          (token.change24h || 0) < 0 ? <TrendingDown className="w-3 h-3" /> : null}
                         {Math.abs(token.change24h || 0).toFixed(2)}%
-                      </div>
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="text-white font-medium">
-                        ${formatCompactNumber(token.liquidity || 0)}
                       </div>
                     </td>
                     <td className="py-4 px-6">

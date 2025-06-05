@@ -337,8 +337,9 @@ export default async function Home() {
                 href={dashcoinTradeLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="relative group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
+                <span className="absolute -top-2 -right-2 bg-amber-500 text-xs font-semibold px-2 py-0.5 rounded-full">Coming Soon</span>
                 <span>Download Chrome Extension</span>
                 <Chrome className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
