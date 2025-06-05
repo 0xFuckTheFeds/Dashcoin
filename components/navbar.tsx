@@ -59,7 +59,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
             {/* Logo */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-3">
-                <DashcoinLogo size={290} />
+                <DashcoinLogo size={40} />
               </Link>
 
             {/* Compact Stats Bar - Center */}
