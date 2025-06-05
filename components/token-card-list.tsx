@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
+import { findResearchEntry } from "@/lib/utils"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { TokenCard } from "./token-card"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
@@ -10,6 +11,7 @@ import { Loader2 } from "lucide-react"
 
 interface ResearchScoreData {
   symbol: string
+  project: string
   score: number | null
   [key: string]: any
 }
@@ -59,12 +61,12 @@ export default function TokenCardList({ data }: { data: PaginatedTokenResponse |
     fetchDex(tokens)
   }, [tokens, fetchDex])
 
-  const getResearch = (symbol: string): ResearchScoreData | undefined =>
-    researchScores.find(r => r.symbol.toUpperCase() === symbol.toUpperCase())
+  const getResearch = (symbol: string, name: string): ResearchScoreData | undefined =>
+    findResearchEntry(researchScores, symbol, name)
 
   const tokensWithData = tokens.map(t => {
     const dex = dexscreenerData[t.token] || {}
-    const research = getResearch(t.symbol || "") || {}
+    const research = getResearch(t.symbol || "", t.name || "") || {}
     return { ...t, ...dex, ...research, marketCap: dex.marketCap ?? t.marketCap }
   })
 

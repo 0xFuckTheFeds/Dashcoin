@@ -10,6 +10,7 @@ import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { SimpleGrowthCard } from "@/components/simple-growth-card";
 import { FounderMetadataGrid } from "@/components/founder-metadata-grid";
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action";
+import { findResearchEntry } from "@/lib/utils";
 
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -37,6 +38,7 @@ interface ComparisonTokenData {
 
 interface ResearchScoreData {
   symbol: string;
+  project: string;
   score: number | null;
   [key: string]: any;
 }
@@ -181,8 +183,12 @@ export default function ComparePage() {
       if (topTwo.length === 2) {
         const token1Data = convertTokenData(topTwo[0]);
         const token2Data = convertTokenData(topTwo[1]);
-        const r1 = researchData.find(r => r.symbol.toUpperCase() === (topTwo[0].symbol || '').toUpperCase()) || null;
-        const r2 = researchData.find(r => r.symbol.toUpperCase() === (topTwo[1].symbol || '').toUpperCase()) || null;
+        const r1 =
+          findResearchEntry(researchData, topTwo[0].symbol || '', topTwo[0].name || '') ||
+          null;
+        const r2 =
+          findResearchEntry(researchData, topTwo[1].symbol || '', topTwo[1].name || '') ||
+          null;
 
         setToken1Name(topTwo[0].token);
         setToken2Name(topTwo[1].token);
@@ -233,8 +239,18 @@ export default function ComparePage() {
   // When research data loads or comparison tokens change, update the metadata
   useEffect(() => {
     if (!comparisonData.token1 || !comparisonData.token2 || researchData.length === 0) return;
-    const r1 = researchData.find(r => r.symbol.toUpperCase() === (comparisonData.token1?.symbol || '').toUpperCase()) || null;
-    const r2 = researchData.find(r => r.symbol.toUpperCase() === (comparisonData.token2?.symbol || '').toUpperCase()) || null;
+    const r1 =
+      findResearchEntry(
+        researchData,
+        comparisonData.token1?.symbol || '',
+        comparisonData.token1?.name || '',
+      ) || null;
+    const r2 =
+      findResearchEntry(
+        researchData,
+        comparisonData.token2?.symbol || '',
+        comparisonData.token2?.name || '',
+      ) || null;
     setComparisonResearch({ token1: r1, token2: r2 });
   }, [researchData, comparisonData]);
 
@@ -270,8 +286,12 @@ export default function ComparePage() {
       console.log('TOKEN! ---------------------------->', token1Data)
       console.log("TOKEN2---------------->", token2Data);
 
-      const r1 = researchData.find(r => r.symbol.toUpperCase() === (token1.symbol || '').toUpperCase()) || null;
-      const r2 = researchData.find(r => r.symbol.toUpperCase() === (token2.symbol || '').toUpperCase()) || null;
+      const r1 =
+        findResearchEntry(researchData, token1.symbol || '', token1.name || '') ||
+        null;
+      const r2 =
+        findResearchEntry(researchData, token2.symbol || '', token2.name || '') ||
+        null;
       setComparisonData({ token1: token1Data, token2: token2Data });
       setComparisonResearch({ token1: r1, token2: r2 });
       setIsComparing(true);

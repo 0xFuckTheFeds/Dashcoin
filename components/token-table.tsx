@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { formatCurrency0 } from "@/lib/utils"
+import { formatCurrency0, findResearchEntry } from "@/lib/utils"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
 import {
   ChevronDown,
@@ -50,8 +50,9 @@ const checklistIcons: Record<string, JSX.Element> = {
 
 interface ResearchScoreData {
   symbol: string
+  project: string
   score: number | null
-  [key: string]: any 
+  [key: string]: any
 }
 
 export default function TokenTable({ data }: { data: PaginatedTokenResponse | TokenData[] }) {
@@ -149,8 +150,10 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     }
 
     filtered = filtered.filter(token => {
-      const research = researchScores.find(
-        item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()
+      const research = findResearchEntry(
+        researchScores,
+        token.symbol || '',
+        token.name || ''
       )
       return canonicalChecklist.every(label => {
         const selected = checklistFilters[label]
@@ -239,18 +242,17 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   }
   
     
-  const getResearchScore = (tokenSymbol: string): number | null => {
+  const getResearchScore = (tokenSymbol: string, tokenName: string): number | null => {
     if (!tokenSymbol) return null;
-    
-    const normalizedSymbol = tokenSymbol.toUpperCase();
-    const scoreData = researchScores.find(item => item.symbol.toUpperCase() === normalizedSymbol);
-    return scoreData?.score !== undefined ? scoreData.score : null;
+
+    const entry = findResearchEntry(researchScores, tokenSymbol, tokenName);
+    return entry && entry.score !== undefined ? entry.score : null;
   }
 
   const tokensWithDexData = filteredTokens.map(token => {
     const tokenAddress = getTokenProperty(token, "token", "");
     const dexData = tokenAddress && dexscreenerData[tokenAddress] ? dexscreenerData[tokenAddress] : {};
-    const research = researchScores.find(item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()) || {};
+    const research = findResearchEntry(researchScores, token.symbol || '', token.name || '') || {};
 
     return {
       ...token,
@@ -332,8 +334,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             
             
         case "researchScore":
-          const scoreA = getResearchScore(a.symbol || '');
-          const scoreB = getResearchScore(b.symbol || '');
+          const scoreA = getResearchScore(a.symbol || '', a.name || '');
+          const scoreB = getResearchScore(b.symbol || '', b.name || '');
           
           if (scoreA === null && scoreB === null) return 0;
           if (scoreA === null) return sortDirection === "asc" ? -1 : 1;
@@ -529,7 +531,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                 tokensWithDexData.map((token: any , index: number) => {
                   const tokenAddress = getTokenProperty(token, "token", "")
                   const tokenSymbol = getTokenProperty(token, "symbol", "???")
-                  const researchScore = getResearchScore(tokenSymbol)
+                  const tokenName = getTokenProperty(token, "name", "")
+                  const researchScore = getResearchScore(tokenSymbol, tokenName)
 
                   return (
                     <tr
