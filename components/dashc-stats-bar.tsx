@@ -1,18 +1,26 @@
 import { formatCurrency } from "@/lib/utils";
 import AnimatedMarketCap from "@/components/animated-marketcap";
+import { CopyAddress } from "@/components/copy-address";
 
 interface DashcStatsBarProps {
   tradeLink: string;
   marketCap: number;
+  contractAddress: string;
 }
 
-export function DashcStatsBar({ tradeLink, marketCap }: DashcStatsBarProps) {
+export function DashcStatsBar({ tradeLink, marketCap, contractAddress }: DashcStatsBarProps) {
   return (
-    <div className="flex flex-wrap justify-between items-center gap-1 bg-dashYellow rounded-lg border border-gray-300 py-1 px-2 w-full md:w-auto text-xs shadow-sm">
+    <div className="flex flex-wrap justify-between items-center gap-1 bg-dashGreen-light text-dashBlack rounded-lg border border-dashGreen-dark py-1 px-2 w-full md:w-auto text-xs shadow-sm">
       <div className="flex items-center gap-1">
-        <span className="font-semibold text-green-700">$DASHC</span>
+        <span className="font-semibold">$DASHC</span>
+        <CopyAddress
+          address={contractAddress}
+          displayLength={4}
+          className="text-dashBlack"
+          iconClassName="text-dashBlack opacity-70 hover:opacity-100"
+        />
       </div>
-      <div className="flex flex-wrap gap-2 justify-center text-dashBlack">
+      <div className="flex flex-wrap gap-2 justify-center">
         <div className="text-center">
           <span className="opacity-70 font-medium">Market Cap</span>
           <p className="font-medium">
@@ -25,7 +33,7 @@ export function DashcStatsBar({ tradeLink, marketCap }: DashcStatsBarProps) {
           href={tradeLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-2 py-0.5 bg-transparent text-dashBlack font-medium rounded-md hover:bg-dashYellow-dark transition-colors flex items-center justify-center border border-gray-300"
+          className="px-2 py-0.5 bg-dashGreen text-white font-medium rounded-md hover:brightness-110 transition-colors flex items-center justify-center border border-dashGreen-dark"
         >
           TRADE
         </a>

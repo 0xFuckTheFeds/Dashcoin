@@ -200,6 +200,7 @@ export default async function Home() {
         dashcStats={{
           tradeLink: dashcoinTradeLink,
           marketCap: dashcMarketCap,
+          contractAddress: dashcoinCA,
         }}
       />
 
