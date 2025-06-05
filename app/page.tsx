@@ -58,7 +58,7 @@ const MarketCapChartWrapper = async ({
       <div className="h-full">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+            <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -155,7 +155,7 @@ const QuickStatsCard = ({ icon: Icon, title, value, change, changeType = "positi
     <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"></div>
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
       <div className="flex items-start justify-between mb-4">
-        <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+        <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
           <Icon className="w-5 h-5 text-white" />
         </div>
         {change && (
@@ -313,14 +313,14 @@ export default async function Home() {
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl mt-16 mt-16">
         {/* Hero Section - Redesigned */}
         <section className="mb-12">
-          <div className="text-center mb-8">
+          <div className="text-center mb-16 mt-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4" />
               Real-time Market Intelligence
             </div>
             
             <h1 className="text-5xl md:text-6xl  font-bold bg-gradient-to-r from-blue-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
-              Internet Capital Markets are the Future.
+              Internet Capital Markets <span className="font-thin">are the Future</span>.
             </h1>
             
             <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
@@ -337,7 +337,7 @@ export default async function Home() {
                 href={dashcoinTradeLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 <span>Download Chrome Extension</span>
                 <Chrome className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -393,9 +393,6 @@ export default async function Home() {
         <section className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
-                <BarChart3 className="w-6 h-6 text-white" />
-              </div>
               <div>
                 <h2 className="text-3xl font-bold text-white">Market Overview</h2>
                 <p className="text-slate-400">Real-time analytics and performance metrics</p>
@@ -534,9 +531,7 @@ export default async function Home() {
         <section className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl">
-                <Search className="w-6 h-6 text-white" />
-              </div>
+
               <div>
                 <h2 className="text-3xl font-bold text-white">Token Analysis</h2>
                 <p className="text-slate-400">Comprehensive token data and rankings</p>
@@ -583,7 +578,7 @@ export default async function Home() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-lg opacity-30 animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full blur-lg opacity-30 animate-pulse"></div>
                     <DashcoinLogo size={240} />
                   </div>
                 </div>
@@ -620,19 +615,8 @@ export default async function Home() {
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-white">Data & Analytics</h4>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
-                    <div className="p-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg">
-                      <Zap className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-white font-medium text-sm">Powered by Dune Analytics</p>
-                      <p className="text-slate-400 text-xs">Real-time blockchain data</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <Clock className="w-3 h-3" />
-                    <span>Last updated: {formattedLastRefresh}</span>
-                  </div>
+
+
                 </div>
               </div>
             </div>
@@ -655,7 +639,7 @@ export default async function Home() {
                     href={dashcoinXLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
+                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
                   >
                     <Twitter className="h-4 w-4 text-white group-hover:rotate-12 transition-transform duration-300" />
                     <span className="text-white font-medium text-sm">Follow</span>

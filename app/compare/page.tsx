@@ -128,7 +128,7 @@ const ComparisonStatsCard = ({ icon: Icon, title, value1, value2, label1, label2
     <div className={`absolute inset-0 ${gradient || 'bg-gradient-to-r from-blue-500/20 to-purple-500/20'} rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl`}></div>
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
       <div className="flex items-center gap-3 mb-4">
-        <div className={`p-2 ${gradient?.replace('/20', '') || 'bg-gradient-to-r from-blue-500 to-purple-500'} rounded-lg`}>
+        <div className={`p-2 ${gradient?.replace('/20', '') || 'bg-gradient-to-r from-blue-500 to-blue-600'} rounded-lg`}>
           <Icon className="w-5 h-5 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-white">{title}</h3>
@@ -502,7 +502,7 @@ export default function ComparePage() {
         <section className="mb-12">
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
+              <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
                 <Target className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -589,7 +589,7 @@ export default function ComparePage() {
                 <button 
                   type="submit" 
                   onClick={handleCompare} 
-                  className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
+                  className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -766,7 +766,7 @@ export default function ComparePage() {
                 {/* Holders Chart */}
                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                    <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
                       <Users className="w-5 h-5 text-white" />
                     </div>
                     <div>
@@ -833,7 +833,7 @@ export default function ComparePage() {
               <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
+                    <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
                       <BarChart3 className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -1023,7 +1023,7 @@ export default function ComparePage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-lg opacity-30 animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full blur-lg opacity-30 animate-pulse"></div>
                     <DashcoinLogo size={40} />
                   </div>
                   <div>
@@ -1078,7 +1078,7 @@ export default function ComparePage() {
                     rel="noopener noreferrer" 
                     className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors group"
                   >
-                    <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                    <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
                       <Twitter className="w-4 h-4 text-white" />
                     </div>
                     <div>
@@ -1112,7 +1112,7 @@ export default function ComparePage() {
                     href={dashcoinXLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
+                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
                   >
                     <Twitter className="h-4 w-4 text-white group-hover:rotate-12 transition-transform duration-300" />
                     <span className="text-white font-medium text-sm">Follow</span>

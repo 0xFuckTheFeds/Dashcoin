@@ -231,7 +231,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
             href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="group/trade relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group/trade relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={(e) => {
               if (!tokenAddress) {
                 e.preventDefault();

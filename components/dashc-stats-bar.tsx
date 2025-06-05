@@ -67,7 +67,7 @@ export function DashcStatsBar({ tradeLink, marketCap, contractAddress }: DashcSt
             href={tradeLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="group/btn relative flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            className="group/btn relative flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
             <Zap className="w-3 h-3" />
             <span>TRADE</span>

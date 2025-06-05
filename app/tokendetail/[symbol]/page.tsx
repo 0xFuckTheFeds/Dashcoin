@@ -89,7 +89,7 @@ const StatsCard = ({ icon: Icon, title, value, change, changeType = "positive", 
     <div className={`absolute inset-0 ${gradient || 'bg-gradient-to-r from-blue-500/20 to-purple-500/20'} rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl`}></div>
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
       <div className="flex items-start justify-between mb-4">
-        <div className={`p-2 ${gradient?.replace('/20', '') || 'bg-gradient-to-r from-blue-500 to-purple-500'} rounded-lg`}>
+        <div className={`p-2 ${gradient?.replace('/20', '') || 'bg-gradient-to-r from-blue-500 to-blue-600'} rounded-lg`}>
           <Icon className="w-5 h-5 text-white" />
         </div>
         {change && (
@@ -354,7 +354,7 @@ export default function TokenResearchPage({
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
+                  className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
                 >
                   <TrendingUp className="w-5 h-5" />
                   <span>Trade Now</span>
@@ -441,7 +441,7 @@ export default function TokenResearchPage({
         {/* Market Statistics */}
         <section className="mb-12">
           <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
+            <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
               <BarChart3 className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -542,7 +542,7 @@ export default function TokenResearchPage({
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
+                  <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
                     <Globe className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -800,7 +800,7 @@ export default function TokenResearchPage({
                   
                   <Link
                     href="/"
-                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
+                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
                   >
                     <BarChart3 className="h-4 w-4 text-white group-hover:rotate-12 transition-transform duration-300" />
                     <span className="text-white font-medium text-sm">Dashboard</span>
