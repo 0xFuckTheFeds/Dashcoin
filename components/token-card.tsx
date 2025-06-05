@@ -1,6 +1,7 @@
 "use client";
 
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
+import Image from "next/image";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import AnimatedMarketCap from "@/components/animated-marketcap";
 import { canonicalChecklist } from "@/components/founders-edge-checklist";
@@ -98,10 +99,19 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
           <Link href={`/tokendetail/${tokenSymbol}`} className="group/link flex-1">
             <div className="flex items-center gap-3 mb-2">
               <div className="relative">
-                {/* Token Avatar Placeholder */}
-                <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-green-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
-                  {tokenSymbol.substring(0, 2)}
-                </div>
+                {token.logoUrl ? (
+                  <Image
+                    src={token.logoUrl}
+                    alt={`${tokenSymbol} logo`}
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-xl object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-green-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                    {tokenSymbol.substring(0, 2)}
+                  </div>
+                )}
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-950 flex items-center justify-center">
                   <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
                 </div>
