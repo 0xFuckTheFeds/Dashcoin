@@ -86,10 +86,10 @@ async function fetchTokenResearchClient(
 // Enhanced Stats Card Component
 const StatsCard = ({ icon: Icon, title, value, change, changeType = "positive", subtitle, gradient }) => (
   <div className="group relative">
-    <div className={`absolute inset-0 ${gradient || 'bg-gradient-to-r from-blue-500/20 to-purple-500/20'} rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl`}></div>
+    <div className={`absolute inset-0 ${gradient || 'bg-gradient-to-r from-teal-500/20 to-green-500/20'} rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl`}></div>
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
       <div className="flex items-start justify-between mb-4">
-        <div className={`p-2 ${gradient?.replace('/20', '') || 'bg-gradient-to-r from-blue-500 to-blue-600'} rounded-lg`}>
+        <div className={`p-2 ${gradient?.replace('/20', '') || 'bg-gradient-to-r from-teal-500 to-teal-600'} rounded-lg`}>
           <Icon className="w-5 h-5 text-white" />
         </div>
         {change && (
@@ -115,7 +115,7 @@ const ResearchScoreBadge = ({ score }) => {
   const getScoreColor = (score) => {
     if (score >= 8) return 'from-emerald-500 to-green-400';
     if (score >= 6) return 'from-yellow-500 to-orange-400';
-    return 'from-red-500 to-pink-400';
+    return 'from-red-500 to-teal-400';
   };
 
   const getScoreLabel = (score) => {
@@ -282,8 +282,8 @@ export default function TokenResearchPage({
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-l from-purple-500/5 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-blue-500/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-l from-green-500/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-teal-500/5 to-transparent rounded-full blur-3xl"></div>
       </div>
 
       {/* Navigation */}
@@ -321,7 +321,7 @@ export default function TokenResearchPage({
             {/* Token Header */}
             <div className="flex-1">
               <div className="flex items-center gap-4 mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-medium">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/10 border border-teal-500/20 rounded-full text-teal-400 text-sm font-medium">
                   <Sparkles className="w-4 h-4" />
                   Token Analysis
                 </div>
@@ -330,7 +330,7 @@ export default function TokenResearchPage({
                 )}
               </div>
               
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
+              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent mb-4">
                 {tokenSymbol}
               </h1>
               
@@ -354,7 +354,7 @@ export default function TokenResearchPage({
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
+                  className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
                 >
                   <TrendingUp className="w-5 h-5" />
                   <span>Trade Now</span>
@@ -385,10 +385,10 @@ export default function TokenResearchPage({
             {researchData?.["Wallet Comments"] && (
               <div className="lg:max-w-md w-full">
                 <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-teal-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"></div>
                   <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] transition-all duration-300">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+                      <div className="p-2 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg">
                         <Wallet className="w-5 h-5 text-white" />
                       </div>
                       <div>
@@ -406,7 +406,7 @@ export default function TokenResearchPage({
                         href={researchData["Wallet Link"]}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm transition-colors"
+                        className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 text-sm transition-colors"
                       >
                         <span>View Wallet</span>
                         <ExternalLink className="h-3 w-3" />
@@ -423,7 +423,7 @@ export default function TokenResearchPage({
         {researchData && hasScore && (
           <section className="mb-12">
             <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl">
+              <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -441,7 +441,7 @@ export default function TokenResearchPage({
         {/* Market Statistics */}
         <section className="mb-12">
           <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
+            <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
               <BarChart3 className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -459,7 +459,7 @@ export default function TokenResearchPage({
               change={`${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%`}
               changeType={change24h >= 0 ? 'positive' : 'negative'}
               subtitle="24h change"
-              gradient="bg-gradient-to-r from-emerald-500/20 to-blue-500/20"
+              gradient="bg-gradient-to-r from-emerald-500/20 to-teal-500/20"
             />
             
             <StatsCard
@@ -469,7 +469,7 @@ export default function TokenResearchPage({
               change={`${change1h >= 0 ? '+' : ''}${change1h.toFixed(2)}%`}
               changeType={change1h >= 0 ? 'positive' : 'negative'}
               subtitle="1h change"
-              gradient="bg-gradient-to-r from-blue-500/20 to-purple-500/20"
+              gradient="bg-gradient-to-r from-teal-500/20 to-green-500/20"
             />
             
             <StatsCard
@@ -477,7 +477,7 @@ export default function TokenResearchPage({
               title="Liquidity"
               value={formatCurrency(liquidity)}
               subtitle="Available liquidity"
-              gradient="bg-gradient-to-r from-purple-500/20 to-pink-500/20"
+              gradient="bg-gradient-to-r from-green-500/20 to-teal-500/20"
             />
             
             <StatsCard
@@ -492,10 +492,10 @@ export default function TokenResearchPage({
           {/* Trading Activity Detail */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] h-full transition-all duration-300">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="p-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl">
+                  <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
                     <Activity className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -539,10 +539,10 @@ export default function TokenResearchPage({
             </div>
 
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-green-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
+                  <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
                     <Globe className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -558,7 +558,7 @@ export default function TokenResearchPage({
                       <CopyAddress
                         address={tokenAddress}
                         showBackground={true}
-                        className="text-blue-400 hover:text-blue-300"
+                        className="text-teal-400 hover:text-teal-300"
                       />
                     ) : (
                       <span className="text-sm text-slate-500">Not available</span>
@@ -588,7 +588,7 @@ export default function TokenResearchPage({
                       <CopyAddress
                         address={dexscreenerData.pairAddress}
                         showBackground={true}
-                        className="text-blue-400 hover:text-blue-300"
+                        className="text-teal-400 hover:text-teal-300"
                       />
                     </div>
                   )}
@@ -602,7 +602,7 @@ export default function TokenResearchPage({
         {chartAddress && (
           <section className="mb-12">
             <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+              <div className="p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
                 <TrendingUp className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -633,7 +633,7 @@ export default function TokenResearchPage({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white/5 border border-white/10 rounded-xl p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+                  <div className="w-3 h-3 bg-teal-400 rounded-full animate-pulse"></div>
                   <h4 className="text-lg font-semibold text-white">Dune Analytics</h4>
                 </div>
                 <div className="space-y-3 text-sm">
@@ -674,8 +674,8 @@ export default function TokenResearchPage({
             <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 text-center">
               <div className="flex flex-col items-center gap-4">
                 <div className="relative">
-                  <div className="w-16 h-16 border-4 border-blue-500/20 rounded-full"></div>
-                  <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin absolute top-0"></div>
+                  <div className="w-16 h-16 border-4 border-teal-500/20 rounded-full"></div>
+                  <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin absolute top-0"></div>
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-white mb-2">Loading Research Data</h3>
@@ -701,7 +701,7 @@ export default function TokenResearchPage({
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/"
-                  className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-300"
+                  className="flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-all duration-300"
                 >
                   <ArrowLeft className="w-5 h-5" />
                   <span>Browse Other Tokens</span>
@@ -800,7 +800,7 @@ export default function TokenResearchPage({
                   
                   <Link
                     href="/"
-                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
+                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 rounded-lg transition-all duration-300 transform hover:scale-105"
                   >
                     <BarChart3 className="h-4 w-4 text-white group-hover:rotate-12 transition-transform duration-300" />
                     <span className="text-white font-medium text-sm">Dashboard</span>

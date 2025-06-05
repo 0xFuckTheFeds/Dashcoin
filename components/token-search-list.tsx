@@ -224,7 +224,7 @@ export default function TokenSearchList() {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="flex items-center gap-3">
-          <Loader2 className="animate-spin h-8 w-8 text-blue-400" />
+          <Loader2 className="animate-spin h-8 w-8 text-teal-400" />
           <p className="text-slate-300 text-lg">Loading token data...</p>
         </div>
       </div>
@@ -241,7 +241,7 @@ export default function TokenSearchList() {
             <p className="text-slate-400">
               {filteredAndSortedTokens.length} tokens found
               {searchTerm && (
-                <span className="ml-2 px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-sm">
+                <span className="ml-2 px-2 py-1 bg-teal-500/20 text-teal-300 rounded text-sm">
                   for "{searchTerm}"
                 </span>
               )}
@@ -254,7 +254,7 @@ export default function TokenSearchList() {
               onClick={() => setViewMode('card')}
               className={`flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-200 ${
                 viewMode === 'card' 
-                  ? 'bg-blue-600 text-white shadow-lg' 
+                  ? 'bg-teal-600 text-white shadow-lg' 
                   : 'text-slate-400 hover:text-white hover:bg-white/10'
               }`}
             >
@@ -265,7 +265,7 @@ export default function TokenSearchList() {
               onClick={() => setViewMode('table')}
               className={`flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-200 ${
                 viewMode === 'table' 
-                  ? 'bg-blue-600 text-white shadow-lg' 
+                  ? 'bg-teal-600 text-white shadow-lg' 
                   : 'text-slate-400 hover:text-white hover:bg-white/10'
               }`}
             >
@@ -288,7 +288,7 @@ export default function TokenSearchList() {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
             />
             {searchTerm && (
               <button
@@ -311,7 +311,7 @@ export default function TokenSearchList() {
                 setSortOption(e.target.value);
                 setCurrentPage(1);
               }}
-              className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-10 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[200px]"
+              className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-10 text-white focus:outline-none focus:ring-2 focus:ring-teal-500 min-w-[200px]"
             >
               <option value="mc-desc" className="bg-slate-800">Market Cap: High to Low</option>
               <option value="mc-asc" className="bg-slate-800">Market Cap: Low to High</option>
@@ -326,13 +326,13 @@ export default function TokenSearchList() {
             <button
               onClick={() => setShowFilter(!showFilter)}
               className={`flex items-center gap-2 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white hover:bg-white/10 transition-all duration-200 ${
-                marketCapFilter !== 'all' ? 'ring-2 ring-blue-500' : ''
+                marketCapFilter !== 'all' ? 'ring-2 ring-teal-500' : ''
               }`}
             >
               <Filter className="w-4 h-4" />
               <span>Filter</span>
               {marketCapFilter !== 'all' && (
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
               )}
             </button>
 
@@ -364,7 +364,7 @@ export default function TokenSearchList() {
                         setMarketCapFilter(e.target.value);
                         setCurrentPage(1);
                       }}
-                      className="w-4 h-4 text-blue-600 border-slate-500 focus:ring-blue-500"
+                      className="w-4 h-4 text-teal-600 border-slate-500 focus:ring-teal-500"
                     />
                     <span className="text-slate-300 group-hover:text-white text-sm">
                       {option.label}
@@ -382,7 +382,7 @@ export default function TokenSearchList() {
               setPageSize(Number(e.target.value));
               setCurrentPage(1);
             }}
-            className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-8 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-8 text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value={12} className="bg-slate-800">12 per page</option>
             <option value={24} className="bg-slate-800">24 per page</option>
@@ -451,8 +451,8 @@ export default function TokenSearchList() {
                 {paginatedTokens.map((token, idx) => (
                   <tr key={idx} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
                     <td className="py-4 px-6">
-                      <Link href={`/tokendetail/${token.symbol}`} className="flex items-center gap-3 group-hover:text-blue-400 transition-colors">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-xs">
+                      <Link href={`/tokendetail/${token.symbol}`} className="flex items-center gap-3 group-hover:text-teal-400 transition-colors">
+                        <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-xs">
                           {(token.symbol || '').substring(0, 2)}
                         </div>
                         <div>
@@ -514,7 +514,7 @@ export default function TokenSearchList() {
                             className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group/btn"
                             title="Twitter"
                           >
-                            <Twitter className="w-4 h-4 text-slate-400 group-hover/btn:text-blue-400" />
+                            <Twitter className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
                           </a>
                         )}
                       </div>
@@ -563,7 +563,7 @@ export default function TokenSearchList() {
                     onClick={() => handlePageChange(pageNum)}
                     className={`px-3 py-2 rounded-lg transition-all duration-200 ${
                       currentPage === pageNum
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-teal-600 text-white'
                         : 'bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white'
                     }`}
                   >

@@ -86,7 +86,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   return (
     <div className="group relative">
       {/* Glow Effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-green-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl"></div>
       
       {/* Main Card */}
       <DashcoinCard 
@@ -99,7 +99,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
             <div className="flex items-center gap-3 mb-2">
               <div className="relative">
                 {/* Token Avatar Placeholder */}
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-green-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
                   {tokenSymbol.substring(0, 2)}
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-950 flex items-center justify-center">
@@ -109,7 +109,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-white group-hover/link:text-blue-400 transition-colors truncate">
+                  <h3 className="text-lg font-bold text-white group-hover/link:text-teal-400 transition-colors truncate">
                     {tokenSymbol}
                   </h3>
                   <ArrowUpRight className="w-4 h-4 text-slate-400 opacity-0 group-hover/link:opacity-100 transition-all duration-200 transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
@@ -124,8 +124,8 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
           {/* Research Score Badge */}
           {researchScore !== null && (
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl blur opacity-30"></div>
-              <div className="relative flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 rounded-xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30"></div>
+              <div className="relative flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-xl">
                 <Star className="w-3 h-3 text-emerald-400" />
                 <span className="text-white font-bold text-sm">
                   {researchScore.toFixed(1)}
@@ -141,7 +141,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
             {/* Market Cap */}
             <div className="space-y-1">
               <div className="flex items-center gap-1.5">
-                <TrendingUp className="w-3 h-3 text-blue-400" />
+                <TrendingUp className="w-3 h-3 text-teal-400" />
                 <span className="text-xs text-slate-400 font-medium">Market Cap</span>
               </div>
               <p className="text-white font-bold text-lg">
@@ -152,7 +152,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
             {/* 24h Change */}
             <div className="space-y-1">
               <div className="flex items-center gap-1.5">
-                <Activity className="w-3 h-3 text-purple-400" />
+                <Activity className="w-3 h-3 text-green-400" />
                 <span className="text-xs text-slate-400 font-medium">24h Change</span>
               </div>
               <div className={`flex items-center gap-1 font-bold text-lg ${getPriceChangeColor(change24h)}`}>
@@ -231,7 +231,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
             href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="group/trade relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group/trade relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={(e) => {
               if (!tokenAddress) {
                 e.preventDefault();

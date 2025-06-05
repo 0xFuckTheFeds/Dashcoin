@@ -32,11 +32,11 @@ export default function EnvSetup() {
   const toggleShowKey = () => setShowKey(!showKey)
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-purple-990 to-slate-900 overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-green-990 to-slate-900 overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-teal-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
         <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-emerald-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></div>
       </div>
 
@@ -55,13 +55,13 @@ export default function EnvSetup() {
         <div className={`w-full max-w-lg transform transition-all duration-1000 delay-300 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl relative overflow-hidden">
             {/* Animated border glow */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-emerald-500/20 rounded-2xl opacity-50 animate-pulse"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-teal-500/20 to-emerald-500/20 rounded-2xl opacity-50 animate-pulse"></div>
             <div className="absolute inset-[1px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-2xl"></div>
             
             <div className="relative z-10 p-8">
               {/* Header */}
               <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent mb-3">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-green-200 to-teal-200 bg-clip-text text-transparent mb-3">
                   Connect to Dune
                 </h1>
                 <p className="text-slate-400 text-sm leading-relaxed">
@@ -83,7 +83,7 @@ export default function EnvSetup() {
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
                       required
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 group-hover:border-slate-600/50"
+                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-300 group-hover:border-slate-600/50"
                     />
                     <button
                       type="button"
@@ -108,7 +108,7 @@ export default function EnvSetup() {
                 <div className="bg-slate-800/30 border border-slate-700/30 rounded-xl p-4">
                   <div className="flex items-start space-x-3">
                     <div className="flex-shrink-0">
-                      <svg className="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 text-teal-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
@@ -118,7 +118,7 @@ export default function EnvSetup() {
                         href="https://dune.com/settings/api"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 hover:text-blue-300 transition-colors duration-200 underline decoration-blue-400/30 hover:decoration-blue-300/50"
+                        className="text-teal-400 hover:text-teal-300 transition-colors duration-200 underline decoration-teal-400/30 hover:decoration-teal-300/50"
                       >
                         Dune account settings
                       </a>
@@ -132,10 +132,10 @@ export default function EnvSetup() {
                   <button
                     type="submit"
                     disabled={isSubmitting || isSuccess || !apiKey.trim()}
-                    className="w-full relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 shadow-lg hover:shadow-xl disabled:shadow-none group"
+                    className="w-full relative overflow-hidden bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 shadow-lg hover:shadow-xl disabled:shadow-none group"
                   >
                     {/* Button glow effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-blue-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-xl"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-xl"></div>
                     
                     <span className="relative z-10 flex items-center justify-center space-x-2">
                       {isSubmitting && (

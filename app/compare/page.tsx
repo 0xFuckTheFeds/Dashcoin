@@ -110,7 +110,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="p-3 bg-white/10 backdrop-blur-xl border border-white/20 rounded-lg shadow-lg">
-        <p className="label text-blue-400 font-medium">{`${label}`}</p>
+        <p className="label text-teal-400 font-medium">{`${label}`}</p>
         {payload.map((entry: any, index: number) => (
           <p key={`item-${index}`} className="text-sm text-white">
             {`${entry.name} : ${entry.value}`}
@@ -125,10 +125,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 // Enhanced Stats Card Component
 const ComparisonStatsCard = ({ icon: Icon, title, value1, value2, label1, label2, gradient, winner }) => (
   <div className="group relative">
-    <div className={`absolute inset-0 ${gradient || 'bg-gradient-to-r from-blue-500/20 to-purple-500/20'} rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl`}></div>
+    <div className={`absolute inset-0 ${gradient || 'bg-gradient-to-r from-teal-500/20 to-green-500/20'} rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl`}></div>
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
       <div className="flex items-center gap-3 mb-4">
-        <div className={`p-2 ${gradient?.replace('/20', '') || 'bg-gradient-to-r from-blue-500 to-blue-600'} rounded-lg`}>
+        <div className={`p-2 ${gradient?.replace('/20', '') || 'bg-gradient-to-r from-teal-500 to-teal-600'} rounded-lg`}>
           <Icon className="w-5 h-5 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-white">{title}</h3>
@@ -468,8 +468,8 @@ export default function ComparePage() {
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-l from-purple-500/5 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-blue-500/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-l from-green-500/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-teal-500/5 to-transparent rounded-full blur-3xl"></div>
       </div>
 
       {/* Navigation */}
@@ -480,18 +480,18 @@ export default function ComparePage() {
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl mt-16">
         {/* Hero Section */}
         <section className="mb-12 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/10 border border-teal-500/20 rounded-full text-teal-400 text-sm font-medium mb-6">
             <Sparkles className="w-4 h-4" />
             Advanced Token Comparison
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent mb-6">
             Token Comparison
           </h1>
           
           <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
             Compare any two tokens with{" "}
-            <span className="text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text font-semibold">
+            <span className="text-transparent bg-gradient-to-r from-teal-400 to-green-400 bg-clip-text font-semibold">
               comprehensive market analytics
             </span>
             . Analyze market cap, holders, volume, and growth metrics side by side.
@@ -502,7 +502,7 @@ export default function ComparePage() {
         <section className="mb-12">
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
+              <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
                 <Target className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -523,7 +523,7 @@ export default function ComparePage() {
                     value={token1Name}
                     onChange={(e) => handleTokenSearch(e.target.value, setToken1Name, setToken1Suggestions, setShowToken1Suggestions)}
                     onFocus={() => token1Suggestions.length > 0 && setShowToken1Suggestions(true)}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400/50 transition-all duration-200"
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400/50 transition-all duration-200"
                     placeholder="e.g. DUPE" 
                     autoComplete="off" 
                   />
@@ -564,7 +564,7 @@ export default function ComparePage() {
                     value={token2Name}
                     onChange={(e) => handleTokenSearch(e.target.value, setToken2Name, setToken2Suggestions, setShowToken2Suggestions)}
                     onFocus={() => token2Suggestions.length > 0 && setShowToken2Suggestions(true)}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400/50 transition-all duration-200"
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:border-green-400 focus:outline-none focus:ring-1 focus:ring-green-400/50 transition-all duration-200"
                     placeholder="e.g. KLED" 
                     autoComplete="off" 
                   />
@@ -589,7 +589,7 @@ export default function ComparePage() {
                 <button 
                   type="submit" 
                   onClick={handleCompare} 
-                  className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
+                  className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -656,7 +656,7 @@ export default function ComparePage() {
             {/* Quick Stats Overview */}
             <section className="mb-12">
               <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl">
+                <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
                   <Activity className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -674,7 +674,7 @@ export default function ComparePage() {
                   label1={comparisonData.token1.symbol}
                   label2={comparisonData.token2.symbol}
                   winner={comparisonData.token1.marketCap > comparisonData.token2.marketCap ? 1 : 2}
-                  gradient="bg-gradient-to-r from-emerald-500/20 to-blue-500/20"
+                  gradient="bg-gradient-to-r from-emerald-500/20 to-teal-500/20"
                 />
                 
                 <ComparisonStatsCard
@@ -685,7 +685,7 @@ export default function ComparePage() {
                   label1={comparisonData.token1.symbol}
                   label2={comparisonData.token2.symbol}
                   winner={comparisonData.token1.holders > comparisonData.token2.holders ? 1 : 2}
-                  gradient="bg-gradient-to-r from-blue-500/20 to-purple-500/20"
+                  gradient="bg-gradient-to-r from-teal-500/20 to-green-500/20"
                 />
                 
                 <ComparisonStatsCard
@@ -696,7 +696,7 @@ export default function ComparePage() {
                   label1={comparisonData.token1.symbol}
                   label2={comparisonData.token2.symbol}
                   winner={comparisonData.token1.marketcapgrowthperday > comparisonData.token2.marketcapgrowthperday ? 1 : 2}
-                  gradient="bg-gradient-to-r from-purple-500/20 to-pink-500/20"
+                  gradient="bg-gradient-to-r from-green-500/20 to-teal-500/20"
                 />
               </div>
             </section>
@@ -704,7 +704,7 @@ export default function ComparePage() {
             {/* Charts Section */}
             <section className="mb-12">
               <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                <div className="p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
                   <BarChart2 className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -718,7 +718,7 @@ export default function ComparePage() {
                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg">
+                      <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
                         <BarChart2 className="w-5 h-5 text-white" />
                       </div>
                       <div>
@@ -766,7 +766,7 @@ export default function ComparePage() {
                 {/* Holders Chart */}
                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
+                    <div className="p-2 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg">
                       <Users className="w-5 h-5 text-white" />
                     </div>
                     <div>
@@ -833,7 +833,7 @@ export default function ComparePage() {
               <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
+                    <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
                       <BarChart3 className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -998,7 +998,7 @@ export default function ComparePage() {
             <section className="mb-12">
               <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                  <div className="p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
                     <Eye className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -1023,7 +1023,7 @@ export default function ComparePage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full blur-lg opacity-30 animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full blur-lg opacity-30 animate-pulse"></div>
                     <DashcoinLogo size={40} />
                   </div>
                   <div>
@@ -1078,7 +1078,7 @@ export default function ComparePage() {
                     rel="noopener noreferrer" 
                     className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors group"
                   >
-                    <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
+                    <div className="p-2 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg">
                       <Twitter className="w-4 h-4 text-white" />
                     </div>
                     <div>
@@ -1112,7 +1112,7 @@ export default function ComparePage() {
                     href={dashcoinXLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
+                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 rounded-lg transition-all duration-300 transform hover:scale-105"
                   >
                     <Twitter className="h-4 w-4 text-white group-hover:rotate-12 transition-transform duration-300" />
                     <span className="text-white font-medium text-sm">Follow</span>

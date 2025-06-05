@@ -42,8 +42,8 @@ export default async function CreatorWalletsPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(139,92,246,0.08),transparent_50%)]"></div>
         
         {/* Floating orbs */}
-        <div className="absolute top-1/4 right-1/3 w-72 h-72 bg-gradient-to-l from-purple-500/6 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-gradient-to-r from-blue-500/5 to-transparent rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/4 right-1/3 w-72 h-72 bg-gradient-to-l from-green-500/6 to-transparent rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-gradient-to-r from-teal-500/5 to-transparent rounded-full blur-3xl animate-pulse delay-1000"></div>
         
         {/* Mesh pattern */}
         <div className="absolute inset-0 opacity-[0.015]">
@@ -61,20 +61,20 @@ export default async function CreatorWalletsPage() {
         <section className="mb-12">
           <div className="text-center mb-10">
             {/* Floating badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-sm font-medium mb-6 backdrop-blur-xl">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-sm font-medium mb-6 backdrop-blur-xl">
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
               <Wallet className="w-4 h-4" />
               <span>Creator Transparency Hub</span>
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-500"></div>
+              <div className="w-2 h-2 bg-teal-400 rounded-full animate-pulse delay-500"></div>
             </div>
             
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-blue-100 to-emerald-200 bg-clip-text text-transparent mb-6 tracking-tight leading-tight">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-teal-100 to-emerald-200 bg-clip-text text-transparent mb-6 tracking-tight leading-tight">
               Creator Wallets
             </h1>
             
             <p className="text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto leading-relaxed mb-8 font-light">
               Track what your favorite{" "}
-              <span className="text-transparent bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text font-semibold">
+              <span className="text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text font-semibold">
                 creators are doing
               </span>
               {" "}with their earned fees. Full transparency into creator wallet activity.
@@ -87,7 +87,7 @@ export default async function CreatorWalletsPage() {
         <section className="mb-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-br from-emerald-500 via-emerald-600 to-blue-600 rounded-2xl shadow-lg">
+              <div className="p-3 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl shadow-lg">
                 <Database className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -135,7 +135,7 @@ export default async function CreatorWalletsPage() {
                       {/* Token Info */}
                       <div className="col-span-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-green-500 rounded-xl flex items-center justify-center text-white font-bold text-sm">
                             {token.symbol.slice(0, 2).toUpperCase()}
                           </div>
                           <div>
@@ -152,7 +152,7 @@ export default async function CreatorWalletsPage() {
                             href={token.walletLink} 
                             target="_blank" 
                             rel="noopener noreferrer" 
-                            className="group/link inline-flex items-center gap-3 px-4 py-2.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 hover:border-blue-500/30 rounded-xl text-blue-400 hover:text-blue-300 transition-all duration-200 font-medium"
+                            className="group/link inline-flex items-center gap-3 px-4 py-2.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/30 rounded-xl text-teal-400 hover:text-teal-300 transition-all duration-200 font-medium"
                           >
                             <Wallet className="w-4 h-4" />
                             <span>View Wallet</span>
@@ -192,7 +192,7 @@ export default async function CreatorWalletsPage() {
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">No wallet data available</h3>
               <p className="text-slate-400 mb-8 max-w-md mx-auto">We're working on gathering creator wallet information. Check back soon for updates.</p>
-              <button className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
+              <button className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
                 <RefreshCw className="w-4 h-4" />
                 Refresh Data
               </button>
@@ -205,7 +205,7 @@ export default async function CreatorWalletsPage() {
           <div className="bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 md:p-12">
             <div className="text-center">
               <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="p-2.5 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl">
+                <div className="p-2.5 bg-gradient-to-br from-teal-500 to-green-500 rounded-xl">
                   <Wallet className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-white">Transparency First</h3>

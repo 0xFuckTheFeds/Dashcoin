@@ -58,7 +58,7 @@ const MarketCapChartWrapper = async ({
       <div className="h-full">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
+            <div className="p-2 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -99,7 +99,7 @@ const MarketCapPieWrapper = async ({
       <div className="h-full">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg">
+            <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
               <PieChart className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -140,7 +140,7 @@ const TokenSearchListWrapper = async () => {
         <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-white mb-2">Unable to load token data</h3>
         <p className="text-slate-400 mb-6">There was an issue fetching the latest token information.</p>
-        <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg mx-auto transition-colors">
+        <button className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg mx-auto transition-colors">
           <RefreshCw className="w-4 h-4" />
           Retry
         </button>
@@ -152,10 +152,10 @@ const TokenSearchListWrapper = async () => {
 // Quick Stats Component
 const QuickStatsCard = ({ icon: Icon, title, value, change, changeType = "positive" }) => (
   <div className="group relative">
-    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"></div>
+    <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-green-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"></div>
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
       <div className="flex items-start justify-between mb-4">
-        <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
+        <div className="p-2 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg">
           <Icon className="w-5 h-5 text-white" />
         </div>
         {change && (
@@ -292,8 +292,8 @@ export default async function Home() {
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-l from-purple-500/5 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-blue-500/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-l from-green-500/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-teal-500/5 to-transparent rounded-full blur-3xl"></div>
       </div>
 
       {/* Grid Pattern */}
@@ -314,18 +314,18 @@ export default async function Home() {
         {/* Hero Section - Redesigned */}
         <section className="mb-12">
           <div className="text-center mb-16 mt-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/10 border border-teal-500/20 rounded-full text-teal-400 text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4" />
               Real-time Market Intelligence
             </div>
             
-            <h1 className="text-5xl md:text-6xl  font-bold bg-gradient-to-r from-blue-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
-              Internet Capital Markets <span className="font-thin">are the Future</span>.
+            <h1 className="text-5xl md:text-6xl  font-bold bg-gradient-to-r from-teal-400 via-teal-400 to-green-400 bg-clip-text text-transparent mb-6">
+              Internet Capital Markets <span className="font-thin italics">are the Future</span>.
             </h1>
             
             <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
               Advanced analytics and real-time insights for the{" "}
-              <span className="text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text font-semibold">
+              <span className="text-transparent bg-gradient-to-r from-teal-400 to-green-400 bg-clip-text font-semibold">
                 Believe coin ecosystem
               </span>
               . Make informed decisions with comprehensive market data.
@@ -337,7 +337,7 @@ export default async function Home() {
                 href={dashcoinTradeLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 <span>Download Chrome Extension</span>
                 <Chrome className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -412,7 +412,7 @@ export default async function Home() {
               fallback={
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96 flex items-center justify-center">
                   <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-400"></div>
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-400"></div>
                     <p className="text-slate-300">Loading market trends...</p>
                   </div>
                 </div>
@@ -427,7 +427,7 @@ export default async function Home() {
               fallback={
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96 flex items-center justify-center">
                   <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-400"></div>
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-400"></div>
                     <p className="text-slate-300">Loading distribution data...</p>
                   </div>
                 </div>
@@ -443,11 +443,11 @@ export default async function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Total Market Cap Detail Card */}
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl">
+                    <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
                       <TrendingUp className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -465,7 +465,7 @@ export default async function Home() {
                 </div>
                 
                 <div className="mb-6">
-                  <div className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent mb-2">
+                  <div className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-2">
                     <AnimatedMarketCap value={totalMarketCapValue} decimals={2} />
                   </div>
                 </div>
@@ -483,11 +483,11 @@ export default async function Home() {
 
             {/* Creator Fees Detail Card */}
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-teal-500/20 rounded-2xl opacity-0 group-hover:opacity-50 transition-all duration-300 blur-xl"></div>
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                    <div className="p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
                       <DollarSign className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -505,7 +505,7 @@ export default async function Home() {
                 </div>
                 
                 <div className="mb-6">
-                  <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                  <div className="text-4xl font-bold bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent mb-2">
                     {formattedFeeEarnings}
                   </div>
                 </div>
@@ -513,7 +513,7 @@ export default async function Home() {
                 <div className="border-t border-white/10 pt-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                       <span className="text-slate-400 text-sm">Est. 0.3% of volume</span>
                     </div>
                     <div className="flex items-center gap-1 text-xs text-slate-500">
@@ -544,7 +544,7 @@ export default async function Home() {
                 <Filter className="w-4 h-4" />
                 <span>Filter</span>
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200">
+              <button className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-all duration-200">
                 <RefreshCw className="w-4 h-4" />
                 <span>Refresh</span>
               </button>
@@ -555,7 +555,7 @@ export default async function Home() {
             fallback={
               <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
                 <div className="flex items-center justify-center gap-3 mb-4">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-400"></div>
                   <p className="text-xl text-slate-300">Loading token data...</p>
                 </div>
                 <p className="text-slate-400">This may take a moment as we fetch data for all tokens.</p>
@@ -578,7 +578,7 @@ export default async function Home() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full blur-lg opacity-30 animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full blur-lg opacity-30 animate-pulse"></div>
                     <DashcoinLogo size={240} />
                   </div>
                 </div>
@@ -639,7 +639,7 @@ export default async function Home() {
                     href={dashcoinXLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-purple-500 rounded-lg transition-all duration-300 transform hover:scale-105"
+                    className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 rounded-lg transition-all duration-300 transform hover:scale-105"
                   >
                     <Twitter className="h-4 w-4 text-white group-hover:rotate-12 transition-transform duration-300" />
                     <span className="text-white font-medium text-sm">Follow</span>

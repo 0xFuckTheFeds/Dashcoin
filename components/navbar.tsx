@@ -160,9 +160,9 @@ function NavLink({ href, active, children, external = false, highlight = false, 
   const baseClasses = "px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200";
   
   const stateClasses = active
-    ? "bg-blue-600/20 text-white border border-blue-500/30"
+    ? "bg-teal-600/20 text-white border border-teal-500/30"
     : highlight
-    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-500 hover:to-purple-500"
+    ? "bg-gradient-to-r from-teal-600 to-green-600 text-white hover:from-teal-500 hover:to-green-500"
     : "text-slate-300 hover:text-white hover:bg-white/10";
 
   return (
@@ -186,9 +186,9 @@ function MobileNavLink({ href, active, children, external = false, highlight = f
   const baseClasses = "flex items-center gap-3 w-full p-3 rounded-lg text-sm font-medium transition-all duration-200";
   
   const stateClasses = active
-    ? "bg-blue-600/20 text-white border border-blue-500/30"
+    ? "bg-teal-600/20 text-white border border-teal-500/30"
     : highlight
-    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+    ? "bg-gradient-to-r from-teal-600 to-green-600 text-white"
     : "text-slate-300 hover:text-white hover:bg-white/10";
 
   return (
