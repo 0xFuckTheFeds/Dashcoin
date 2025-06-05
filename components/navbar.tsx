@@ -5,7 +5,17 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
 import { DashcStatsBar, DashcStatsBarProps } from "@/components/dashc-stats-bar";
-import { Menu, X, ExternalLink } from "lucide-react";
+import { 
+  Menu, 
+  X, 
+  ExternalLink, 
+  BarChart3, 
+  GitCompare, 
+  Wallet, 
+  MessageCircle, 
+  BookOpen, 
+  Users 
+} from "lucide-react";
 
 interface NavbarProps {
   dashcStats?: DashcStatsBarProps;
@@ -27,38 +37,41 @@ export function Navbar({ dashcStats }: NavbarProps) {
   }, [pathname]);
 
   const navItems = [
-    { href: "/", label: "Overview" },
-    { href: "/compare", label: "Compare" },
-    { href: "/creator-wallets", label: "Wallets" },
-    { href: "/founder-interviews", label: "Interviews" },
-    { href: "https://dashcoin-research.gitbook.io/dashcoin-research", label: "Guide", external: true },
-    { href: "https://dashcoin-research-tg-gated.vercel.app/", label: "Join Group", external: true, highlight: true }
+    { href: "/", label: "Overview", icon: BarChart3 },
+    { href: "/compare", label: "Compare", icon: GitCompare },
+    { href: "/creator-wallets", label: "Wallets", icon: Wallet },
+    { href: "/founder-interviews", label: "Interviews", icon: MessageCircle },
+    { href: "https://dashcoin-research.gitbook.io/dashcoin-research", label: "Guide", icon: BookOpen, external: true },
+    { href: "https://dashcoin-research-tg-gated.vercel.app/", label: "Discord", icon: Users, external: true, highlight: true }
   ];
 
   return (
     <>
       <header 
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled 
-            ? 'bg-slate-950/80 backdrop-blur-xl border-b border-white/10' 
-            : 'bg-transparent'
+            ? 'bg-slate-950/90 backdrop-blur-xl border-b border-white/10 shadow-lg' 
+            : 'bg-slate-950'
         }`}
       >
-        <div className="container mx-auto px-4">
+        <div className="max-w-9xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            {/* Logo and Stats */}
-            <div className="flex items-center gap-6">
+            {/* Logo */}
+            <div className="flex items-center">
               <Link href="/" className="flex items-center gap-3">
-                <DashcoinLogo size={40} />
+                <DashcoinLogo size={290} />
               </Link>
 
-              {/* Stats Bar - Inline */}
-              {dashcStats && (
-                <div className="hidden md:block">
-                  <DashcStatsBar {...dashcStats} />
-                </div>
-              )}
+            {/* Compact Stats Bar - Center */}
+            {dashcStats && (
+              <div className="hidden md:block flex-1 max-w-md mx-8">
+                <DashcStatsBar {...dashcStats} />
+              </div>
+            )}
+
             </div>
+
+
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
@@ -69,6 +82,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
                   active={pathname === item.href}
                   external={item.external}
                   highlight={item.highlight}
+                  icon={item.icon}
                 >
                   {item.label}
                 </NavLink>
@@ -119,6 +133,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
                   active={pathname === item.href}
                   external={item.external}
                   highlight={item.highlight}
+                  icon={item.icon}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
@@ -138,9 +153,10 @@ interface NavLinkProps {
   children: React.ReactNode;
   external?: boolean;
   highlight?: boolean;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
-function NavLink({ href, active, children, external = false, highlight = false }: NavLinkProps) {
+function NavLink({ href, active, children, external = false, highlight = false, icon: Icon }: NavLinkProps) {
   const baseClasses = "px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200";
   
   const stateClasses = active
@@ -153,8 +169,9 @@ function NavLink({ href, active, children, external = false, highlight = false }
     <Link
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className={`${baseClasses} ${stateClasses} flex items-center gap-1`}
+      className={`${baseClasses} ${stateClasses} flex items-center gap-2`}
     >
+      <Icon className="w-4 h-4" />
       {children}
       {external && <ExternalLink className="w-3 h-3 opacity-60" />}
     </Link>
@@ -165,8 +182,8 @@ interface MobileNavLinkProps extends NavLinkProps {
   onClick: () => void;
 }
 
-function MobileNavLink({ href, active, children, external = false, highlight = false, onClick }: MobileNavLinkProps) {
-  const baseClasses = "flex items-center justify-between w-full p-3 rounded-lg text-sm font-medium transition-all duration-200";
+function MobileNavLink({ href, active, children, external = false, highlight = false, icon: Icon, onClick }: MobileNavLinkProps) {
+  const baseClasses = "flex items-center gap-3 w-full p-3 rounded-lg text-sm font-medium transition-all duration-200";
   
   const stateClasses = active
     ? "bg-blue-600/20 text-white border border-blue-500/30"
@@ -181,7 +198,8 @@ function MobileNavLink({ href, active, children, external = false, highlight = f
       className={`${baseClasses} ${stateClasses}`}
       onClick={onClick}
     >
-      {children}
+      <Icon className="w-4 h-4" />
+      <span className="flex-1">{children}</span>
       {external && <ExternalLink className="w-4 h-4 opacity-60" />}
     </Link>
   );

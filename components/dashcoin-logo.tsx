@@ -11,7 +11,7 @@ export function DashcoinLogo({ className = "", size = 240 }: DashcoinLogoProps) 
       <div className="flex items-center gap-2">
 
           <Image
-            src="/images/dashcoin.png"
+            src="/images/fulllogo.png"
             alt="Dashcoin Research Logo"
             width={size}
             height={size}

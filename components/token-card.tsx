@@ -1,125 +1,249 @@
-"use client"
+"use client";
 
-import { DashcoinCard } from "@/components/ui/dashcoin-card"
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
-
-import AnimatedMarketCap from "@/components/animated-marketcap"
-import { canonicalChecklist } from "@/components/founders-edge-checklist"
-import { valueToScore } from "@/lib/score"
+import { DashcoinCard } from "@/components/ui/dashcoin-card";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import AnimatedMarketCap from "@/components/animated-marketcap";
+import { canonicalChecklist } from "@/components/founders-edge-checklist";
+import { valueToScore } from "@/lib/score";
 import {
-  User, Twitter, Clock, Medal, Package, Layers, TrendingUp, Users
-} from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { FileSearch } from "lucide-react"
+  User, 
+  Twitter, 
+  Clock, 
+  Medal, 
+  Package, 
+  Layers, 
+  TrendingUp, 
+  Users,
+  ArrowUpRight,
+  ArrowUp,
+  ArrowDown,
+  Minus,
+  ExternalLink,
+  Zap,
+  Star,
+  Shield,
+  Activity
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const checklistIcons: Record<string, JSX.Element> = {
-  "Team Doxxed": <User className="h-4 w-4" />,
-  "Twitter Activity Level": <Twitter className="h-4 w-4" />,
-  "Time Commitment": <Clock className="h-4 w-4" />,
-  "Prior Founder Experience": <Medal className="h-4 w-4" />,
-  "Product Maturity": <Package className="h-4 w-4" />,
-  "Funding Status": <TrendingUp className="h-4 w-4" />,
-  "Token-Product Integration Depth": <Layers className="h-4 w-4" />,
-  "Social Reach & Engagement Index": <Users className="h-4 w-4" />,
-}
+  "Team Doxxed": <User className="h-3 w-3" />,
+  "Twitter Activity Level": <Twitter className="h-3 w-3" />,
+  "Time Commitment": <Clock className="h-3 w-3" />,
+  "Prior Founder Experience": <Medal className="h-3 w-3" />,
+  "Product Maturity": <Package className="h-3 w-3" />,
+  "Funding Status": <TrendingUp className="h-3 w-3" />,
+  "Token-Product Integration Depth": <Layers className="h-3 w-3" />,
+  "Social Reach & Engagement Index": <Users className="h-3 w-3" />,
+};
 
 function badgeColor(value: any): string {
-  const score = valueToScore(value)
-  if (score === 2) return "bg-green-600 text-white"
-  if (score === 1) return "bg-yellow-600 text-black"
-  return "bg-gray-600 text-white"
+  const score = valueToScore(value);
+  if (score === 2) return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+  if (score === 1) return "bg-amber-500/20 text-amber-300 border-amber-500/30";
+  return "bg-slate-500/20 text-slate-400 border-slate-500/30";
+}
+
+function formatCompactNumber(num: number): string {
+  if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+  if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+  if (num >= 1e3) return (num / 1e3).toFixed(0) + 'K';
+  return num.toString();
+}
+
+function getPriceChangeIcon(change: number) {
+  if (change > 0) return <ArrowUp className="w-3 h-3" />;
+  if (change < 0) return <ArrowDown className="w-3 h-3" />;
+  return <Minus className="w-3 h-3" />;
+}
+
+function getPriceChangeColor(change: number) {
+  if (change > 0) return "text-emerald-400";
+  if (change < 0) return "text-red-400";
+  return "text-slate-400";
 }
 
 export interface TokenCardProps {
-  token: Record<string, any>
-  researchScore: number | null
+  token: Record<string, any>;
+  researchScore: number | null;
 }
 
 export function TokenCard({ token, researchScore }: TokenCardProps) {
-  const router = useRouter()
-  const tokenAddress = token.token || ""
-  const tokenSymbol = token.symbol || "???"
-  const change24h = token.change24h || 0
+  const router = useRouter();
+  const tokenAddress = token.token || "";
+  const tokenSymbol = token.symbol || "???";
+  const change24h = token.change24h || 0;
 
   const handleCardClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement
+    const target = e.target as HTMLElement;
     if (target.closest('a,button')) {
-      return
+      return;
     }
-    router.push(`/tokendetail/${tokenSymbol}`)
-  }
+    router.push(`/tokendetail/${tokenSymbol}`);
+  };
 
   return (
-    <DashcoinCard onClick={handleCardClick} className="token-card cursor-pointer p-8 flex flex-col gap-6 transition-all duration-200 hover:-translate-y-0.5">
-      <div className="flex justify-between items-start">
-        <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
-          <div>
-            <p className="text-2xl font-bold text-dashYellow">{tokenSymbol}</p>
-            {token.name && (
-              <p className="text-lg text-dashYellow-light">{token.name}</p>
+    <div className="group relative">
+      {/* Glow Effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl"></div>
+      
+      {/* Main Card */}
+      <DashcoinCard 
+        onClick={handleCardClick} 
+        className="relative cursor-pointer p-6 flex flex-col gap-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border-white/10 hover:border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/[0.08]"
+      >
+        {/* Header Section */}
+        <div className="flex justify-between items-start">
+          <Link href={`/tokendetail/${tokenSymbol}`} className="group/link flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="relative">
+                {/* Token Avatar Placeholder */}
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                  {tokenSymbol.substring(0, 2)}
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-950 flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                </div>
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-white group-hover/link:text-blue-400 transition-colors truncate">
+                    {tokenSymbol}
+                  </h3>
+                  <ArrowUpRight className="w-4 h-4 text-slate-400 opacity-0 group-hover/link:opacity-100 transition-all duration-200 transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+                </div>
+                {token.name && (
+                  <p className="text-sm text-slate-400 truncate">{token.name}</p>
+                )}
+              </div>
+            </div>
+          </Link>
+
+          {/* Research Score Badge */}
+          {researchScore !== null && (
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl blur opacity-30"></div>
+              <div className="relative flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 rounded-xl">
+                <Star className="w-3 h-3 text-emerald-400" />
+                <span className="text-white font-bold text-sm">
+                  {researchScore.toFixed(1)}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Market Data Section */}
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            {/* Market Cap */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <TrendingUp className="w-3 h-3 text-blue-400" />
+                <span className="text-xs text-slate-400 font-medium">Market Cap</span>
+              </div>
+              <p className="text-white font-bold text-lg">
+                ${formatCompactNumber(token.marketCap || 0)}
+              </p>
+            </div>
+
+            {/* 24h Change */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <Activity className="w-3 h-3 text-purple-400" />
+                <span className="text-xs text-slate-400 font-medium">24h Change</span>
+              </div>
+              <div className={`flex items-center gap-1 font-bold text-lg ${getPriceChangeColor(change24h)}`}>
+                {getPriceChangeIcon(change24h)}
+                <span>{Math.abs(change24h).toFixed(2)}%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Performance Indicator Bar */}
+          <div className="relative">
+            <div className="w-full h-1 bg-slate-700 rounded-full overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all duration-500 ${
+                  change24h > 0 
+                    ? 'bg-gradient-to-r from-emerald-500 to-green-400' 
+                    : change24h < 0 
+                    ? 'bg-gradient-to-r from-red-500 to-red-400'
+                    : 'bg-slate-500'
+                }`}
+                style={{ 
+                  width: `${Math.min(Math.max(Math.abs(change24h) * 2, 5), 100)}%`,
+                  marginLeft: change24h < 0 ? 'auto' : '0'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Traits Section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4 text-slate-400" />
+            <span className="text-sm font-medium text-slate-300">Research Traits</span>
+          </div>
+          
+          <div className="flex flex-wrap gap-1.5">
+            {canonicalChecklist.slice(0, 6).map(label => {
+              const value = (token as any)[label];
+              return (
+                <TooltipProvider delayDuration={0} key={label}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-medium transition-all duration-200 hover:scale-105 ${badgeColor(value)}`}>
+                        {checklistIcons[label]}
+                        <span>{value || '-'}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="bg-slate-800 border-slate-700">
+                      <p className="text-xs">{label}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              );
+            })}
+            
+            {canonicalChecklist.length > 6 && (
+              <div className="flex items-center px-2 py-1 bg-slate-600/20 border border-slate-600/30 rounded-lg text-xs text-slate-400">
+                +{canonicalChecklist.length - 6} more
+              </div>
             )}
           </div>
-        </Link>
-        {researchScore !== null && (
-          <span className="px-3 py-1 rounded-full bg-dashGreen text-white text-base font-medium">
-            {researchScore.toFixed(1)}
-          </span>
-        )}
-      </div>
-
-      <div className="flex items-start justify-between text-base">
-        <div className="flex items-center gap-3">
-          <div>
-            <p className="text-dashYellow-light">Market Cap</p>
-            <p className="font-bold text-dashYellow">
-              <AnimatedMarketCap value={token.marketCap || 0} />
-            </p>
-          </div>
-          <span className="opacity-50">|</span>
-          <div className={`${change24h > 0 ? 'text-green-600' : change24h < 0 ? 'text-red-500' : ''}`}> 
-            <p className="text-dashYellow-light">24h %</p>
-            <p className={`font-bold ${change24h === 0 ? 'text-dashYellow' : ''}`}>{change24h.toFixed(2)}%</p>
-          </div>
         </div>
-      </div>
 
-      <div>
-        <p className="text-base font-medium mb-2 text-dashYellow">Traits</p>
-        <div className="flex flex-wrap gap-1.5">
-          {canonicalChecklist.map(label => {
-            const value = (token as any)[label]
-            return (
-              <TooltipProvider delayDuration={0} key={label}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className={`flex items-center gap-1 px-2 py-0.5 rounded ${badgeColor(value)} text-sm`}>
-                      {checklistIcons[label]}
-                      <span>{value || '-'}</span>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>{label}</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )
-          })}
-        </div>
-      </div>
+        {/* Action Section */}
+        <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+          <Link 
+            href={`/tokendetail/${tokenSymbol}`} 
+            className="group/detail flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 hover:text-white rounded-lg transition-all duration-200"
+          >
+            <span className="text-sm font-medium">View Details</span>
+            <ArrowUpRight className="w-3 h-3 group-hover/detail:translate-x-0.5 group-hover/detail:-translate-y-0.5 transition-transform" />
+          </Link>
 
-        <div className="flex justify-end mt-auto">
           <a
             href={tokenAddress ? `https://axiom.trade/t/${tokenAddress}/dashc` : '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-dashGreen text-white rounded-md text-base hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dashGreen-dark"
+            className="group/trade relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={(e) => {
+              if (!tokenAddress) {
+                e.preventDefault();
+              }
+            }}
           >
-            TRADE
+            <Zap className="w-4 h-4" />
+            <span className="text-sm font-semibold">TRADE</span>
+            <ExternalLink className="w-3 h-3 opacity-60 group-hover/trade:opacity-100 transition-opacity" />
           </a>
-          <Link href={`/tokendetail/${tokenSymbol}`} className="ml-2 text-dashYellow hover:text-dashYellow-dark flex items-center">
-            <FileSearch className="h-4 w-4" />
-        </Link>
-      </div>
-    </DashcoinCard>
-  )
+        </div>
+      </DashcoinCard>
+    </div>
+  );
 }
-

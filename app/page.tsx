@@ -309,7 +309,7 @@ export default async function Home() {
         />
       </div>
 
-      <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
+      <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl mt-16">
         {/* Hero Section - Redesigned */}
         <section className="mb-12">
           <div className="text-center mb-8">

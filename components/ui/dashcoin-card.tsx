@@ -5,7 +5,7 @@ const DashcoinCard = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
   ({ className, style, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("card-with-border p-6", className)}
+      className={cn("card-with-border p-6 h-full rounded", className)}
       style={{ boxShadow: "0px 2px 8px rgba(0,0,0,0.15)", ...(style || {}) }}
       {...props}
     />
