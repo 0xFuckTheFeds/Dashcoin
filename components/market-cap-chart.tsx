@@ -149,7 +149,7 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
   return (
     <DashcoinCard>
       <DashcoinCardHeader>
-        <DashcoinCardTitle>Market Cap & Holders Over Time</DashcoinCardTitle>
+        <DashcoinCardTitle className="text-white">Market Cap & Holders Over Time</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
         <div className="h-64 bg-neutral-900 rounded-lg">
