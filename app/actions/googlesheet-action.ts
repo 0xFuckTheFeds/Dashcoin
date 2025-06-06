@@ -11,7 +11,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
   const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk';
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
   const SHEET_NAME = 'Dashcoin Scoring';
-  const RANGE = `${SHEET_NAME}!A1:T200`;
+  const RANGE = `${SHEET_NAME}!A1:T`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
   try {
@@ -91,7 +91,7 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
   const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk'
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0'
   const SHEET_NAME = 'Dashcoin Scoring'
-  const RANGE = `${SHEET_NAME}!A1:T200`
+  const RANGE = `${SHEET_NAME}!A1:T`
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`
 
   try {
