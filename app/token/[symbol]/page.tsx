@@ -21,7 +21,7 @@ import { formatCurrency } from "@/lib/utils";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CopyAddress } from "@/components/copy-address";
 
 export default function TokenPage({ params }: { params: { symbol: string } }) {
@@ -61,7 +61,11 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
       })
     : "N/A";
 
+  const hasLoaded = useRef(false)
+
   useEffect(() => {
+    if (hasLoaded.current) return
+    hasLoaded.current = true
     async function loadData() {
       try {
         const duneTokenData = await fetchTokenDetails(symbol);
