@@ -155,7 +155,7 @@ const ComparisonStatsCard = ({ icon: Icon, title, value1, value2, label1, label2
 );
 
 export default function ComparePage() {
-  const dashcoinXLink = "https://x.com/dune_dashcoin";
+  const dashcoinXLink = "https://x.com/Dashc_Research";
 
   const [token1Address, setToken1Address] = useState("");
   const [token2Address, setToken2Address] = useState("");

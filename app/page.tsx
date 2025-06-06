@@ -184,7 +184,7 @@ export default async function Home() {
   
   const dashcoinCA = "7gkgsqE2Uip7LUyrqEi8fyLPNSbn7GYu9yFgtxZwYUVa";
   const dashcoinTradeLink = "https://axiom.trade/meme/Fjq9SmWmtnETAVNbir1eXhrVANi1GDoHEA4nb4tNn7w6/@dashc";
-  const dashcoinXLink = "https://x.com/dune_dashcoin";
+  const dashcoinXLink = "https://x.com/Dashc_Research";
   
   const marketStatsPromise = fetchMarketStats().then(data => {
     return data;
