@@ -24,8 +24,7 @@ import {
   Zap,
   AlertCircle,
   CheckCircle,
-  Copy,
-  Eye
+  Copy
 } from "lucide-react";
 import { DashcoinButton } from "@/components/ui/dashcoin-button";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
@@ -400,10 +399,6 @@ export default function TokenResearchPage({
                   </a>
                 )}
                 
-                <button className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300">
-                  <Eye className="w-5 h-5" />
-                  <span>Add to Watchlist</span>
-                </button>
               </div>
             </div>
 
@@ -643,56 +638,6 @@ export default function TokenResearchPage({
           </section>
         )}
 
-        {/* Data Refresh Status */}
-        <section>
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
-                <Clock className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">Data Refresh Status</h3>
-                <p className="text-slate-400">Real-time data synchronization information</p>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 bg-teal-400 rounded-full animate-pulse"></div>
-                  <h4 className="text-lg font-semibold text-white">Dune Analytics</h4>
-                </div>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Last Update:</span>
-                    <span className="text-white font-mono">{formattedDuneLastRefresh}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Next Refresh:</span>
-                    <span className="text-white font-mono">{formattedDuneNextRefresh}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
-                  <h4 className="text-lg font-semibold text-white">DEX Data</h4>
-                </div>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Last Update:</span>
-                    <span className="text-white font-mono">{formattedDexLastRefresh}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Next Refresh:</span>
-                    <span className="text-white font-mono">{formattedDexNextRefresh}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Loading States */}
         {isLoading && (
@@ -732,10 +677,15 @@ export default function TokenResearchPage({
                   <ArrowLeft className="w-5 h-5" />
                   <span>Browse Other Tokens</span>
                 </Link>
-                <button className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300">
+                <a
+                  href="https://x.com/Nic_Wenzel_1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300"
+                >
                   <Activity className="w-5 h-5" />
                   <span>Request Analysis</span>
-                </button>
+                </a>
               </div>
             </div>
           </section>
