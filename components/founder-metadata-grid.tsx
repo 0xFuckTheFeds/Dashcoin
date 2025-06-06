@@ -32,15 +32,15 @@ export function FounderMetadataGrid({ token1, token2 }: Props) {
 
   const rows = [
     { label: "Research Score", val1: token1.score, val2: token2.score, score: true },
-    ...canonicalChecklist.map(label => ({ label, val1: token1[label], val2: token2[label], score: false })),
+    ...canonicalChecklist.map(trait => ({ label: trait.label, val1: token1[trait.label], val2: token2[trait.label], score: false })),
   ];
 
   return (
     <div className="divide-y divide-dashGreen-light">
       <div className="hidden md:grid grid-cols-3 font-semibold mb-2">
-        <div className="p-2">Trait</div>
-        <div className="p-2 text-center">{token1.symbol}</div>
-        <div className="p-2 text-center">{token2.symbol}</div>
+        <div className="p-2 text-gray-300">Trait</div>
+        <div className="p-2 text-center text-gray-300">{token1.symbol}</div>
+        <div className="p-2 text-center text-gray-300">{token2.symbol}</div>
       </div>
       {rows.map(({ label, val1, val2, score }) => {
         const s1 = score ? (typeof val1 === 'number' ? val1 : 0) : valueToScore(val1, (gradeMaps as any)[label] || gradeMaps.default);
@@ -53,10 +53,10 @@ export function FounderMetadataGrid({ token1, token2 }: Props) {
         const col2 = score ? scoreColor(val2 as number | null) : traitColor(val2, label);
         return (
           <div key={label} className="flex flex-col md:grid md:grid-cols-3 py-2 gap-2 group">
-            <TooltipProvider delayDuration={0}>
+            <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="px-2 font-medium cursor-help">{label}</div>
+                  <div className="px-2 font-medium cursor-help text-gray-50">{label}</div>
                 </TooltipTrigger>
                 <TooltipContent>{label}</TooltipContent>
               </Tooltip>

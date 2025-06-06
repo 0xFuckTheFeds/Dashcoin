@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
-import { fetchDexscreenerTokenData } from "@/app/actions/dexscreener-actions";
+import { fetchDexscreenerTokenLogo } from "@/app/actions/dexscreener-actions";
 
 interface TokenHeaderCardProps {
   name: string;
@@ -23,9 +23,7 @@ export function TokenHeaderCard({ name, symbol, address, logoUrl }: TokenHeaderC
       if (!address) return;
 
       try {
-        const data = await fetchDexscreenerTokenData(address);
-        const pair = data && data.pairs && data.pairs.length > 0 ? (data.pairs[0] as any) : null;
-        const img = pair?.baseToken?.imageUrl || pair?.info?.imageUrl || pair?.baseToken?.logoURI;
+        const img = await fetchDexscreenerTokenLogo(address);
         if (img) {
           setLogo(img as string);
         }

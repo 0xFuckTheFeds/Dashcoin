@@ -1,7 +1,12 @@
 "use server";
 
 import { cache } from "react";
-import { getFromCache, setInCache } from "@/lib/redis";
+import {
+  getFromCache,
+  setInCache,
+  CACHE_KEYS,
+  DEX_LOGO_CACHE_DURATION,
+} from "@/lib/redis";
 
 export interface DexscreenerPair {
   chainId: string;
@@ -69,6 +74,7 @@ const IS_PREVIEW =
   process.env.ENABLE_DUNE_API === "false";
 
 const dexscreenerCache = new Map<string, { data: any; timestamp: number }>();
+const logoCache = new Map<string, { url: string; timestamp: number }>();
 const CACHE_TTL = 5 * 60 * 1000;
 const KV_PREFIX = "dexscreener:";
 const apiCallTimes: number[] = [];
@@ -526,4 +532,38 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
     console.error("Error enriching token data with Dexscreener:", error);
     return tokenData || {};
   }
+}
+
+export async function fetchDexscreenerTokenLogo(
+  tokenAddress: string,
+): Promise<string | null> {
+  if (!tokenAddress) return null
+
+  const cacheKey = `logo:${tokenAddress}`
+  const kvKey = `${CACHE_KEYS.DEX_LOGO_PREFIX}${tokenAddress}`
+
+  const mem = logoCache.get(cacheKey)
+  if (mem && Date.now() - mem.timestamp < DEX_LOGO_CACHE_DURATION) {
+    return mem.url
+  }
+
+  const kvData = await getFromCache<string>(kvKey)
+  if (kvData) {
+    logoCache.set(cacheKey, { url: kvData, timestamp: Date.now() })
+    return kvData
+  }
+
+  const data = await fetchDexscreenerTokenData(tokenAddress)
+  const pair =
+    data && data.pairs && data.pairs.length > 0 ? (data.pairs[0] as any) : null
+  const imageUrl =
+    pair?.baseToken?.imageUrl || pair?.info?.imageUrl || pair?.baseToken?.logoURI
+
+  if (imageUrl) {
+    logoCache.set(cacheKey, { url: imageUrl, timestamp: Date.now() })
+    await setInCache(kvKey, imageUrl, DEX_LOGO_CACHE_DURATION)
+    return imageUrl as string
+  }
+
+  return null
 }

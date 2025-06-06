@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /* === GLOBAL BODY STYLES === */
 body {
   font-family: 'Inter', sans-serif;
