@@ -151,10 +151,11 @@ const ResearchScoreBadge = ({ score, data }: { score: number; data?: Record<stri
               {canonicalChecklist.map(({ label }) => {
                 const raw = data[label];
                 const val = valueToScore(raw, (gradeMaps as any)[label]);
+                const display = val * 3;
                 return (
                   <li key={label} className="flex justify-between gap-2">
                     <span>{label}</span>
-                    <span className="font-semibold">+{val}</span>
+                    <span className="font-semibold">+{display}</span>
                   </li>
                 );
               })}
