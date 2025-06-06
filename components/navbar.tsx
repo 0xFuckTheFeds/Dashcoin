@@ -42,7 +42,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
     { href: "/creator-wallets", label: "Wallets", icon: Wallet },
     { href: "/founder-interviews", label: "Interviews", icon: MessageCircle },
     { href: "https://dashcoin-research.gitbook.io/dashcoin-research", label: "Guide", icon: BookOpen, external: true },
-    { href: "https://dashcoin-research-tg-gated.vercel.app/", label: "Discord", icon: Users, external: true, highlight: true }
+    { href: "https://dashcoin-research-tg-gated.vercel.app/", label: "Dashcoin Holder Alpha Group", icon: Users, external: true, highlight: true }
   ];
 
   return (
