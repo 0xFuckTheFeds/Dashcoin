@@ -268,7 +268,8 @@ export default async function Home() {
   const hoursUntilRefresh = Math.floor(timeRemaining / (2 * 60 * 60 * 1000));
   const minutesUntilRefresh = Math.floor((timeRemaining % (60 * 60 * 1000)) / (60 * 1000));
 
-  const totalMarketCapValue = marketStats?.totalMarketCap || 0;
+  const totalMarketCapValue =
+    totalMarketCap?.total_marketcap_usd || marketStats?.totalMarketCap || 0;
   const formattedTotalMarketCap = formatCurrency0(totalMarketCapValue);
   const formattedVolume = formatCurrency(marketStats?.volume24h || 0);
   const formattedFeeEarnings = formatCurrency(marketStats?.feeEarnings24h || 0);
