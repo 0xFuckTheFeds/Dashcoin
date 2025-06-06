@@ -1,4 +1,11 @@
 import { gradeMaps, valueToScore } from '@/lib/score'
+import {
+  getFromCache,
+  setInCache,
+  CACHE_KEYS,
+  WALLET_CACHE_DURATION,
+  setQueryLastRefreshTime,
+} from '@/lib/redis'
 
 interface ResearchScoreData {
   symbol: string
@@ -91,6 +98,11 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
   const RANGE = `${SHEET_NAME}!A1:T200`
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`
 
+  const cached = await getFromCache<WalletLinkData[]>(CACHE_KEYS.CREATOR_WALLETS)
+  if (cached && cached.length > 0) {
+    return cached
+  }
+
   try {
     const response = await fetch(url)
     const data = await response.json()
@@ -110,7 +122,7 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
       return entry
     })
 
-    return structured.map((entry: any) => {
+    const result = structured.map((entry: any) => {
       return {
         symbol: (entry['Project'] || '').toString().toUpperCase(),
         walletLink: entry['Wallet Link'] || '',
@@ -118,6 +130,9 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
         twitter: entry['Twitter'] || ''
       }
     })
+    await setInCache(CACHE_KEYS.CREATOR_WALLETS, result, WALLET_CACHE_DURATION)
+    await setQueryLastRefreshTime(CACHE_KEYS.CREATOR_WALLETS_LAST_REFRESH)
+    return result
   } catch (err) {
     console.error('Google Sheets API error:', err)
     return []
