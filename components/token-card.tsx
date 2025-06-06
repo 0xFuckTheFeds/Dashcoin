@@ -3,7 +3,6 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import Image from "next/image";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import AnimatedMarketCap from "@/components/animated-marketcap";
 import { canonicalChecklist } from "@/components/founders-edge-checklist";
 import { valueToScore } from "@/lib/score";
 import { useState } from "react";
