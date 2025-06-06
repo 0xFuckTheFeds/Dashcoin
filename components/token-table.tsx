@@ -79,7 +79,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [checklistFilters, setChecklistFilters] = useState<Record<string, string[]>>(
     () => {
       const initial: Record<string, string[]> = {}
-      canonicalChecklist.forEach(label => {
+      canonicalChecklist.forEach(trait => {
+        const label = trait.label
         const param = searchParams.get(label)
         initial[label] = param ? param.split('|') : []
       })
@@ -152,7 +153,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       const research = researchScores.find(
         item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()
       )
-      return canonicalChecklist.every(label => {
+      return canonicalChecklist.every(trait => {
+        const label = trait.label
         const selected = checklistFilters[label]
         if (!selected || selected.length === 0) return true
         let raw = research ? research[label] : ''
@@ -166,7 +168,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    canonicalChecklist.forEach(label => {
+    canonicalChecklist.forEach(trait => {
+      const label = trait.label
       const values = checklistFilters[label]
       if (values && values.length > 0) {
         params.set(label, values.join('|'))
@@ -456,16 +459,19 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                     {renderSortIndicator("researchScore")}
                   </div>
                 </th>
-                {canonicalChecklist.map(label => (
+                {canonicalChecklist.map(({ label, description }) => (
                   <th key={label} className="relative text-left py-3 px-4 text-dashYellow">
-                    <TooltipProvider delayDuration={0}>
+                    <TooltipProvider delayDuration={100}>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="flex items-center gap-1 cursor-pointer">
                             {checklistIcons[label]}
                           </div>
                         </TooltipTrigger>
-                        <TooltipContent>{label}</TooltipContent>
+                        <TooltipContent className="max-w-xs text-left">
+                          <p className="text-xs font-semibold mb-1">{label}</p>
+                          <p className="text-xs opacity-80">{description}</p>
+                        </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                     <Filter
@@ -586,7 +592,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                           <span className="text-dashYellow-light opacity-50">-</span>
                         )}
                       </td>
-                      {canonicalChecklist.map(label => {
+                      {canonicalChecklist.map(trait => {
+                        const label = trait.label
                         const raw = (token as any)[label]
                         const display = raw !== undefined && raw !== '' ? raw : '-'
                         return (

@@ -3,15 +3,56 @@ import { CheckCircle, XCircle, MinusCircle } from "lucide-react";
 import React from "react";
 import { gradeMaps, valueToScore, computeFounderScore } from "@/lib/score";
 
-export const canonicalChecklist = [
-  "Team Doxxed",
-  "Twitter Activity Level",
-  "Time Commitment",
-  "Prior Founder Experience",
-  "Product Maturity",
-  "Funding Status",
-  "Token-Product Integration Depth",
-  "Social Reach & Engagement Index",
+export interface TraitInfo {
+  label: string;
+  category: string;
+  description: string;
+}
+
+export const canonicalChecklist: TraitInfo[] = [
+  {
+    label: "Team Doxxed",
+    category: "Team",
+    description:
+      "This team has disclosed legal names. This boosts trust in volatile markets.",
+  },
+  {
+    label: "Twitter Activity Level",
+    category: "Community",
+    description: "How frequently the team engages on Twitter and shares updates.",
+  },
+  {
+    label: "Time Commitment",
+    category: "Team",
+    description:
+      "Indicates if the founders are working full time or part time on the project.",
+  },
+  {
+    label: "Prior Founder Experience",
+    category: "Team",
+    description: "Number of past startups founded by the team members.",
+  },
+  {
+    label: "Product Maturity",
+    category: "Product",
+    description:
+      "Stage of the product: prototype, MVP, or revenue generating.",
+  },
+  {
+    label: "Funding Status",
+    category: "Funding",
+    description: "Whether the project is venture backed, angel funded or bootstrapped.",
+  },
+  {
+    label: "Token-Product Integration Depth",
+    category: "Product",
+    description: "How integrated the token is within the live product.",
+  },
+  {
+    label: "Social Reach & Engagement Index",
+    category: "Community",
+    description: "Overall social following and engagement of the project.",
+  },
 ];
 
 function getIcon(value: number) {
@@ -49,7 +90,7 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
       </div>
       <p className="text-base opacity-80 mb-6 text-center">Signal-based checklist of founder credibility and product traction.</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {canonicalChecklist.map((label) => {
+        {canonicalChecklist.map(({ label }) => {
           const raw = data[label];
           const val = valueToScore(raw, (gradeMaps as any)[label]);
           return (

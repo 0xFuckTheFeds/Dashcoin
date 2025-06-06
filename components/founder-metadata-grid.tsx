@@ -32,7 +32,7 @@ export function FounderMetadataGrid({ token1, token2 }: Props) {
 
   const rows = [
     { label: "Research Score", val1: token1.score, val2: token2.score, score: true },
-    ...canonicalChecklist.map(label => ({ label, val1: token1[label], val2: token2[label], score: false })),
+    ...canonicalChecklist.map(trait => ({ label: trait.label, val1: token1[trait.label], val2: token2[trait.label], score: false })),
   ];
 
   return (
@@ -53,7 +53,7 @@ export function FounderMetadataGrid({ token1, token2 }: Props) {
         const col2 = score ? scoreColor(val2 as number | null) : traitColor(val2, label);
         return (
           <div key={label} className="flex flex-col md:grid md:grid-cols-3 py-2 gap-2 group">
-            <TooltipProvider delayDuration={0}>
+            <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="px-2 font-medium cursor-help text-gray-50">{label}</div>
