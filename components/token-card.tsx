@@ -39,11 +39,36 @@ const checklistIcons: Record<string, JSX.Element> = {
   "Social Reach & Engagement Index": <Users className="h-3 w-3" />,
 };
 
+const traitCategories: Record<string, string> = {
+  "Team Doxxed": "Team",
+  "Twitter Activity Level": "Team",
+  "Time Commitment": "Team",
+  "Prior Founder Experience": "Team",
+  "Social Reach & Engagement Index": "Team",
+  "Product Maturity": "Product",
+  "Token-Product Integration Depth": "Product",
+  "Funding Status": "Funding",
+};
+
+const traitDescriptions: Record<string, string> = {
+  "Team Doxxed": "Verified identities increase community trust in the project",
+  "Twitter Activity Level": "Active social accounts signal engaged founders",
+  "Time Commitment": "Full-time dedication typically leads to better outcomes",
+  "Prior Founder Experience": "Experienced founders handle challenges more easily",
+  "Product Maturity": "A mature product lowers execution risk",
+  "Funding Status": "External funding can extend runway and credibility",
+  "Token-Product Integration Depth": "Live integrations show real utility for the token",
+  "Social Reach & Engagement Index": "Larger communities can help drive adoption",
+};
+
 function badgeColor(value: any): string {
+  if (value === "Unknown" || value === null || value === undefined || value === "") {
+    return "bg-slate-600/20 text-slate-300 border-slate-600/30";
+  }
   const score = valueToScore(value);
-  if (score === 2) return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+  if (score === 2) return "bg-emerald-600/20 text-emerald-300 border-emerald-600/30";
   if (score === 1) return "bg-amber-500/20 text-amber-300 border-amber-500/30";
-  return "bg-slate-500/20 text-slate-400 border-slate-500/30";
+  return "bg-red-500/20 text-red-300 border-red-500/30";
 }
 
 function formatCompactNumber(num: number): string {
@@ -75,6 +100,20 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   const tokenAddress = token.token || "";
   const tokenSymbol = token.symbol || "???";
   const change24h = token.change24h || 0;
+
+  const maxTraits = 5;
+  const traits = canonicalChecklist.map(label => ({
+    label,
+    value: (token as any)[label],
+    category: traitCategories[label] || "Other",
+  }));
+  const displayedTraits = traits.slice(0, maxTraits);
+  const remainingTraitCount = traits.length - displayedTraits.length;
+  const groupedTraits = displayedTraits.reduce<Record<string, { label: string; value: any }[]>>((acc, t) => {
+    if (!acc[t.category]) acc[t.category] = [];
+    acc[t.category].push({ label: t.label, value: t.value });
+    return acc;
+  }, {});
 
   const handleCardClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -198,33 +237,35 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
             <Shield className="w-4 h-4 text-slate-400" />
             <span className="text-sm font-medium text-slate-300">Research Traits</span>
           </div>
-          
-          <div className="flex flex-wrap gap-1.5">
-            {canonicalChecklist.slice(0, 6).map(label => {
-              const value = (token as any)[label];
-              return (
-                <TooltipProvider delayDuration={0} key={label}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-medium transition-all duration-200 hover:scale-105 ${badgeColor(value)}`}>
-                        {checklistIcons[label]}
-                        <span>{value || '-'}</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="bg-slate-800 border-slate-700">
-                      <p className="text-xs">{label}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              );
-            })}
-            
-            {canonicalChecklist.length > 6 && (
-              <div className="flex items-center px-2 py-1 bg-slate-600/20 border border-slate-600/30 rounded-lg text-xs text-slate-400">
-                +{canonicalChecklist.length - 6} more
+
+          {Object.entries(groupedTraits).map(([cat, traits]) => (
+            <div key={cat} className="space-y-1">
+              <p className="text-xs font-medium text-slate-400">{cat}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {traits.map(({ label, value }) => (
+                  <TooltipProvider delayDuration={0} key={label}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-medium transition-all duration-200 hover:scale-105 ${badgeColor(value)}`}>
+                          {checklistIcons[label]}
+                          <span>{value || '-'}</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="bg-slate-800 border-slate-700">
+                        <p className="text-xs">{traitDescriptions[label]}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+          ))}
+
+          {remainingTraitCount > 0 && (
+            <div className="flex items-center px-2 py-1 bg-slate-600/20 border border-slate-600/30 rounded-lg text-xs text-slate-400">
+              +{remainingTraitCount} more
+            </div>
+          )}
         </div>
 
         {/* Action Section */}
