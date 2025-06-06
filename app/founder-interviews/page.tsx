@@ -23,6 +23,9 @@ export const metadata = {
 }
 
 export default function FounderInterviewsPage() {
+  const requestInterviewLink = "https://x.com/nic_wenzel_1";
+  const communityLink =
+    "https://x.com/i/communities/1923256037240603012";
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
       {/* Enhanced Background Elements */}
@@ -167,16 +170,26 @@ export default function FounderInterviewsPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 via-green-700 to-teal-600 hover:from-green-500 hover:via-green-600 hover:to-teal-500 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-xl">
+                <a
+                  href={requestInterviewLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 via-green-700 to-teal-600 hover:from-green-500 hover:via-green-600 hover:to-teal-500 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-xl"
+                >
                   <MessageCircle className="w-5 h-5" />
                   <span>Request Interview</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
-                </button>
-                
-                <button className="group flex items-center gap-3 px-8 py-4 bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 text-white font-semibold rounded-2xl transition-all duration-300 backdrop-blur-xl">
+                </a>
+
+                <a
+                  href={communityLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-3 px-8 py-4 bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 text-white font-semibold rounded-2xl transition-all duration-300 backdrop-blur-xl"
+                >
                   <Users className="w-5 h-5" />
                   <span>Join Community</span>
-                </button>
+                </a>
               </div>
             </div>
           </div>
