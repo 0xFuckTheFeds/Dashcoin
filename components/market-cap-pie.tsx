@@ -123,7 +123,7 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
   return (
     <DashcoinCard>
       <DashcoinCardHeader>
-        <DashcoinCardTitle>Market Cap Distribution</DashcoinCardTitle>
+        <DashcoinCardTitle className="text-white">Market Cap Distribution</DashcoinCardTitle>
       </DashcoinCardHeader>
       <DashcoinCardContent>
         {hasData ? (
