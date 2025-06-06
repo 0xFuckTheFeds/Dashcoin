@@ -374,8 +374,9 @@ export default function TokenResearchPage({
               <div className="flex flex-wrap gap-4">
                 <a
                   href={
-                    dexscreenerData?.url ||
-                    `https://axiom.trade/t/${tokenAddress}/dashc`
+                    tokenAddress
+                      ? `https://axiom.trade/t/${tokenAddress}/dashc`
+                      : "#"
                   }
                   target="_blank"
                   rel="noopener noreferrer"
@@ -769,9 +770,10 @@ export default function TokenResearchPage({
                     <span>Market Dashboard</span>
                   </Link>
                   <a href={
-                    dexscreenerData?.url ||
-                    `https://axiom.trade/t/${tokenAddress}/dashc`
-                  } target="_blank" rel="noopener noreferrer" 
+                    tokenAddress
+                      ? `https://axiom.trade/t/${tokenAddress}/dashc`
+                      : "#"
+                  } target="_blank" rel="noopener noreferrer"
                      className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
                     <TrendingUp className="w-4 h-4" />
                     <span>Trade {tokenSymbol}</span>

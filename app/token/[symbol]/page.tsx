@@ -180,8 +180,9 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
           <div className="flex gap-2">
             <a
               href={
-                dexscreenerData?.url ||
-                `https://axiom.trade/t/${tokenAddress}/dashc`
+                tokenAddress
+                  ? `https://axiom.trade/t/${tokenAddress}/dashc`
+                  : "#"
               }
               target="_blank"
               rel="noopener noreferrer"
