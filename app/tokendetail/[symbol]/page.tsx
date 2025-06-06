@@ -48,7 +48,9 @@ import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
-import { FoundersEdgeChecklist } from "@/components/founders-edge-checklist";
+import { FoundersEdgeChecklist, canonicalChecklist } from "@/components/founders-edge-checklist";
+import { gradeMaps, valueToScore } from "@/lib/score";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 interface TokenResearchData {
   Symbol: string;
@@ -111,7 +113,7 @@ const StatsCard = ({ icon: Icon, title, value, change, changeType = "positive", 
 );
 
 // Research Score Badge Component
-const ResearchScoreBadge = ({ score }) => {
+const ResearchScoreBadge = ({ score, data }: { score: number; data?: Record<string, any> }) => {
   const getScoreColor = (score) => {
     if (score >= 8) return 'from-emerald-500 to-green-400';
     if (score >= 6) return 'from-yellow-500 to-orange-400';
@@ -125,20 +127,42 @@ const ResearchScoreBadge = ({ score }) => {
   };
 
   return (
-    <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-xl">
-      <div className={`p-2 bg-gradient-to-r ${getScoreColor(score)} rounded-lg`}>
-        <Target className="w-5 h-5 text-white" />
-      </div>
-      <div>
-        <p className="text-sm text-slate-400">Research Score</p>
-        <div className="flex items-center gap-2">
-          <span className="text-2xl font-bold text-white">{score}/10</span>
-          <span className={`text-sm font-medium bg-gradient-to-r ${getScoreColor(score)} bg-clip-text text-transparent`}>
-            {getScoreLabel(score)}
-          </span>
-        </div>
-      </div>
-    </div>
+    <TooltipProvider delayDuration={100}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-xl cursor-help">
+            <div className={`p-2 bg-gradient-to-r ${getScoreColor(score)} rounded-lg`}>
+              <Target className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-sm text-slate-400">Research Score</p>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-white">{score}/10</span>
+                <span className={`text-sm font-medium bg-gradient-to-r ${getScoreColor(score)} bg-clip-text text-transparent`}>
+                  {getScoreLabel(score)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </TooltipTrigger>
+        {data && (
+          <TooltipContent className="text-left">
+            <ul className="space-y-1">
+              {canonicalChecklist.map(({ label }) => {
+                const raw = data[label];
+                const val = valueToScore(raw, (gradeMaps as any)[label]);
+                return (
+                  <li key={label} className="flex justify-between gap-2">
+                    <span>{label}</span>
+                    <span className="font-semibold">+{val}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </TooltipContent>
+        )}
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
@@ -326,7 +350,7 @@ export default function TokenResearchPage({
                   Token Analysis
                 </div>
                 {researchData && researchData.Score && (
-                  <ResearchScoreBadge score={Number(researchData.Score)} />
+                  <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
                 )}
               </div>
               

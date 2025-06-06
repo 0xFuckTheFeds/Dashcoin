@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import AnimatedMarketCap from "@/components/animated-marketcap";
 import { canonicalChecklist } from "@/components/founders-edge-checklist";
-import { valueToScore } from "@/lib/score";
+import { gradeMaps, valueToScore } from "@/lib/score";
 import { useState } from "react";
 import {
   User, 
@@ -159,15 +159,35 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
 
           {/* Research Score Badge */}
           {researchScore !== null && (
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30"></div>
-              <div className="relative flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-xl">
-                <Star className="w-3 h-3 text-emerald-400" />
-                <span className="text-white font-bold text-sm">
-                  {researchScore.toFixed(1)}
-                </span>
-              </div>
-            </div>
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30"></div>
+                    <div className="relative flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-xl">
+                      <Star className="w-3 h-3 text-emerald-400" />
+                      <span className="text-white font-bold text-sm">
+                        {researchScore.toFixed(1)}
+                      </span>
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="text-left">
+                  <ul className="space-y-1">
+                    {canonicalChecklist.map(({ label }) => {
+                      const raw = (token as any)[label];
+                      const val = valueToScore(raw, (gradeMaps as any)[label]);
+                      return (
+                        <li key={label} className="flex justify-between gap-2">
+                          <span>{label}</span>
+                          <span className="font-semibold">+{val}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
 
