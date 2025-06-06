@@ -184,7 +184,7 @@ export default function TokenSearchList() {
 
     // sorting
     if (sortOption === "mc-desc") {
-      // Tokens are already returned sorted by market cap from the API.
+      result = [...result].sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0));
     } else if (sortOption === "mc-asc") {
       result = [...result].sort((a, b) => (a.marketCap || 0) - (b.marketCap || 0));
     } else if (sortOption === "rs-desc") {
