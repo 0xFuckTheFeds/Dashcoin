@@ -31,7 +31,6 @@ import {
   X
 } from "lucide-react";
 import { formatCurrency0 } from "@/lib/utils";
-import AnimatedMarketCap from "@/components/animated-marketcap";
 import Link from "next/link";
 
 interface ResearchScoreData {

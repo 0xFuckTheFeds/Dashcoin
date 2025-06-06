@@ -1,5 +1,4 @@
 import { formatCurrency } from "@/lib/utils";
-import AnimatedMarketCap from "@/components/animated-marketcap";
 import { CopyAddress } from "@/components/copy-address";
 import { TrendingUp, ExternalLink, Zap } from "lucide-react";
 
