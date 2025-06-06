@@ -3,7 +3,6 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import Image from "next/image";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import AnimatedMarketCap from "@/components/animated-marketcap";
 import { canonicalChecklist } from "@/components/founders-edge-checklist";
 import { valueToScore } from "@/lib/score";
 import {
@@ -19,7 +18,6 @@ import {
   ArrowUp,
   ArrowDown,
   Minus,
-  ExternalLink,
   Zap,
   Star,
   Shield,
@@ -73,7 +71,7 @@ export interface TokenCardProps {
 export function TokenCard({ token, researchScore }: TokenCardProps) {
   const router = useRouter();
   const tokenAddress = token.token || "";
-  const tokenSymbol = token.symbol || "???";
+  const tokenSymbol = token.symbol || "UNKNOWN";
   const change24h = token.change24h || 0;
 
   const handleLinkClick = (
@@ -234,10 +232,13 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
 
         {/* Action Section */}
         <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-          <div className="group/detail flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 hover:text-white rounded-lg transition-all duration-200">
-            <span className="text-sm font-medium">View Details</span>
-            <ArrowUpRight className="w-3 h-3 group-hover/detail:translate-x-0.5 group-hover/detail:-translate-y-0.5 transition-transform" />
-          </div>
+          <button
+            type="button"
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-slate-400"
+          >
+            View Details
+            <ArrowUpRight className="inline w-3 h-3" />
+          </button>
 
           <button
             type="button"
@@ -252,7 +253,6 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
           >
             <Zap className="w-4 h-4" />
             <span className="text-sm font-semibold">TRADE</span>
-            <ExternalLink className="w-3 h-3 opacity-60 group-hover/trade:opacity-100 transition-opacity" />
           </button>
         </div>
       </DashcoinCard>
