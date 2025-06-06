@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { 
   Loader2, 
@@ -227,7 +227,11 @@ export default function TokenResearchPage({
     getResearchData();
   }, [symbol]);
 
+  const hasLoaded = useRef(false)
+
   useEffect(() => {
+    if (hasLoaded.current) return
+    hasLoaded.current = true
     async function loadData() {
       try {
         const duneTokenData = await fetchTokenDetails(symbol);
