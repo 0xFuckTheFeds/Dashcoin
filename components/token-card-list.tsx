@@ -62,11 +62,13 @@ export default function TokenCardList({ data }: { data: PaginatedTokenResponse |
   const getResearch = (symbol: string): ResearchScoreData | undefined =>
     researchScores.find(r => r.symbol.toUpperCase() === symbol.toUpperCase())
 
-  const tokensWithData = tokens.map(t => {
-    const dex = dexscreenerData[t.token] || {}
-    const research = getResearch(t.symbol || "") || {}
-    return { ...t, ...dex, ...research, marketCap: dex.marketCap ?? t.marketCap }
-  })
+  const tokensWithData = [...tokens]
+    .map(t => {
+      const dex = dexscreenerData[t.token] || {}
+      const research = getResearch(t.symbol || "") || {}
+      return { ...t, ...dex, ...research, marketCap: dex.marketCap ?? t.marketCap }
+    })
+    .sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0))
 
   if (isLoading && tokensWithData.length === 0) {
     return (
