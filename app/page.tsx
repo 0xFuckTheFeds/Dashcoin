@@ -17,8 +17,7 @@ import {
   getTimeUntilNextDuneRefresh,
 } from "./actions/dune-actions";
 import { fetchDexscreenerTokenData } from "./actions/dexscreener-actions";
-import { formatCurrency } from "@/lib/utils";
-import AnimatedMarketCap from "@/components/animated-marketcap";
+import { formatCurrency, formatCurrency0 } from "@/lib/utils";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
@@ -270,8 +269,10 @@ export default async function Home() {
   const minutesUntilRefresh = Math.floor((timeRemaining % (60 * 60 * 1000)) / (60 * 1000));
 
   const totalMarketCapValue = marketStats?.totalMarketCap || 0;
+  const formattedTotalMarketCap = formatCurrency0(totalMarketCapValue);
   const formattedVolume = formatCurrency(marketStats?.volume24h || 0);
   const formattedFeeEarnings = formatCurrency(marketStats?.feeEarnings24h || 0);
+  const formattedFeeEarnings0 = formatCurrency0(marketStats?.feeEarnings24h || 0);
 
   let dashcPrice = 0;
   let dashcMarketCap = 0;
@@ -363,7 +364,7 @@ export default async function Home() {
             <QuickStatsCard
               icon={TrendingUp}
               title="Total Market Cap"
-              value={<AnimatedMarketCap value={totalMarketCapValue} decimals={0} />}
+              value={formattedTotalMarketCap}
               change="+12.5%"
               changeType="positive"
             />
@@ -377,7 +378,7 @@ export default async function Home() {
             <QuickStatsCard
               icon={DollarSign}
               title="Creator Fees"
-              value={formattedFeeEarnings}
+              value={formattedFeeEarnings0}
               change="+15.7%"
               changeType="positive"
               subtitle="Estimated from total volume*"
@@ -469,7 +470,7 @@ export default async function Home() {
                 
                 <div className="mb-6">
                   <div className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-2">
-                    <AnimatedMarketCap value={totalMarketCapValue} decimals={2} />
+                    {formattedTotalMarketCap}
                   </div>
                 </div>
                 
@@ -509,7 +510,7 @@ export default async function Home() {
                 
                 <div className="mb-6">
                   <div className="text-4xl font-bold bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent mb-2">
-                    {formattedFeeEarnings}
+                    {formattedFeeEarnings0}
                   </div>
                 </div>
                 
