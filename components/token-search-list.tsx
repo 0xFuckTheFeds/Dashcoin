@@ -52,7 +52,7 @@ export default function TokenSearchList() {
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({});
   const [walletInfo, setWalletInfo] = useState<Record<string, { walletLink: string; twitter: string }>>({});
-  const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
+  const [viewMode, setViewMode] = useState<'card' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
