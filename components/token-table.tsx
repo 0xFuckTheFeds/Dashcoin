@@ -459,7 +459,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                     {renderSortIndicator("researchScore")}
                   </div>
                 </th>
-                {canonicalChecklist.map(({ label, description }) => (
+                {canonicalChecklist.map(({ label, display, description }) => (
                   <th key={label} className="relative text-left py-3 px-4 text-dashYellow">
                     <TooltipProvider delayDuration={100}>
                       <Tooltip>
@@ -469,7 +469,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                           </div>
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs text-left">
-                          <p className="text-xs font-semibold mb-1">{label}</p>
+                          <p className="text-xs font-semibold mb-1">{display}</p>
                           <p className="text-xs opacity-80">{description}</p>
                         </TooltipContent>
                       </Tooltip>

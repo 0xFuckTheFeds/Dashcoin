@@ -174,14 +174,14 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
                 </TooltipTrigger>
                 <TooltipContent side="top" className="text-left">
                   <ul className="space-y-1">
-                    {canonicalChecklist.map(({ label }) => {
+                    {canonicalChecklist.map(({ label, display }) => {
                       const raw = (token as any)[label];
                       const val = valueToScore(raw, (gradeMaps as any)[label]);
-                      const display = val * 6;
+                      const displayVal = val * 6;
                       return (
                         <li key={label} className="flex justify-between gap-2">
-                          <span>{label}</span>
-                          <span className="font-semibold">+{display}</span>
+                          <span>{display}</span>
+                          <span className="font-semibold">+{displayVal}</span>
                         </li>
                       );
                     })}
@@ -247,7 +247,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
           </div>
           
           <div className="flex flex-wrap gap-1.5">
-            {(showAllTraits ? canonicalChecklist : canonicalChecklist.slice(0, 4)).map(({ label, description }) => {
+            {(showAllTraits ? canonicalChecklist : canonicalChecklist.slice(0, 4)).map(({ label, display, description }) => {
               const value = (token as any)[label];
               const score = valueToScore(value);
               const rating = score === 2 ? "✓" : score === 1 ? "⚠️" : "?";
@@ -264,7 +264,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
                     <TooltipContent side="top" className="max-w-xs text-left">
                       <p className="text-xs font-semibold mb-1 flex items-center gap-1">
                         {checklistIcons[label]}
-                        {label} {rating}
+                        {display} {rating}
                       </p>
                       <p className="text-xs opacity-80">{description}</p>
                     </TooltipContent>

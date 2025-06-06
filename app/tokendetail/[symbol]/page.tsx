@@ -148,14 +148,14 @@ const ResearchScoreBadge = ({ score, data }: { score: number; data?: Record<stri
         {data && (
           <TooltipContent className="text-left">
             <ul className="space-y-1">
-              {canonicalChecklist.map(({ label }) => {
+              {canonicalChecklist.map(({ label, display }) => {
                 const raw = data[label];
                 const val = valueToScore(raw, (gradeMaps as any)[label]);
-                const display = val * 6;
+                const displayVal = val * 6;
                 return (
                   <li key={label} className="flex justify-between gap-2">
-                    <span>{label}</span>
-                    <span className="font-semibold">+{display}</span>
+                    <span>{display}</span>
+                    <span className="font-semibold">+{displayVal}</span>
                   </li>
                 );
               })}
