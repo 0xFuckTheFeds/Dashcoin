@@ -24,7 +24,8 @@ import {
   Zap,
   Star,
   Shield,
-  Activity
+  Activity,
+  Info
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -207,16 +208,20 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
               const score = valueToScore(value);
               const rating = score === 2 ? "✓" : score === 1 ? "⚠️" : "?";
               return (
-                <TooltipProvider delayDuration={0} key={label}>
+                <TooltipProvider delayDuration={100} key={label}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-medium transition-all duration-200 hover:scale-105 ${badgeColor(value)}`}>
                         {checklistIcons[label]}
                         <span>{value || '-'}</span>
+                        <Info className="w-3 h-3 text-slate-300" />
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="bg-slate-800 border-slate-700 max-w-xs text-left">
-                      <p className="text-xs font-semibold mb-1">{label} {rating}</p>
+                    <TooltipContent side="top" className="max-w-xs text-left">
+                      <p className="text-xs font-semibold mb-1 flex items-center gap-1">
+                        {checklistIcons[label]}
+                        {label} {rating}
+                      </p>
                       <p className="text-xs opacity-80">{description}</p>
                     </TooltipContent>
                   </Tooltip>

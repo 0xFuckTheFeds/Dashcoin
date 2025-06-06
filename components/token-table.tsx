@@ -461,7 +461,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                 </th>
                 {canonicalChecklist.map(({ label, description }) => (
                   <th key={label} className="relative text-left py-3 px-4 text-dashYellow">
-                    <TooltipProvider delayDuration={0}>
+                    <TooltipProvider delayDuration={100}>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="flex items-center gap-1 cursor-pointer">
