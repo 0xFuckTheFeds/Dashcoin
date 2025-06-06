@@ -4,7 +4,7 @@ import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import Image from "next/image";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { canonicalChecklist } from "@/components/founders-edge-checklist";
-import { valueToScore } from "@/lib/score";
+import { gradeMaps, valueToScore } from "@/lib/score";
 import { useState } from "react";
 import {
   User, 
@@ -158,15 +158,36 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
 
           {/* Research Score Badge */}
           {researchScore !== null && (
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30"></div>
-              <div className="relative flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-xl">
-                <Star className="w-3 h-3 text-emerald-400" />
-                <span className="text-white font-bold text-sm">
-                  {researchScore.toFixed(1)}
-                </span>
-              </div>
-            </div>
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30"></div>
+                    <div className="relative flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-xl">
+                      <Star className="w-3 h-3 text-emerald-400" />
+                      <span className="text-white font-bold text-sm">
+                        {researchScore.toFixed(1)}
+                      </span>
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="text-left">
+                  <ul className="space-y-1">
+                    {canonicalChecklist.map(({ label, display }) => {
+                      const raw = (token as any)[label];
+                      const val = valueToScore(raw, (gradeMaps as any)[label]);
+                      const displayVal = val * 6;
+                      return (
+                        <li key={label} className="flex justify-between gap-2">
+                          <span>{display}</span>
+                          <span className="font-semibold">+{displayVal}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
 
@@ -225,7 +246,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
           </div>
           
           <div className="flex flex-wrap gap-1.5">
-            {(showAllTraits ? canonicalChecklist : canonicalChecklist.slice(0, 4)).map(({ label, description }) => {
+            {(showAllTraits ? canonicalChecklist : canonicalChecklist.slice(0, 4)).map(({ label, display, description }) => {
               const value = (token as any)[label];
               const score = valueToScore(value);
               const rating = score === 2 ? "✓" : score === 1 ? "⚠️" : "?";
@@ -242,7 +263,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
                     <TooltipContent side="top" className="max-w-xs text-left">
                       <p className="text-xs font-semibold mb-1 flex items-center gap-1">
                         {checklistIcons[label]}
-                        {label} {rating}
+                        {display} {rating}
                       </p>
                       <p className="text-xs opacity-80">{description}</p>
                     </TooltipContent>

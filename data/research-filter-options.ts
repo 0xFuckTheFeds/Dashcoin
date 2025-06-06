@@ -27,9 +27,10 @@ export const researchFilterOptions: Record<string, string[]> = {
     "Unknown",
   ],
   "Social Reach & Engagement Index": [
-    "High ( ≥ 20 k followers )",
-    "Medium ( 5 k – 20 k followers )",
-    "Low ( < 5 k followers )",
+    // Literal strings from the sheet
+    "High ( ≥ 20k followers)",
+    "Medium (5k – 20k followers)",
+    "Low (< 5k followers)",
     "Unknown",
   ],
 };
