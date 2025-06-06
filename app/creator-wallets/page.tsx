@@ -2,6 +2,7 @@ import { Navbar } from "@/components/navbar";
 import Image from "next/image";
 import { fetchAllTokensFromDune } from "../actions/dune-actions";
 import { fetchCreatorWalletLinks } from "../actions/googlesheet-action";
+import { fetchDexscreenerTokenLogo } from "../actions/dexscreener-actions";
 import { 
   ExternalLink, 
   Wallet, 
@@ -24,16 +25,21 @@ export default async function CreatorWalletsPage() {
     walletData.map((d) => [d.symbol.toUpperCase(), { link: d.walletLink, activity: d.walletActivity }])
   );
 
-  const tokensWithWallets = tokens.map((token) => {
-    const entry = walletMap.get(token.symbol.toUpperCase()) || { link: "", activity: "" };
-    return {
-      name: token.name || token.symbol,
-      symbol: token.symbol,
-      tokenUrl: token.token_url,
-      walletLink: entry.link,
-      walletActivity: entry.activity,
-    };
-  });
+  const tokensWithWallets = await Promise.all(
+    tokens.map(async (token) => {
+      const entry =
+        walletMap.get(token.symbol.toUpperCase()) || { link: "", activity: "" };
+      const logo = await fetchDexscreenerTokenLogo(token.token);
+
+      return {
+        name: token.name || token.symbol,
+        symbol: token.symbol,
+        tokenUrl: logo || token.token_url,
+        walletLink: entry.link,
+        walletActivity: entry.activity,
+      };
+    }),
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
