@@ -150,7 +150,7 @@ const TokenSearchListWrapper = async () => {
 };
 
 // Quick Stats Component
-const QuickStatsCard = ({ icon: Icon, title, value, change, changeType = "positive" }) => (
+const QuickStatsCard = ({ icon: Icon, title, value, change, changeType = "positive", subtitle }) => (
   <div className="group relative">
     <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-green-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"></div>
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
@@ -169,7 +169,8 @@ const QuickStatsCard = ({ icon: Icon, title, value, change, changeType = "positi
       </div>
       <div>
         <p className="text-sm text-slate-400 mb-1">{title}</p>
-        <p className="text-2xl font-bold text-white">{value}</p>
+        <p className="text-2xl font-bold text-white mb-1">{value}</p>
+        {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
       </div>
     </div>
   </div>
@@ -379,10 +380,11 @@ export default async function Home() {
               value={formattedFeeEarnings}
               change="+15.7%"
               changeType="positive"
+              subtitle="Estimated from total volume*"
             />
             <QuickStatsCard
               icon={Users}
-              title="Active Tokens"
+              title="Indexed Tokens"
               value={marketStats?.coinLaunches || "N/A"}
               change="+3"
               changeType="positive"
