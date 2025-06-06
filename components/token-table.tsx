@@ -256,18 +256,25 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     return scoreData?.score !== undefined ? scoreData.score : null;
   }
 
-  const tokensWithDexData = filteredTokens.map(token => {
-    const tokenAddress = getTokenProperty(token, "token", "");
-    const dexData = tokenAddress && dexscreenerData[tokenAddress] ? dexscreenerData[tokenAddress] : {};
-    const research = researchScores.find(item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()) || {};
+  const tokensWithDexData = [...filteredTokens]
+    .map(token => {
+      const tokenAddress = getTokenProperty(token, "token", "");
+      const dexData = tokenAddress && dexscreenerData[tokenAddress] ? dexscreenerData[tokenAddress] : {};
+      const research = researchScores.find(item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()) || {};
 
-    return {
-      ...token,
-      ...dexData,
-      ...research,
-      marketCap: dexData.marketCap !== undefined ? dexData.marketCap : token.marketCap,
-    };
-  });
+      return {
+        ...token,
+        ...dexData,
+        ...research,
+        marketCap: dexData.marketCap !== undefined ? dexData.marketCap : token.marketCap,
+      };
+    })
+    .sort((a, b) => {
+      if (sortField !== 'marketCap') return 0;
+      return sortDirection === 'asc'
+        ? (a.marketCap || 0) - (b.marketCap || 0)
+        : (b.marketCap || 0) - (a.marketCap || 0);
+    });
 
   useEffect(() => {
     if (refreshCountdown <= 0) {
