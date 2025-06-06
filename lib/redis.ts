@@ -15,10 +15,15 @@ export const CACHE_KEYS = {
   TOKEN_MARKET_CAPS_LAST_REFRESH: "dashcoin:token_market_caps_last_refresh",
   MARKET_STATS_LAST_REFRESH: "dashcoin:market_stats_last_refresh",
   REFRESH_IN_PROGRESS: "dashcoin:refresh_in_progress",
+  CREATOR_WALLETS: "dashcoin:creator_wallets",
+  CREATOR_WALLETS_LAST_REFRESH: "dashcoin:creator_wallets_last_refresh",
+  DEX_LOGO_PREFIX: "dexscreener:logo:",
 }
 
-export const CACHE_DURATION = 1 * 60 * 60 * 1000  
-export const CACHE_DURATION_LONG = 1 * 60 * 60 * 1000 
+export const CACHE_DURATION = 1 * 60 * 60 * 1000
+export const CACHE_DURATION_LONG = 1 * 60 * 60 * 1000
+export const WALLET_CACHE_DURATION = 5 * 60 * 1000
+export const DEX_LOGO_CACHE_DURATION = 60 * 60 * 1000
 
 const isKvAvailable = typeof kv !== "undefined" && kv !== null
 
