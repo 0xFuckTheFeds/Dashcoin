@@ -24,7 +24,6 @@ import {
   Activity
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 const checklistIcons: Record<string, JSX.Element> = {
   "Team Doxxed": <User className="h-3 w-3" />,
@@ -69,28 +68,15 @@ export interface TokenCardProps {
 }
 
 export function TokenCard({ token, researchScore }: TokenCardProps) {
-  const router = useRouter();
   const tokenAddress = token.token || "";
   const tokenSymbol = token.symbol || "???";
   const change24h = token.change24h || 0;
 
-  const handleCardClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    const isModified =
-      e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
-    if (isModified) {
-      return;
-    }
-    e.preventDefault();
-    router.push(`/tokendetail/${tokenSymbol}`);
-  };
 
   return (
     <div className="group relative">
       <Link
         href={`/tokendetail/${tokenSymbol}`}
-        onClick={handleCardClick}
         className="group relative block"
       >
         {/* Glow Effect */}
