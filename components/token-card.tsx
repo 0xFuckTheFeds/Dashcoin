@@ -128,13 +128,27 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-white group-hover/link:text-teal-400 transition-colors truncate">
+                  <h3
+                    className="text-lg font-bold text-white group-hover/link:text-teal-400 transition-colors truncate"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/tokendetail/${tokenSymbol}`);
+                    }}
+                  >
                     {tokenSymbol}
                   </h3>
                   <ArrowUpRight className="w-4 h-4 text-slate-400 opacity-0 group-hover/link:opacity-100 transition-all duration-200 transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
                 </div>
                 {token.name && (
-                  <p className="text-sm text-slate-400 truncate">{token.name}</p>
+                  <p
+                    className="text-sm text-slate-400 truncate"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/tokendetail/${tokenSymbol}`);
+                    }}
+                  >
+                    {token.name}
+                  </p>
                 )}
               </div>
             </div>
