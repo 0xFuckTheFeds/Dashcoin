@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/navbar";
+import Image from "next/image";
 import { fetchAllTokensFromDune } from "../actions/dune-actions";
 import { fetchCreatorWalletLinks } from "../actions/googlesheet-action";
 import { 
@@ -28,6 +29,7 @@ export default async function CreatorWalletsPage() {
     return {
       name: token.name || token.symbol,
       symbol: token.symbol,
+      tokenUrl: token.token_url,
       walletLink: entry.link,
       walletActivity: entry.activity,
     };
@@ -135,8 +137,18 @@ export default async function CreatorWalletsPage() {
                       {/* Token Info */}
                       <div className="col-span-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-green-500 rounded-xl flex items-center justify-center text-white font-bold text-sm">
-                            {token.symbol.slice(0, 2).toUpperCase()}
+                          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-green-500 rounded-xl flex items-center justify-center text-white font-bold text-sm overflow-hidden">
+                            {token.tokenUrl ? (
+                              <Image
+                                src={token.tokenUrl}
+                                alt={`${token.symbol} logo`}
+                                width={48}
+                                height={48}
+                                className="w-12 h-12 object-cover"
+                              />
+                            ) : (
+                              token.symbol.slice(0, 2).toUpperCase()
+                            )}
                           </div>
                           <div>
                             <h3 className="font-semibold text-white text-lg tracking-tight">{token.name}</h3>
