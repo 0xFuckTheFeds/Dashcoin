@@ -586,12 +586,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                           <TooltipProvider delayDuration={100}>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <div className="flex items-center cursor-help">
-                                  <span className="font-medium mr-2">{researchScore.toFixed(1)}</span>
-                                  <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
-                                    <FileSearch className="h-4 w-4" />
-                                  </Link>
-                                </div>
+                                <span className="font-medium mr-2 cursor-help">{researchScore.toFixed(1)}</span>
                               </TooltipTrigger>
                               <TooltipContent side="top" className="text-left">
                                 <ul className="space-y-1">
@@ -609,6 +604,9 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                                 </ul>
                               </TooltipContent>
                             </Tooltip>
+                            <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow ml-1">
+                              <FileSearch className="h-4 w-4" />
+                            </Link>
                           </TooltipProvider>
                         ) : (
                           <span className="text-dashYellow-light opacity-50">-</span>
