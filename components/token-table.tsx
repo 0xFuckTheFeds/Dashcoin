@@ -130,22 +130,28 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
 
     if (searchTerm.trim() !== "") {
       filtered = filtered.filter((token: any) => {
+        const lowerTerm = searchTerm.toLowerCase()
         const symbolMatch =
           token.symbol && typeof token.symbol === "string"
-            ? token.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+            ? token.symbol.toLowerCase().includes(lowerTerm)
             : false
 
         const nameMatch =
           token.name && typeof token.name === "string"
-            ? token.name.toLowerCase().includes(searchTerm.toLowerCase())
+            ? token.name.toLowerCase().includes(lowerTerm)
             : false
 
         const descriptionMatch =
           token.description && typeof token.description === "string"
-            ? token.description.toLowerCase().includes(searchTerm.toLowerCase())
+            ? token.description.toLowerCase().includes(lowerTerm)
             : false
 
-        return symbolMatch || nameMatch || descriptionMatch
+        const addressMatch =
+          token.token && typeof token.token === "string"
+            ? token.token.toLowerCase().includes(lowerTerm)
+            : false
+
+        return symbolMatch || nameMatch || descriptionMatch || addressMatch
       })
     }
 
@@ -387,7 +393,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-dashYellow-light opacity-70" />
           <input
             type="text"
-            placeholder="Search tokens..."
+            placeholder="Search tokens or contract addresses..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-dashGreen-dark border border-dashBlack rounded-md text-dashYellow-light placeholder:text-dashYellow-light/50 focus:outline-none focus:ring-2 focus:ring-dashYellow"
