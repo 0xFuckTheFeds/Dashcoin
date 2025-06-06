@@ -369,7 +369,7 @@ export default async function Home() {
             />
             <QuickStatsCard
               icon={Activity}
-              title="24h Volume"
+              title="Total Volume"
               value={formattedVolume}
               change="+8.2%"
               changeType="positive"
