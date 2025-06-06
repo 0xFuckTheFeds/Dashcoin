@@ -1028,7 +1028,6 @@ export default function ComparePage() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white">Dashcoin Research</h3>
-                    <p className="text-sm text-slate-400">Token Comparison Platform</p>
                   </div>
                 </div>
                 <p className="text-slate-400 text-sm leading-relaxed">
@@ -1048,22 +1047,13 @@ export default function ComparePage() {
                     <span>New Comparison</span>
                   </button>
                   {comparisonData.token1 && comparisonData.token2 && (
-                    <>
-                      <button 
-                        onClick={exportCsv}
-                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
-                      >
-                        <Download className="w-4 h-4" />
-                        <span>Export Data</span>
-                      </button>
-                      <button 
+                      <button
                         onClick={handleReverseCompare}
                         className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
                       >
                         <ArrowLeftRight className="w-4 h-4" />
                         <span>Reverse Comparison</span>
                       </button>
-                    </>
                   )}
                 </div>
               </div>
