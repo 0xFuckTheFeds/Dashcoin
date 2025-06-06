@@ -34,6 +34,7 @@ import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
+import { gradeMaps, valueToScore } from "@/lib/score"
 import { researchFilterOptions } from "@/data/research-filter-options"
 import { useRouter, useSearchParams } from "next/navigation"
 
@@ -582,12 +583,33 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                             <span>Loading...</span>
                           </div>
                         ) : researchScore !== null && researchScore !== undefined ? (
-                          <div className="flex items-center">
-                            <span className="font-medium mr-2">{researchScore.toFixed(1)}</span>
-                            <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
-                              <FileSearch className="h-4 w-4" />
-                            </Link>
-                          </div>
+                          <TooltipProvider delayDuration={100}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center cursor-help">
+                                  <span className="font-medium mr-2">{researchScore.toFixed(1)}</span>
+                                  <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
+                                    <FileSearch className="h-4 w-4" />
+                                  </Link>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="text-left">
+                                <ul className="space-y-1">
+                                  {canonicalChecklist.map(({ label, display }) => {
+                                    const raw = (token as any)[label]
+                                    const val = valueToScore(raw, (gradeMaps as any)[label])
+                                    const displayVal = val * 6
+                                    return (
+                                      <li key={label} className="flex justify-between gap-2">
+                                        <span>{display}</span>
+                                        <span className="font-semibold">+{displayVal}</span>
+                                      </li>
+                                    )
+                                  })}
+                                </ul>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         ) : (
                           <span className="text-dashYellow-light opacity-50">-</span>
                         )}
