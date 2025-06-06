@@ -1026,9 +1026,7 @@ export default function ComparePage() {
                     <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full blur-lg opacity-30 animate-pulse"></div>
                     <DashcoinLogo size={40} />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white">Dashcoin Research</h3>
-                  </div>
+
                 </div>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Advanced analytics and comparative insights for the Believe coin ecosystem.
