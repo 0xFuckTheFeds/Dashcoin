@@ -32,7 +32,7 @@ export function FounderMetadataGrid({ token1, token2 }: Props) {
 
   const rows = [
     { label: "Research Score", val1: token1.score, val2: token2.score, score: true },
-    ...canonicalChecklist.map(label => ({ label, val1: token1[label], val2: token2[label], score: false })),
+    ...canonicalChecklist.map(trait => ({ label: trait.label, val1: token1[trait.label], val2: token2[trait.label], score: false })),
   ];
 
   return (

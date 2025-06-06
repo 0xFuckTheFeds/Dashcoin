@@ -6,6 +6,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import AnimatedMarketCap from "@/components/animated-marketcap";
 import { canonicalChecklist } from "@/components/founders-edge-checklist";
 import { valueToScore } from "@/lib/score";
+import { useState } from "react";
 import {
   User, 
   Twitter, 
@@ -75,6 +76,7 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
   const tokenAddress = token.token || "";
   const tokenSymbol = token.symbol || "???";
   const change24h = token.change24h || 0;
+  const [showAllTraits, setShowAllTraits] = useState(false);
 
   const handleCardClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -200,8 +202,10 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
           </div>
           
           <div className="flex flex-wrap gap-1.5">
-            {canonicalChecklist.slice(0, 6).map(label => {
+            {(showAllTraits ? canonicalChecklist : canonicalChecklist.slice(0, 4)).map(({ label, description }) => {
               const value = (token as any)[label];
+              const score = valueToScore(value);
+              const rating = score === 2 ? "✓" : score === 1 ? "⚠️" : "?";
               return (
                 <TooltipProvider delayDuration={0} key={label}>
                   <Tooltip>
@@ -211,18 +215,23 @@ export function TokenCard({ token, researchScore }: TokenCardProps) {
                         <span>{value || '-'}</span>
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="bg-slate-800 border-slate-700">
-                      <p className="text-xs">{label}</p>
+                    <TooltipContent side="top" className="bg-slate-800 border-slate-700 max-w-xs text-left">
+                      <p className="text-xs font-semibold mb-1">{label} {rating}</p>
+                      <p className="text-xs opacity-80">{description}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               );
             })}
-            
-            {canonicalChecklist.length > 6 && (
-              <div className="flex items-center px-2 py-1 bg-slate-600/20 border border-slate-600/30 rounded-lg text-xs text-slate-400">
-                +{canonicalChecklist.length - 6} more
-              </div>
+
+            {!showAllTraits && canonicalChecklist.length > 4 && (
+              <button
+                type="button"
+                onClick={() => setShowAllTraits(true)}
+                className="flex items-center px-2 py-1 bg-slate-600/20 border border-slate-600/30 rounded-lg text-xs text-slate-400"
+              >
+                +{canonicalChecklist.length - 4} more
+              </button>
             )}
           </div>
         </div>
