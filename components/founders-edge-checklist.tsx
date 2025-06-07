@@ -88,7 +88,7 @@ interface ChecklistProps {
 
 export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistProps) {
   if (!data) return null;
-  const sheetScore = Number(data["Score"]);
+  const sheetScore = Number(data["Score"] ?? (data as any).score);
   const score = !isNaN(sheetScore) && sheetScore > 0 ? sheetScore : computeFounderScore(data);
   return (
     <DashcoinCard
