@@ -21,6 +21,7 @@ import { formatCurrency, formatCurrency0 } from "@/lib/utils";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
+import { DashcStatsBar } from "@/components/dashc-stats-bar";
 import { 
   Twitter, 
   TrendingUp, 
@@ -304,13 +305,7 @@ export default async function Home() {
 
       {/* Navigation */}
       <div className="relative z-50">
-        <Navbar
-          dashcStats={{
-            tradeLink: dashcoinTradeLink,
-            marketCap: dashcMarketCap,
-            contractAddress: dashcoinCA,
-          }}
-        />
+        <Navbar />
       </div>
 
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl mt-16 mt-16">
@@ -390,6 +385,14 @@ export default async function Home() {
               value={marketStats?.coinLaunches || "N/A"}
               change="+3"
               changeType="positive"
+            />
+          </div>
+
+          <div className="mt-8 flex justify-center">
+            <DashcStatsBar
+              tradeLink={dashcoinTradeLink}
+              marketCap={dashcMarketCap}
+              contractAddress={dashcoinCA}
             />
           </div>
         </section>

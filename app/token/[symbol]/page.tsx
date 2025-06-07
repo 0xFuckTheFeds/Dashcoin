@@ -2,6 +2,7 @@
 
 import { DashcoinButton } from "@/components/ui/dashcoin-button";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
+import { Navbar } from "@/components/navbar";
 import {
   DashcoinCard,
   DashcoinCardHeader,
@@ -156,13 +157,7 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
 
   return (
     <div className="min-h-screen">
-      <header className="container mx-auto py-6 px-4">
-        <div className="flex justify-between items-center">
-          <Link href="/">
-            <DashcoinLogo size={48} />
-          </Link>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="container mx-auto px-4 py-6 space-y-8">
         <Link

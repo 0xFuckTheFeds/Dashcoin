@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { DashcoinButton } from "@/components/ui/dashcoin-button";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
+import { Navbar } from "@/components/navbar";
 import {
   DashcoinCard,
   DashcoinCardHeader,
@@ -315,23 +316,7 @@ export default function TokenResearchPage({
       </div>
 
       {/* Navigation */}
-      <header className="relative z-50 border-b border-white/10 bg-white/5 backdrop-blur-xl">
-        <div className="container mx-auto py-4 px-4 max-w-7xl">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                <DashcoinLogo size={240} />
-              </div>
-            </Link>
-            
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span>Live Data</span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl mt-16">
         {/* Back Navigation */}

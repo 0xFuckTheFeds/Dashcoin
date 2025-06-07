@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Navbar } from '@/components/navbar';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -41,7 +42,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dashGreen-darkest">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-dashGreen-darkest">
+      <Navbar />
       <div className="w-full max-w-md">
         <div className="bg-dashGreen-dark shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4 border border-dashYellow/20">
           <h1 className="text-2xl font-bold text-dashYellow mb-6 text-center">Admin Login</h1>
