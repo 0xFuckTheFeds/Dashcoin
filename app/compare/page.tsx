@@ -485,7 +485,7 @@ export default function ComparePage() {
             Advanced Token Comparison
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent mb-6">
             Token Comparison
           </h1>
           
@@ -864,19 +864,19 @@ export default function ComparePage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-white/10">
-                        <th className="text-left py-4 px-4 font-semibold text-white">Metric</th>
-                        <th className="text-right py-4 px-4 font-semibold text-white">{comparisonData.token1.symbol}</th>
-                        <th className="text-right py-4 px-4 font-semibold text-white">{comparisonData.token2.symbol}</th>
-                        <th className="text-right py-4 px-4 font-semibold text-white">Difference</th>
+                        <th className="text-left py-2 px-3 font-semibold text-white">Metric</th>
+                        <th className="text-right py-2 px-3 font-semibold text-white">{comparisonData.token1.symbol}</th>
+                        <th className="text-right py-2 px-3 font-semibold text-white">{comparisonData.token2.symbol}</th>
+                        <th className="text-right py-2 px-3 font-semibold text-white">Difference</th>
                       </tr>
                     </thead>
                     <tbody className="text-sm">
                       <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-4 px-4 text-slate-300">Market Cap</td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token1.marketCap > comparisonData.token2.marketCap ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className="py-2 px-3 text-slate-300">Market Cap</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.marketCap > comparisonData.token2.marketCap ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           ${comparisonData.token1.marketCap.toLocaleString()}
                         </td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token2.marketCap > comparisonData.token1.marketCap ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.marketCap > comparisonData.token1.marketCap ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           ${comparisonData.token2.marketCap.toLocaleString()}
                         </td>
                         {(() => {
@@ -885,7 +885,7 @@ export default function ComparePage() {
                           const multipleStr = calculateMultiple(v1, v2);
                           const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
                           return (
-                            <td className={`text-right py-4 px-4 font-medium ${colorClass}`}>
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
                               {multipleStr}
                             </td>
                           );
@@ -893,11 +893,11 @@ export default function ComparePage() {
                       </tr>
                       
                       <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-4 px-4 text-slate-300">Holders</td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token1.holders > comparisonData.token2.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className="py-2 px-3 text-slate-300">Holders</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.holders > comparisonData.token2.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           {comparisonData.token1.holders.toLocaleString()}
                         </td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token2.holders > comparisonData.token1.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.holders > comparisonData.token1.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           {comparisonData.token2.holders.toLocaleString()}
                         </td>
                         {(() => {
@@ -906,7 +906,7 @@ export default function ComparePage() {
                           const multipleStr = calculateMultiple(v1, v2);
                           const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
                           return (
-                            <td className={`text-right py-4 px-4 font-medium ${colorClass}`}>
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
                               {multipleStr}
                             </td>
                           );
@@ -914,11 +914,11 @@ export default function ComparePage() {
                       </tr>
                       
                       <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-4 px-4 text-slate-300">Total Volume</td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token1.volume24h > comparisonData.token2.volume24h ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className="py-2 px-3 text-slate-300">Total Volume</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.volume24h > comparisonData.token2.volume24h ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           ${comparisonData.token1.volume24h.toLocaleString()}
                         </td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token2.volume24h > comparisonData.token1.volume24h ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.volume24h > comparisonData.token1.volume24h ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           ${comparisonData.token2.volume24h.toLocaleString()}
                         </td>
                         {(() => {
@@ -927,7 +927,7 @@ export default function ComparePage() {
                           const multipleStr = calculateMultiple(v1, v2);
                           const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
                           return (
-                            <td className={`text-right py-4 px-4 font-medium ${colorClass}`}>
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
                               {multipleStr}
                             </td>
                           );
@@ -935,24 +935,24 @@ export default function ComparePage() {
                       </tr>
                       
                       <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-4 px-4 text-slate-300">Launch Date</td>
-                        <td className="text-right py-4 px-4 text-white">
+                        <td className="py-2 px-3 text-slate-300">Launch Date</td>
+                        <td className="text-right py-2 px-3 text-white">
                           {new Date(comparisonData.token1.launchDate).toLocaleDateString()}
                         </td>
-                        <td className="text-right py-4 px-4 text-white">
+                        <td className="text-right py-2 px-3 text-white">
                           {new Date(comparisonData.token2.launchDate).toLocaleDateString()}
                         </td>
-                        <td className="text-right py-4 px-4 text-slate-400">
+                        <td className="text-right py-2 px-3 text-slate-400">
                           {Math.abs(Math.floor((new Date(comparisonData.token1.launchDate).getTime() - new Date(comparisonData.token2.launchDate).getTime()) / (1000 * 60 * 60 * 24)))} days
                         </td>
                       </tr>
                       
                       <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-4 px-4 text-slate-300">MarketCap Growth/Day</td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token1.marketcapgrowthperday > comparisonData.token2.marketcapgrowthperday ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className="py-2 px-3 text-slate-300">MarketCap Growth/Day</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.marketcapgrowthperday > comparisonData.token2.marketcapgrowthperday ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           ${comparisonData.token1.marketcapgrowthperday.toLocaleString()}
                         </td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token2.marketcapgrowthperday > comparisonData.token1.marketcapgrowthperday ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.marketcapgrowthperday > comparisonData.token1.marketcapgrowthperday ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           ${comparisonData.token2.marketcapgrowthperday.toLocaleString()}
                         </td>
                         {(() => {
@@ -961,7 +961,7 @@ export default function ComparePage() {
                           const multipleStr = calculateMultiple(v1, v2);
                           const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
                           return (
-                            <td className={`text-right py-4 px-4 font-medium ${colorClass}`}>
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
                               {multipleStr}
                             </td>
                           );
@@ -969,11 +969,11 @@ export default function ComparePage() {
                       </tr>
                       
                       <tr className="hover:bg-white/5 transition-colors">
-                        <td className="py-4 px-4 text-slate-300">Market Cap per Holder</td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token1.marketCap/comparisonData.token1.holders > comparisonData.token2.marketCap/comparisonData.token2.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className="py-2 px-3 text-slate-300">Market Cap per Holder</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.marketCap/comparisonData.token1.holders > comparisonData.token2.marketCap/comparisonData.token2.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           ${(comparisonData.token1.marketCap/comparisonData.token1.holders).toLocaleString()}
                         </td>
-                        <td className={`text-right py-4 px-4 ${comparisonData.token2.marketCap/comparisonData.token2.holders > comparisonData.token1.marketCap/comparisonData.token1.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.marketCap/comparisonData.token2.holders > comparisonData.token1.marketCap/comparisonData.token1.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
                           ${(comparisonData.token2.marketCap/comparisonData.token2.holders).toLocaleString()}
                         </td>
                         {(() => {
@@ -982,7 +982,7 @@ export default function ComparePage() {
                           const multipleStr = calculateMultiple(v1, v2);
                           const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
                           return (
-                            <td className={`text-right py-4 px-4 font-medium ${colorClass}`}>
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
                               {multipleStr}
                             </td>
                           );
