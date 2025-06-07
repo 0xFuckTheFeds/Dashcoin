@@ -203,9 +203,16 @@ export default function TokenSearchList() {
     return filteredAndSortedTokens.slice(start, start + pageSize);
   }, [filteredAndSortedTokens, currentPage, pageSize]);
 
+  // Only refetch Dexscreener data when the set of token addresses changes
+  const paginatedTokenKey = useMemo(
+    () => paginatedTokens.map((t) => t.token).join(','),
+    [paginatedTokens],
+  );
+
   useEffect(() => {
     fetchDexData(paginatedTokens);
-  }, [paginatedTokens, fetchDexData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paginatedTokenKey, fetchDexData]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
