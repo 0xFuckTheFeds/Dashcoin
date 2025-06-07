@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
-import { DashcStatsBar, DashcStatsBarProps } from "@/components/dashc-stats-bar";
+
 import { 
   Menu, 
   X, 
@@ -17,11 +17,7 @@ import {
   Users 
 } from "lucide-react";
 
-interface NavbarProps {
-  dashcStats?: DashcStatsBarProps;
-}
-
-export function Navbar({ dashcStats }: NavbarProps) {
+export function Navbar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -62,13 +58,6 @@ export function Navbar({ dashcStats }: NavbarProps) {
                 <DashcoinLogo size={40} />
               </Link>
 
-            {/* Compact Stats Bar - Center */}
-            {dashcStats && (
-              <div className="hidden md:block flex-1 max-w-md mx-8">
-                <DashcStatsBar {...dashcStats} />
-              </div>
-            )}
-
             </div>
 
 
@@ -98,12 +87,6 @@ export function Navbar({ dashcStats }: NavbarProps) {
             </button>
           </div>
 
-          {/* Mobile Stats Bar */}
-          {dashcStats && (
-            <div className="md:hidden pb-4">
-              <DashcStatsBar {...dashcStats} />
-            </div>
-          )}
         </div>
       </header>
 
