@@ -76,6 +76,26 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const searchParams = useSearchParams()
   const router = useRouter()
 
+  const handleRowClick = (
+    e: React.MouseEvent<HTMLTableRowElement>,
+    symbol: string,
+  ) => {
+    if (
+      e.button !== 0 ||
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey
+    ) {
+      return
+    }
+
+    const target = e.target as HTMLElement
+    if (target.closest('a,button')) return
+
+    router.push(`/tokendetail/${symbol}`)
+  }
+
   const [checklistFilters, setChecklistFilters] = useState<Record<string, string[]>>(
     () => {
       const initial: Record<string, string[]> = {}
@@ -554,10 +574,14 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                     <tr
                       key={index}
                       className="border-b border-dashGreen-light odd:bg-neutral-800 even:bg-neutral-900 hover:bg-neutral-700 cursor-pointer"
-                      onClick={() => router.push(`/tokendetail/${tokenSymbol}`)}
+                      onClick={(e) => handleRowClick(e, tokenSymbol)}
                     >
                       <td className="py-3 px-4">
-                        <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
+                        <Link
+                          href={`/tokendetail/${tokenSymbol}`}
+                          className="hover:text-dashYellow"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <div>
                             <p className="font-bold">{tokenSymbol}</p>
                             {tokenAddress && (
@@ -577,6 +601,12 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                             target="_blank"
                             rel="noopener noreferrer"
                             className="px-3 py-1.5 bg-dashGreen text-white font-medium rounded-md hover:shadow transition-colors text-sm min-w-[72px]"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              if (!tokenAddress) {
+                                e.preventDefault()
+                              }
+                            }}
                           >
                             TRADE
                           </a>
@@ -597,7 +627,11 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                         ) : researchScore !== null && researchScore !== undefined ? (
                           <div className="flex items-center">
                             <span className="font-medium mr-2">{researchScore.toFixed(1)}</span>
-                            <Link href={`/tokendetail/${tokenSymbol}`} className="hover:text-dashYellow">
+                            <Link
+                              href={`/tokendetail/${tokenSymbol}`}
+                              className="hover:text-dashYellow"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <FileSearch className="h-4 w-4" />
                             </Link>
                           </div>
