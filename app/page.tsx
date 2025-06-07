@@ -336,7 +336,7 @@ export default async function Home() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <a
-                href="#product"
+                href="#token-directory"
                 className="relative group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 <span>Explore Dashboard</span>
@@ -443,7 +443,7 @@ export default async function Home() {
         </section>
 
         {/* Token Analysis Section */}
-        <section className="mb-12">
+        <section id="token-directory" className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
 
