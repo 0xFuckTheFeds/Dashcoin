@@ -86,44 +86,60 @@ interface ChecklistProps {
   showLegend?: boolean;
 }
 
+
 export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistProps) {
   if (!data) return null;
   const sheetScore = Number(data["Score"] ?? (data as any).score);
   const score = !isNaN(sheetScore) && sheetScore > 0 ? sheetScore : computeFounderScore(data);
+
+  const groups = canonicalChecklist.reduce<Record<string, TraitInfo[]>>((acc, trait) => {
+    acc[trait.category] = acc[trait.category] || [];
+    acc[trait.category].push(trait);
+    return acc;
+  }, {});
+
   return (
-    <DashcoinCard
-      className="token-card relative p-10 rounded-2xl shadow-lg"
-    >
-      <div className="flex justify-center items-center gap-6 mb-4">
-        <h2 className="text-2xl font-semibold text-dashYellow">Founder&apos;s Edge Checklist</h2>
-        <div className="bg-dashGreen text-white px-3 py-1 rounded-full text-sm font-semibold shadow flex items-center">
-          <span>
-            Founder Score: <span className="font-bold">{score}</span> / 100
-          </span>
-          {score >= 75 && <span className="ml-2 animate-bounce">🐸</span>}
+    <DashcoinCard className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-6">
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold text-dashYellow">Founder's Edge</h3>
+          <div className="text-sm text-white font-medium">
+            Score: <span className="font-bold">{score}</span>/100
+          </div>
+        </div>
+        <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-teal-500 to-green-500" style={{ width: `${score}%` }} />
         </div>
       </div>
-      <p className="text-base opacity-80 mb-6 text-center">Signal-based checklist of founder credibility and product traction.</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {canonicalChecklist.map(({ label, display }) => {
-          const raw = data[label];
-          const val = valueToScore(raw, (gradeMaps as any)[label]);
-          return (
-            <div
-              key={label}
-              className="flex items-center gap-2 bg-white text-black rounded-full px-4 py-3"
-            >
-              {getIcon(val)}
-              <span className="text-base">{display}</span>
-            </div>
-          );
-        })}
+
+      <div className="space-y-8">
+        {Object.entries(groups).map(([category, traits]) => (
+          <div key={category}>
+            <h4 className="text-sm font-semibold text-slate-400 uppercase mb-2">{category}</h4>
+            <ul className="divide-y divide-white/10">
+              {traits.map(({ label, display }) => {
+                const raw = data[label];
+                const val = valueToScore(raw, (gradeMaps as any)[label]);
+                return (
+                  <li key={label} className="flex items-center justify-between py-2">
+                    <span className="text-slate-300">{display}</span>
+                    <span className="flex items-center gap-2">
+                      {getIcon(val)}
+                      <span className="text-white text-sm">{raw || 'Unknown'}</span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </div>
+
       {showLegend && (
-        <div className="mt-4 flex items-center gap-4 text-sm">
-          <div className="flex items-center gap-1"><MinusCircle className="text-yellow-400 w-4 h-4" /> Unknown</div>
-          <div className="flex items-center gap-1"><XCircle className="text-red-500 w-4 h-4" /> No</div>
-          <div className="flex items-center gap-1"><CheckCircle className="text-green-500 w-4 h-4" /> Yes</div>
+        <div className="pt-4 flex items-center gap-4 text-xs text-slate-400">
+          <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> Positive</span>
+          <span className="flex items-center gap-1"><XCircle className="w-3 h-3 text-red-500" /> Negative</span>
+          <span className="flex items-center gap-1"><MinusCircle className="w-3 h-3 text-yellow-400" /> Unknown</span>
         </div>
       )}
     </DashcoinCard>
