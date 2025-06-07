@@ -53,7 +53,8 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 
 interface TokenResearchData {
   Symbol: string;
-  Score: number | string;
+  Score?: number | string;
+  score?: number | string;
   "Team Doxxed": number | string;
   "Twitter Activity Level": number | string;
   "Time Commitment": number | string;
@@ -216,7 +217,7 @@ export default function TokenResearchPage({
       try {
         const data = await fetchTokenResearchClient(symbol);
         setResearchData(data);
-        setHasScore(!!data && !!data["Score"]);
+        setHasScore(!!data && (!!data["Score"] || !!(data as any).score));
       } catch (error) {
         console.error(`Error fetching research data for ${symbol}:`, error);
       } finally {
@@ -353,8 +354,11 @@ export default function TokenResearchPage({
                   <Sparkles className="w-4 h-4" />
                   Token Analysis
                 </div>
-                {researchData && researchData.Score && (
-                  <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
+                {researchData && (researchData.Score || (researchData as any).score) && (
+                  <ResearchScoreBadge
+                    score={Number(researchData.Score ?? (researchData as any).score)}
+                    data={researchData}
+                  />
                 )}
               </div>
               
@@ -459,6 +463,24 @@ export default function TokenResearchPage({
             
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
               <FoundersEdgeChecklist data={researchData} showLegend />
+              <div className="overflow-x-auto mt-8">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="text-slate-400">
+                      <th className="py-2 px-3 text-left">Metric</th>
+                      <th className="py-2 px-3 text-left">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {canonicalChecklist.map(({ label, display }) => (
+                      <tr key={label} className="border-t border-white/10">
+                        <td className="py-2 px-3 text-white">{display}</td>
+                        <td className="py-2 px-3 text-slate-300">{researchData[label] || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </section>
         )}
