@@ -21,17 +21,16 @@ import { formatCurrency, formatCurrency0 } from "@/lib/utils";
 import EnvSetup from "./env-setup";
 import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
-import { 
-  Twitter, 
-  TrendingUp, 
-  DollarSign, 
-  Activity, 
-  BarChart3, 
-  PieChart, 
+import {
+  Twitter,
+  TrendingUp,
+  DollarSign,
+  Activity,
+  BarChart3,
+  PieChart,
   Zap,
   Search,
   Filter,
-  Chrome,
   ArrowUpRight,
   Clock,
   Users,
@@ -150,9 +149,9 @@ const TokenSearchListWrapper = async () => {
 
 // Quick Stats Component
 const QuickStatsCard = ({ icon: Icon, title, value, change, changeType = "positive", subtitle }) => (
-  <div className="group relative">
+  <div className="group relative h-full">
     <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-green-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"></div>
-    <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
+    <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 h-full flex flex-col justify-between">
       <div className="flex items-start justify-between mb-4">
         <div className="p-2 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg">
           <Icon className="w-5 h-5 text-white" />
@@ -322,8 +321,8 @@ export default async function Home() {
               Real-time Market Intelligence
             </div>
             
-            <h1 className="text-5xl md:text-6xl  font-bold bg-gradient-to-r from-teal-400 via-teal-400 to-green-400 bg-clip-text text-transparent mb-6">
-              Internet Capital Markets <span className="font-thin italics">are the Future</span>.
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-teal-400 via-teal-400 to-green-400 bg-clip-text text-transparent mb-6">
+              Real-time market data at your fingertips
             </h1>
             
             <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
@@ -337,14 +336,11 @@ export default async function Home() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <a
-                href={dashcoinTradeLink}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#product"
                 className="relative group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
-                <span className="absolute -top-2 -right-2 bg-amber-500 text-xs font-semibold px-2 py-0.5 rounded-full">Coming Soon</span>
-                <span>Download Chrome Extension</span>
-                <Chrome className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <span>Explore Dashboard</span>
+                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
               
               <a
@@ -361,7 +357,7 @@ export default async function Home() {
           </div>
 
           {/* Quick Stats Grid - Improved Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
             <QuickStatsCard
               icon={TrendingUp}
               title="Total Market Cap"
@@ -395,7 +391,7 @@ export default async function Home() {
         </section>
 
         {/* Market Overview Section */}
-        <section className="mb-12">
+        <section id="product" className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
               <div>
