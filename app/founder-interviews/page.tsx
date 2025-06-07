@@ -12,8 +12,6 @@ import {
   TrendingUp,
   Building,
   Globe,
-  Search,
-  Filter,
   Clock,
   Star
 } from "lucide-react";
@@ -50,9 +48,9 @@ export default function FounderInterviewsPage() {
       </div>
 
       {/* Enhanced Hero Section */}
-      <section className="relative z-10 pt-24 pb-16">
+      <section className="relative z-10 pt-12 pb-8">
         <div className="container mx-auto px-6 max-w-6xl">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             {/* Floating badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 via-teal-500/10 to-green-500/10 border border-green-500/20 rounded-full text-green-400 text-sm font-medium mb-8 backdrop-blur-xl">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -61,11 +59,11 @@ export default function FounderInterviewsPage() {
               <div className="w-2 h-2 bg-teal-400 rounded-full animate-pulse delay-500"></div>
             </div>
             
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-teal-100 to-green-200 bg-clip-text text-transparent mb-8 tracking-tight leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white via-teal-100 to-green-200 bg-clip-text text-transparent mb-6 tracking-tight leading-tight">
               Founder Interviews
             </h1>
             
-            <p className="text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto leading-relaxed mb-12 font-light">
+            <p className="text-lg md:text-xl text-slate-300 max-w-4xl mx-auto leading-relaxed mb-8 font-light">
               Conversations with the{" "}
               <span className="text-transparent bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text font-semibold">
                 visionary builders
@@ -73,21 +71,6 @@ export default function FounderInterviewsPage() {
               {" "}shaping the Internet Capital Markets. Deep insights into strategy, innovation, and the future of decentralized finance.
             </p>
 
-            {/* Enhanced search and filter section */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
-              <div className="relative flex-1 w-full sm:w-auto">
-                <Search className="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search interviews by founder or topic..."
-                  className="w-full pl-12 pr-4 py-4 bg-white/[0.03] border border-white/10 rounded-2xl text-white placeholder-slate-400 focus:bg-white/[0.08] focus:border-white/20 transition-all duration-200 backdrop-blur-xl"
-                />
-              </div>
-              <button className="flex items-center gap-2 px-6 py-4 bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 text-white rounded-2xl transition-all duration-200 backdrop-blur-xl font-medium">
-                <Filter className="w-5 h-5" />
-                <span>Filter</span>
-              </button>
-            </div>
           </div>
 
         </div>
