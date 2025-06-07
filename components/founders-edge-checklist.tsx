@@ -1,5 +1,4 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
-import { CheckCircle, XCircle, MinusCircle } from "lucide-react";
 import React from "react";
 import { gradeMaps, valueToScore, computeFounderScore } from "@/lib/score";
 
@@ -70,16 +69,6 @@ export const canonicalChecklist: TraitInfo[] = [
   },
 ];
 
-function getIcon(value: number) {
-  switch (value) {
-    case 2:
-      return <CheckCircle className="text-green-500 w-5 h-5" />;
-    case 1:
-      return <XCircle className="text-red-500 w-5 h-5" />;
-    default:
-      return <MinusCircle className="text-yellow-400 w-5 h-5" />;
-  }
-}
 
 interface ChecklistProps {
   data: Record<string, any>;
@@ -120,12 +109,13 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
               {traits.map(({ label, display }) => {
                 const raw = data[label];
                 const val = valueToScore(raw, (gradeMaps as any)[label]);
+                const displayVal = val * 6;
                 return (
                   <li key={label} className="flex items-center justify-between py-2">
                     <span className="text-slate-300">{display}</span>
                     <span className="flex items-center gap-2">
-                      {getIcon(val)}
-                      <span className="text-white text-sm">{raw || 'Unknown'}</span>
+                      <span className="text-white text-sm font-semibold">+{displayVal}</span>
+                      <span className="text-slate-400 text-sm">{raw || 'Unknown'}</span>
                     </span>
                   </li>
                 );
@@ -137,9 +127,9 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
 
       {showLegend && (
         <div className="pt-4 flex items-center gap-4 text-xs text-slate-400">
-          <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> Positive</span>
-          <span className="flex items-center gap-1"><XCircle className="w-3 h-3 text-red-500" /> Negative</span>
-          <span className="flex items-center gap-1"><MinusCircle className="w-3 h-3 text-yellow-400" /> Unknown</span>
+          <span className="flex items-center gap-1 font-semibold">+12&nbsp;Positive</span>
+          <span className="flex items-center gap-1 font-semibold">+6&nbsp;Negative</span>
+          <span className="flex items-center gap-1 font-semibold">0&nbsp;Unknown</span>
         </div>
       )}
     </DashcoinCard>
