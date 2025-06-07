@@ -3,10 +3,10 @@ import Image from "next/image";
 import { fetchAllTokensFromDune } from "../actions/dune-actions";
 import { fetchCreatorWalletLinks } from "../actions/googlesheet-action";
 import { fetchDexscreenerTokenLogo } from "../actions/dexscreener-actions";
-import { 
-  ExternalLink, 
-  Wallet, 
-  Activity, 
+import { CreatorWalletList } from "@/components/creator-wallet-list";
+import {
+  Wallet,
+  Activity,
   Search,
   Filter,
   RefreshCw,
@@ -76,7 +76,7 @@ export default async function CreatorWalletsPage() {
               <div className="w-2 h-2 bg-teal-400 rounded-full animate-pulse delay-500"></div>
             </div>
             
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-teal-100 to-emerald-200 bg-clip-text text-transparent mb-6 tracking-tight leading-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-teal-100 to-emerald-200 bg-clip-text text-transparent mb-6 tracking-tight leading-tight">
               Creator Wallets
             </h1>
             
@@ -136,72 +136,7 @@ export default async function CreatorWalletsPage() {
               </div>
 
               {/* Table Body */}
-              <div className="divide-y divide-white/[0.05]">
-                {tokensWithWallets.map((token, index) => (
-                  <div key={`${token.symbol}-${index}`} className="group px-8 py-6 hover:bg-white/[0.02] transition-all duration-200">
-                    <div className="grid grid-cols-12 gap-6 items-center">
-                      {/* Token Info */}
-                      <div className="col-span-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-green-500 rounded-xl flex items-center justify-center text-white font-bold text-sm overflow-hidden">
-                            {token.tokenUrl ? (
-                              <Image
-                                src={token.tokenUrl}
-                                alt={`${token.symbol} logo`}
-                                width={48}
-                                height={48}
-                                className="w-12 h-12 object-cover"
-                              />
-                            ) : (
-                              token.symbol.slice(0, 2).toUpperCase()
-                            )}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-white text-lg tracking-tight">{token.name}</h3>
-                            <p className="text-slate-400 text-sm">{token.symbol}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Wallet Link */}
-                      <div className="col-span-4">
-                        {token.walletLink ? (
-                          <a 
-                            href={token.walletLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="group/link inline-flex items-center gap-3 px-4 py-2.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/30 rounded-xl text-teal-400 hover:text-teal-300 transition-all duration-200 font-medium"
-                          >
-                            <Wallet className="w-4 h-4" />
-                            <span>View Wallet</span>
-                            <ArrowUpRight className="w-4 h-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
-                          </a>
-                        ) : (
-                          <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-500/5 border border-slate-500/10 rounded-xl text-slate-500">
-                            <AlertCircle className="w-4 h-4" />
-                            <span>No wallet linked</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Activity */}
-                      <div className="col-span-4">
-                        {token.walletActivity ? (
-                          <div className="flex items-start gap-3 p-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl">
-                            <Activity className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                            <p className="text-sm text-slate-300 leading-relaxed">{token.walletActivity}</p>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-3 p-3 bg-slate-500/5 border border-slate-500/10 rounded-xl text-slate-500">
-                            <Clock className="w-4 h-4" />
-                            <span className="text-sm">No recent activity</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <CreatorWalletList tokens={tokensWithWallets} />
             </div>
           ) : (
             <div className="text-center py-20">
