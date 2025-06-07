@@ -54,7 +54,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
             : 'bg-slate-950'
         }`}
       >
-        <div className="max-w-9xl mx-auto px-4">
+        <div className="max-w-none mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center">
@@ -64,7 +64,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
 
             {/* Compact Stats Bar - Center */}
             {dashcStats && (
-              <div className="hidden md:block flex-1 max-w-md mx-8">
+              <div className="hidden md:block flex-1 max-w-lg mx-8">
                 <DashcStatsBar {...dashcStats} />
               </div>
             )}
@@ -114,7 +114,7 @@ export function Navbar({ dashcStats }: NavbarProps) {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <div className="absolute top-0 right-0 h-full w-72 bg-slate-950/95 backdrop-blur-xl border-l border-white/10 p-6">
+          <div className="absolute top-0 right-0 h-full w-80 bg-slate-950/95 backdrop-blur-xl border-l border-white/10 p-6">
             <div className="flex items-center justify-between mb-8">
               <span className="text-lg font-bold text-white">Menu</span>
               <button
@@ -157,7 +157,7 @@ interface NavLinkProps {
 }
 
 function NavLink({ href, active, children, external = false, highlight = false, icon: Icon }: NavLinkProps) {
-  const baseClasses = "px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200";
+  const baseClasses = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200";
   
   const stateClasses = active
     ? "bg-teal-600/20 text-white border border-teal-500/30"
@@ -183,7 +183,7 @@ interface MobileNavLinkProps extends NavLinkProps {
 }
 
 function MobileNavLink({ href, active, children, external = false, highlight = false, icon: Icon, onClick }: MobileNavLinkProps) {
-  const baseClasses = "flex items-center gap-3 w-full p-3 rounded-lg text-sm font-medium transition-all duration-200";
+  const baseClasses = "flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200";
   
   const stateClasses = active
     ? "bg-teal-600/20 text-white border border-teal-500/30"
