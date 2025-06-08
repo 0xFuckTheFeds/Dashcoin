@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import Link from "next/link"
 import { formatCurrency0 } from "@/lib/utils"
 import { DashcoinCard } from "@/components/ui/dashcoin-card"
@@ -27,11 +27,10 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "@/components/ui/tooltip"
-import { fetchPaginatedTokens } from "@/app/actions/dune-actions"
+// We fetch the full token list from the cached API route and paginate locally
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
-import { useCallback } from "react"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { researchFilterOptions } from "@/data/research-filter-options"
@@ -65,11 +64,11 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [currentPage, setCurrentPage] = useState(initialData.page || 1)
   const [itemsPerPage, setItemsPerPage] = useState(initialData.pageSize || 10)
   const [isLoading, setIsLoading] = useState(false)
+  const [allTokens, setAllTokens] = useState<TokenData[]>(initialData.tokens || [])
   const [tokenData, setTokenData] = useState<PaginatedTokenResponse>(initialData)
   const [filteredTokens, setFilteredTokens] = useState<TokenData[]>(initialData.tokens || [])
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([])
   const [isLoadingResearch, setIsLoadingResearch] = useState(false)
-  const [isSortingLocally, setIsSortingLocally] = useState(false)
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshCountdown, setRefreshCountdown] = useState(60)
@@ -140,13 +139,28 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     getResearchScores();
   }, []);
 
-  useEffect(() => {
-    if (!Array.isArray(tokenData.tokens)) {
+  // Load all tokens from the API and store them locally
+  const loadAllTokens = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/tokens');
+      const tokens = await res.json();
+      setAllTokens(Array.isArray(tokens) ? tokens : []);
+    } catch (error) {
+      console.error('Error fetching tokens:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const computeVisibleTokens = useCallback(() => {
+    if (!allTokens.length) {
       setFilteredTokens([])
+      setTokenData(prev => ({ ...prev, tokens: [], totalTokens: 0, totalPages: 1 }))
       return
     }
 
-    let filtered = [...tokenData.tokens]
+    let filtered = [...allTokens]
 
     if (searchTerm.trim() !== "") {
       filtered = filtered.filter((token: any) => {
@@ -189,8 +203,62 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       })
     })
 
-    setFilteredTokens(filtered)
-  }, [searchTerm, tokenData.tokens, researchScores, checklistFilters])
+    const sorted = [...filtered].sort((a, b) => {
+      let valueA, valueB
+      switch (sortField) {
+        case 'name':
+          valueA = (a.name || '').toString().toLowerCase()
+          valueB = (b.name || '').toString().toLowerCase()
+          return sortDirection === 'asc'
+            ? valueA.localeCompare(valueB)
+            : valueB.localeCompare(valueA)
+        case 'symbol':
+          valueA = (a.symbol || '').toString().toLowerCase()
+          valueB = (b.symbol || '').toString().toLowerCase()
+          return sortDirection === 'asc'
+            ? valueA.localeCompare(valueB)
+            : valueB.localeCompare(valueA)
+        case 'researchScore':
+          const scoreA = getResearchScore(a.symbol || '')
+          const scoreB = getResearchScore(b.symbol || '')
+          if (scoreA === null && scoreB === null) return 0
+          if (scoreA === null) return sortDirection === 'asc' ? -1 : 1
+          if (scoreB === null) return sortDirection === 'asc' ? 1 : -1
+          return sortDirection === 'asc' ? scoreA! - scoreB! : scoreB! - scoreA!
+        case 'change24h':
+          valueA = a.change24h || 0
+          valueB = b.change24h || 0
+          return sortDirection === 'asc' ? valueA - valueB : valueB - valueA
+        case 'marketCap':
+        default:
+          valueA = a.marketCap || 0
+          valueB = b.marketCap || 0
+          return sortDirection === 'asc' ? valueA - valueB : valueB - valueA
+      }
+    })
+
+    const totalTokens = sorted.length
+    const totalPages = Math.max(1, Math.ceil(totalTokens / itemsPerPage))
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const pageTokens = sorted.slice(startIndex, startIndex + itemsPerPage)
+
+    setFilteredTokens(pageTokens)
+    setTokenData({
+      tokens: pageTokens,
+      page: currentPage,
+      pageSize: itemsPerPage,
+      totalTokens,
+      totalPages,
+    })
+  }, [allTokens, searchTerm, researchScores, checklistFilters, sortField, sortDirection, currentPage, itemsPerPage])
+
+  useEffect(() => {
+    computeVisibleTokens()
+  }, [computeVisibleTokens])
+
+  useEffect(() => {
+    loadAllTokens()
+  }, [loadAllTokens])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -209,24 +277,6 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     }
   }, [checklistFilters])
 
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      const newData = await fetchPaginatedTokens(
-        currentPage, 
-        itemsPerPage, 
-        sortField, 
-        sortDirection,
-        searchTerm 
-      );
-      setTokenData(newData);
-      setFilteredTokens(newData.tokens || []);
-    } catch (error) {
-      console.error("Error fetching paginated tokens:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const fetchDexscreenerData = useCallback(async () => {
     if (!filteredTokens.length) return;
@@ -308,98 +358,32 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     
     return () => clearTimeout(timer);
   }, [refreshCountdown, fetchDexscreenerData]);
-  
+
+
+  // Fetch fresh Dexscreener data whenever the set of tokens changes
   useEffect(() => {
     fetchDexscreenerData();
-  }, [currentPage, fetchDexscreenerData]);
+  }, [filteredTokens, fetchDexscreenerData]);
 
   useEffect(() => {
     if (searchTerm !== "" && currentPage !== 1) {
       setCurrentPage(1);
-    } else {
-      const timer = setTimeout(() => {
-        fetchData();
-      }, 300);
-      
-      return () => clearTimeout(timer);
     }
-  }, [searchTerm]);
+  }, [searchTerm, currentPage]);
 
   useEffect(() => {
-    if (["researchScore", "name", "symbol"].includes(sortField) || isSortingLocally) {
-      sortTokensLocally();
-    } else {
-      fetchData();
-    }
-  }, [currentPage, itemsPerPage, sortField, sortDirection]);
+    computeVisibleTokens();
+  }, [currentPage, itemsPerPage, sortField, sortDirection, computeVisibleTokens]);
 
   const handleSort = (field: string) => {
     if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
     } else {
-      setSortField(field);
-      setSortDirection("desc");
+      setSortField(field)
+      setSortDirection('desc')
     }
-    
-    setIsSortingLocally(["researchScore", "name", "symbol", "marketCap"].includes(field));
-    setCurrentPage(1);
+    setCurrentPage(1)
   }
-
-  const sortTokensLocally = () => {
-    if (!filteredTokens.length) return;
-    
-    const sortedTokens = [...filteredTokens].sort((a, b) => {
-      let valueA, valueB;
-      
-      switch(sortField) {
-        case "name":
-          valueA = (a.name || "").toString().toLowerCase();
-          valueB = (b.name || "").toString().toLowerCase();
-          return sortDirection === "asc" 
-            ? valueA.localeCompare(valueB)
-            : valueB.localeCompare(valueA);
-            
-        case "symbol":
-          valueA = (a.symbol || "").toString().toLowerCase();
-          valueB = (b.symbol || "").toString().toLowerCase();
-          return sortDirection === "asc" 
-            ? valueA.localeCompare(valueB)
-            : valueB.localeCompare(valueA);
-            
-            
-        case "researchScore":
-          const scoreA = getResearchScore(a.symbol || '');
-          const scoreB = getResearchScore(b.symbol || '');
-          
-          if (scoreA === null && scoreB === null) return 0;
-          if (scoreA === null) return sortDirection === "asc" ? -1 : 1;
-          if (scoreB === null) return sortDirection === "asc" ? 1 : -1;
-          
-          return sortDirection === "asc" 
-            ? scoreA - scoreB 
-            : scoreB - scoreA;
-
-        case "change24h":
-          valueA = a.change24h || 0;
-          valueB = b.change24h || 0;
-          return sortDirection === "asc"
-            ? valueA - valueB
-            : valueB - valueA;
-
-        case "marketCap":
-          valueA = a.marketCap || 0;
-          valueB = b.marketCap || 0;
-          return sortDirection === "asc"
-            ? valueA - valueB
-            : valueB - valueA;
-
-        default:
-          return 0;
-      }
-    });
-    
-    setFilteredTokens(sortedTokens);
-  };
 
   const renderSortIndicator = (field: string) => {
     if (sortField !== field) return null
