@@ -72,7 +72,6 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [isLoadingResearch, setIsLoadingResearch] = useState(false)
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
-  const [refreshCountdown, setRefreshCountdown] = useState(60)
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -308,7 +307,6 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       
       setDexscreenerData(newDexData);
       setLastRefreshed(new Date());
-      setRefreshCountdown(60);
     } catch (error) {
       console.error("Error fetching Dexscreener data:", error);
     }
@@ -347,18 +345,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         : (b.marketCap || 0) - (a.marketCap || 0);
     });
 
-  useEffect(() => {
-    if (refreshCountdown <= 0) {
-      fetchDexscreenerData();
-      return;
-    }
-    
-    const timer = setTimeout(() => {
-      setRefreshCountdown(prev => prev - 1);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  }, [refreshCountdown, fetchDexscreenerData]);
+
 
 
   // Fetch fresh Dexscreener data whenever the set of tokens changes
@@ -672,8 +659,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
 
       <div className="flex justify-between mt-2">
         <div className="text-xs opacity-70 mt-1">
-          Last updated: {lastRefreshed ? lastRefreshed.toLocaleTimeString() : 'Never'} 
-          {lastRefreshed && <span> (refreshing in {refreshCountdown}s)</span>}
+          Last updated: {lastRefreshed ? lastRefreshed.toLocaleTimeString() : 'Never'}
         </div>
       </div>
 
