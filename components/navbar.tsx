@@ -50,8 +50,8 @@ export function Navbar() {
             : 'bg-slate-950'
         }`}
       >
-        <div className="max-w-9xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 max-w-7xl mx-auto">
             {/* Logo */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-3">
