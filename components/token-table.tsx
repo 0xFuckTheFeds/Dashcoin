@@ -71,6 +71,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([])
   const [isLoadingResearch, setIsLoadingResearch] = useState(false)
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
+  const [isDexLoading, setIsDexLoading] = useState(false)
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -288,8 +289,9 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     if (tokenAddresses.length === 0) return;
     
     try {
-      const dataMap = await batchFetchTokensData(tokenAddresses);
-      const newDexData: Record<string, any> = {};
+      setIsDexLoading(true)
+      const dataMap = await batchFetchTokensData(tokenAddresses)
+      const newDexData: Record<string, any> = {}
       
       tokenAddresses.forEach(address => {
         const data = dataMap.get(address);
@@ -305,10 +307,12 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         }
       });
       
-      setDexscreenerData(newDexData);
-      setLastRefreshed(new Date());
+      setDexscreenerData(newDexData)
+      setLastRefreshed(new Date())
     } catch (error) {
-      console.error("Error fetching Dexscreener data:", error);
+      console.error("Error fetching Dexscreener data:", error)
+    } finally {
+      setIsDexLoading(false)
     }
   }, [filteredTokens]);
 
@@ -527,7 +531,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
+              {isLoading || isDexLoading ? (
                 <tr>
                   <td colSpan={13} className="py-8 text-center">
                     <div className="flex items-center justify-center gap-2">
