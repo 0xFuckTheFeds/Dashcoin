@@ -1,9 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { DashcoinCard, DashcoinCardHeader, DashcoinCardTitle, DashcoinCardContent } from "@/components/ui/dashcoin-card"
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react"
 import type { MarketCapTimeData } from "@/types/dune"
-import { formatCurrency, getCssVariable, hexToRgba } from "@/lib/utils"
+import { formatCurrency, hexToRgba } from "@/lib/utils"
 
 declare global {
   interface Window {
@@ -15,9 +14,12 @@ interface MarketCapChartProps {
   data: MarketCapTimeData[]
 }
 
-export function MarketCapChart({ data }: MarketCapChartProps) {
-  const chartRef = useRef<HTMLCanvasElement>(null)
-  const chartInstance = useRef<any>(null)
+export const MarketCapChart = forwardRef<HTMLCanvasElement, MarketCapChartProps>(
+  ({ data }, ref) => {
+    const chartRef = useRef<HTMLCanvasElement>(null)
+    const chartInstance = useRef<any>(null)
+
+    useImperativeHandle(ref, () => chartRef.current as HTMLCanvasElement)
 
   const createChart = () => {
     if (chartInstance.current) {
@@ -36,6 +38,7 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
     const dashYellow = "#50E3C2"
     const dashYellowLight = "#A0A0B0"
     const dashGreen = "#6A8DFF"
+    const gridColor = "#334155"
 
     const chartData = {
       labels: sortedData.map((item) => (item.date ? new Date(item.date).toLocaleDateString() : "Unknown")),
@@ -71,7 +74,7 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
         scales: {
           x: {
             grid: {
-              color: "rgba(42, 47, 14, 0.3)",
+              color: gridColor,
             },
             ticks: {
               color: dashYellowLight,
@@ -79,7 +82,7 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
           },
           y: {
             grid: {
-              color: "rgba(42, 47, 14, 0.3)",
+              color: gridColor,
             },
             ticks: {
               color: dashYellowLight,
@@ -105,6 +108,11 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
             },
           },
           tooltip: {
+            backgroundColor: "#0f172a",
+            titleColor: "#f1f5f9",
+            bodyColor: "#f1f5f9",
+            borderColor: "#475569",
+            borderWidth: 1,
             callbacks: {
               label: (context: any) => {
                 const label = context.dataset.label || ""
@@ -147,15 +155,8 @@ export function MarketCapChart({ data }: MarketCapChartProps) {
   }, [data])
 
   return (
-    <DashcoinCard>
-      <DashcoinCardHeader>
-        <DashcoinCardTitle className="text-white">Market Cap & Holders Over Time</DashcoinCardTitle>
-      </DashcoinCardHeader>
-      <DashcoinCardContent>
-        <div className="h-64 bg-neutral-900 rounded-lg">
-          <canvas ref={chartRef} />
-        </div>
-      </DashcoinCardContent>
-    </DashcoinCard>
+    <div className="relative h-72 w-full">
+      <canvas ref={chartRef} className="!w-full !h-full" />
+    </div>
   )
-}
+})

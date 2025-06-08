@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { DashcoinCard, DashcoinCardHeader, DashcoinCardTitle, DashcoinCardContent } from "@/components/ui/dashcoin-card"
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react"
 import type { TokenMarketCapData } from "@/types/dune"
 import { formatCurrency } from "@/lib/utils"
 
@@ -22,10 +21,13 @@ interface MarketCapPieProps {
   data: TokenMarketCapData[]
 }
 
-export function MarketCapPie({ data }: MarketCapPieProps) {
-  const chartRef = useRef<HTMLCanvasElement>(null)
-  const chartInstance = useRef<any>(null)
-  const hasData = data && data.length > 0
+export const MarketCapPie = forwardRef<HTMLCanvasElement, MarketCapPieProps>(
+  ({ data }, ref) => {
+    const chartRef = useRef<HTMLCanvasElement>(null)
+    const chartInstance = useRef<any>(null)
+    const hasData = data && data.length > 0
+
+    useImperativeHandle(ref, () => chartRef.current as HTMLCanvasElement)
 
   useEffect(() => {
     if (!hasData) return
@@ -70,6 +72,8 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
     if (topTokens.length === 0) return
 
     const dashYellowLight = "#A0A0B0"
+    const tooltipBg = "#0f172a"
+    const tooltipBorder = "#475569"
 
     const colors = palette
 
@@ -105,6 +109,11 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
             },
           },
           tooltip: {
+            backgroundColor: tooltipBg,
+            titleColor: "#f1f5f9",
+            bodyColor: "#f1f5f9",
+            borderColor: tooltipBorder,
+            borderWidth: 1,
             callbacks: {
               label: (context: any) => {
                 const label = context.label || ""
@@ -121,21 +130,16 @@ export function MarketCapPie({ data }: MarketCapPieProps) {
   }
 
   return (
-    <DashcoinCard>
-      <DashcoinCardHeader>
-        <DashcoinCardTitle className="text-white">Market Cap Distribution</DashcoinCardTitle>
-      </DashcoinCardHeader>
-      <DashcoinCardContent>
-        {hasData ? (
-          <div className="min-h-[300px] p-4 bg-neutral-50 dark:bg-neutral-900 rounded-lg">
-            <canvas ref={chartRef} />
-          </div>
-        ) : (
-          <div className="min-h-[300px] flex items-center justify-center bg-neutral-50 dark:bg-neutral-900 rounded-lg">
-            <p>No market cap data available.</p>
-          </div>
-        )}
-      </DashcoinCardContent>
-    </DashcoinCard>
+    <div className="min-h-[300px] w-full">
+      {hasData ? (
+        <div className="relative h-72 rounded-lg bg-slate-900">
+          <canvas ref={chartRef} className="!w-full !h-full" />
+        </div>
+      ) : (
+        <div className="h-72 flex items-center justify-center rounded-lg bg-slate-900">
+          <p className="text-slate-400">No market cap data available.</p>
+        </div>
+      )}
+    </div>
   )
-}
+})
