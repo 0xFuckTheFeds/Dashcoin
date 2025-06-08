@@ -394,57 +394,6 @@ export default async function Home() {
           />
         </section>
 
-        {/* Market Overview Section */}
-        <section id="product" className="mb-12">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <div>
-                <h2 className="text-3xl font-bold text-white">Market Overview</h2>
-                <p className="text-slate-400">Real-time analytics and performance metrics</p>
-              </div>
-            </div>
-            
-            {/* Data Freshness Indicator */}
-            <div className="flex items-center gap-3 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span className="text-emerald-400 text-sm font-medium">Live Data</span>
-            </div>
-          </div>
-
-          {/* Charts Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
-            <Suspense
-              fallback={
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96 flex items-center justify-center">
-                  <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-400"></div>
-                    <p className="text-slate-300">Loading market trends...</p>
-                  </div>
-                </div>
-              }
-            >
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full">
-                <MarketCapChartWrapper marketCapTimeDataPromise={marketCapTimeDataPromise} />
-              </div>
-            </Suspense>
-            
-            <Suspense
-              fallback={
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96 flex items-center justify-center">
-                  <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-400"></div>
-                    <p className="text-slate-300">Loading distribution data...</p>
-                  </div>
-                </div>
-              }
-            >
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full">
-                <MarketCapPieWrapper tokenMarketCapsPromise={tokenMarketCapsPromise} />
-              </div>
-            </Suspense>
-          </div>
-
-        </section>
 
         {/* Token Analysis Section */}
         <section id="token-directory" className="mb-12">
@@ -484,8 +433,60 @@ export default async function Home() {
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
               <TokenSearchListWrapper />
             </div>
+        </Suspense>
+      </section>
+
+      {/* Market Overview Section */}
+      <section id="product" className="mb-12">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div>
+              <h2 className="text-3xl font-bold text-white">Market Overview</h2>
+              <p className="text-slate-400">Real-time analytics and performance metrics</p>
+            </div>
+          </div>
+
+          {/* Data Freshness Indicator */}
+          <div className="flex items-center gap-3 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            <span className="text-emerald-400 text-sm font-medium">Live Data</span>
+          </div>
+        </div>
+
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+          <Suspense
+            fallback={
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96 flex items-center justify-center">
+                <div className="flex items-center gap-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-400"></div>
+                  <p className="text-slate-300">Loading market trends...</p>
+                </div>
+              </div>
+            }
+          >
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full">
+              <MarketCapChartWrapper marketCapTimeDataPromise={marketCapTimeDataPromise} />
+            </div>
           </Suspense>
-        </section>
+
+          <Suspense
+            fallback={
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96 flex items-center justify-center">
+                <div className="flex items-center gap-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-400"></div>
+                  <p className="text-slate-300">Loading distribution data...</p>
+                </div>
+              </div>
+            }
+          >
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full">
+              <MarketCapPieWrapper tokenMarketCapsPromise={tokenMarketCapsPromise} />
+            </div>
+          </Suspense>
+        </div>
+
+      </section>
       </main>
 
       {/* Enhanced Footer */}
