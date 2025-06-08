@@ -74,21 +74,24 @@ export default function TokenSearchList() {
     if (!addresses.length) return;
     try {
       const map = await batchFetchTokensData(addresses);
-      const result: Record<string, any> = {};
-      addresses.forEach(addr => {
-        const d = map.get(addr);
-        if (d && d.pairs && d.pairs.length > 0) {
-          const p = d.pairs[0] as any;
-          result[addr] = {
-            volume24h: p.volume?.h24 || 0,
-            change24h: p.priceChange?.h24 || 0,
-            marketCap: p.fdv || 0,
-            liquidity: p.liquidity?.usd || 0,
-            logoUrl: p.baseToken?.imageUrl || p.info?.imageUrl || p.baseToken?.logoURI,
-          };
-        }
+      setDexscreenerData(prev => {
+        const updated: Record<string, any> = { ...prev };
+        addresses.forEach(addr => {
+          const d = map.get(addr);
+          if (d && d.pairs && d.pairs.length > 0) {
+            const p = d.pairs[0] as any;
+            updated[addr] = {
+              volume24h: p.volume?.h24 || 0,
+              change24h: p.priceChange?.h24 || 0,
+              marketCap: p.fdv || 0,
+              liquidity: p.liquidity?.usd || 0,
+              logoUrl:
+                p.baseToken?.imageUrl || p.info?.imageUrl || p.baseToken?.logoURI,
+            };
+          }
+        });
+        return updated;
       });
-      setDexscreenerData(result);
     } catch (err) {
       console.error("Error fetching Dexscreener", err);
     }
