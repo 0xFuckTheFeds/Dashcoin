@@ -448,47 +448,6 @@ export default function TokenResearchPage({
           </div>
         </section>
 
-        {/* Research Analysis */}
-        {researchData && hasScore && (
-          <section className="mb-12">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-white">Founder's Edge Analysis</h2>
-                <p className="text-slate-400">Comprehensive research metrics and risk assessment</p>
-              </div>
-            </div>
-            
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-              <FoundersEdgeChecklist data={researchData} />
-              <div className="overflow-x-auto mt-8">
-                <table className="min-w-full text-sm">
-                  <thead>
-                    <tr className="text-slate-400">
-                      <th className="py-2 px-3 text-left">Metric</th>
-                      <th className="py-2 px-3 text-left">Score</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {canonicalChecklist.map(({ label, display }) => {
-                      const raw = researchData[label];
-                      const val = valueToScore(raw, (gradeMaps as any)[label]);
-                      const displayVal = val * 6;
-                      return (
-                        <tr key={label} className="border-t border-white/10">
-                          <td className="py-2 px-3 text-white">{display}</td>
-                          <td className="py-2 px-3 text-slate-300">+{displayVal}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* Market Statistics */}
         <section className="mb-12">
@@ -662,9 +621,51 @@ export default function TokenResearchPage({
                 <p className="text-slate-400">Interactive trading view with technical analysis</p>
               </div>
             </div>
-            
+
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
               <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
+            </div>
+          </section>
+        )}
+
+        {/* Research Analysis */}
+        {researchData && hasScore && (
+          <section className="mb-12">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-white">Founder's Edge Analysis</h2>
+                <p className="text-slate-400">Comprehensive research metrics and risk assessment</p>
+              </div>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+              <FoundersEdgeChecklist data={researchData} />
+              <div className="overflow-x-auto mt-8">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="text-slate-400">
+                      <th className="py-2 px-3 text-left">Metric</th>
+                      <th className="py-2 px-3 text-left">Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {canonicalChecklist.map(({ label, display }) => {
+                      const raw = researchData[label];
+                      const val = valueToScore(raw, (gradeMaps as any)[label]);
+                      const displayVal = val * 6;
+                      return (
+                        <tr key={label} className="border-t border-white/10">
+                          <td className="py-2 px-3 text-white">{display}</td>
+                          <td className="py-2 px-3 text-slate-300">+{displayVal}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </section>
         )}

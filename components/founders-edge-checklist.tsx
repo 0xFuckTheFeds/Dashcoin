@@ -100,11 +100,27 @@ export function FoundersEdgeChecklist({ data }: ChecklistProps) {
     }
   };
 
+  const categoryScores = Object.fromEntries(
+    Object.entries(groups).map(([category, traits]) => {
+      const total = traits.reduce((acc, { label }) => {
+        const val = valueToScore(data[label], (gradeMaps as any)[label]);
+        return acc + val * 6;
+      }, 0);
+      return [category, total];
+    })
+  );
+
+  const categoryColor = (score: number) => {
+    if (score === 0) return "bg-red-600 text-white";
+    if (score === 6) return "bg-yellow-500 text-black";
+    return "bg-emerald-600 text-white";
+  };
+
   return (
     <DashcoinCard className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-6">
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-semibold text-dashYellow">Founder's Edge</h3>
+          <h3 className="text-xl font-semibold text-white">Founder's Edge</h3>
           <div className="text-sm text-white font-medium">
             Score: <span className="font-bold">{score}</span>/100
           </div>
@@ -114,11 +130,12 @@ export function FoundersEdgeChecklist({ data }: ChecklistProps) {
         </div>
       </div>
 
-      <Accordion type="multiple" defaultValue={Object.keys(groups)} className="space-y-6">
+      <Accordion type="multiple" className="space-y-6">
         {Object.entries(groups).map(([category, traits]) => (
           <AccordionItem key={category} value={category} className="border-b border-white/10 pt-6 first:pt-0">
-            <AccordionTrigger className="text-left py-3">
+            <AccordionTrigger className="text-left py-3 flex items-center justify-between">
               <span className="text-lg font-semibold text-white">{category}</span>
+              <Badge className={`ml-2 px-2 py-0.5 text-xs font-semibold ${categoryColor(categoryScores[category])}`}>+{categoryScores[category]}</Badge>
             </AccordionTrigger>
             <AccordionContent className="pt-0">
               <ul className="divide-y divide-white/10">
