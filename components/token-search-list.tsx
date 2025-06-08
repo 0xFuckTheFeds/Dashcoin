@@ -510,10 +510,11 @@ export default function TokenSearchList() {
                             href={`https://axiom.trade/t/${token.token}/dashc`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group/btn"
+                            className="group/btn flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white text-xs font-semibold rounded-lg transition-all"
                             title="Trade"
                           >
-                            <Zap className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
+                            <Zap className="w-3 h-3" />
+                            <span>Trade</span>
                           </a>
                         )}
                         {token.walletLink && (
