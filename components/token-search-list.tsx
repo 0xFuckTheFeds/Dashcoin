@@ -28,7 +28,8 @@ import {
   Activity,
   DollarSign,
   Users,
-  X
+  X,
+  Zap
 } from "lucide-react";
 import { formatCurrency0 } from "@/lib/utils";
 import Link from "next/link";
@@ -504,6 +505,17 @@ export default function TokenSearchList() {
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
+                        {token.token && (
+                          <a
+                            href={`https://axiom.trade/t/${token.token}/dashc`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group/btn"
+                            title="Trade"
+                          >
+                            <Zap className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
+                          </a>
+                        )}
                         {token.walletLink && (
                           <a
                             href={token.walletLink}
