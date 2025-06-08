@@ -72,7 +72,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [isLoadingResearch, setIsLoadingResearch] = useState(false)
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
-  const [refreshCountdown, setRefreshCountdown] = useState(60)
+  console.log('TokenTable render', { allTokens: allTokens.length, dexData: Object.keys(dexscreenerData).length })
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -280,9 +280,9 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
 
 
   const fetchDexscreenerData = useCallback(async () => {
-    if (!filteredTokens.length) return;
-    
-    const tokenAddresses = filteredTokens
+    if (!allTokens.length) return;
+
+    const tokenAddresses = allTokens
       .map(token => token.token)
       .filter(address => address && typeof address === "string");
     
@@ -308,11 +308,11 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       
       setDexscreenerData(newDexData);
       setLastRefreshed(new Date());
-      setRefreshCountdown(60);
+      console.log('Dexscreener data loaded');
     } catch (error) {
       console.error("Error fetching Dexscreener data:", error);
     }
-  }, [filteredTokens]);
+  }, [allTokens]);
 
   const getTokenProperty = (token: any, property: string, defaultValue: any = "N/A") => {
     return token && token[property] !== undefined && token[property] !== null ? token[property] : defaultValue
@@ -347,24 +347,12 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
         : (b.marketCap || 0) - (a.marketCap || 0);
     });
 
+  // Fetch Dexscreener data once when all tokens are loaded
   useEffect(() => {
-    if (refreshCountdown <= 0) {
+    if (allTokens.length) {
       fetchDexscreenerData();
-      return;
     }
-    
-    const timer = setTimeout(() => {
-      setRefreshCountdown(prev => prev - 1);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  }, [refreshCountdown, fetchDexscreenerData]);
-
-
-  // Fetch fresh Dexscreener data whenever the set of tokens changes
-  useEffect(() => {
-    fetchDexscreenerData();
-  }, [filteredTokens, fetchDexscreenerData]);
+  }, [allTokens, fetchDexscreenerData]);
 
   useEffect(() => {
     if (searchTerm !== "" && currentPage !== 1) {
@@ -672,8 +660,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
 
       <div className="flex justify-between mt-2">
         <div className="text-xs opacity-70 mt-1">
-          Last updated: {lastRefreshed ? lastRefreshed.toLocaleTimeString() : 'Never'} 
-          {lastRefreshed && <span> (refreshing in {refreshCountdown}s)</span>}
+          Last updated: {lastRefreshed ? lastRefreshed.toLocaleTimeString() : 'Never'}
         </div>
       </div>
 
