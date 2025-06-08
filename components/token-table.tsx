@@ -308,10 +308,15 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     
     return () => clearTimeout(timer);
   }, [refreshCountdown, fetchDexscreenerData]);
-  
+
   useEffect(() => {
     fetchDexscreenerData();
   }, [currentPage, fetchDexscreenerData]);
+
+  // Fetch fresh Dexscreener data whenever the set of tokens changes
+  useEffect(() => {
+    fetchDexscreenerData();
+  }, [filteredTokens, fetchDexscreenerData]);
 
   useEffect(() => {
     if (searchTerm !== "" && currentPage !== 1) {
