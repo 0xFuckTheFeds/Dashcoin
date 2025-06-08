@@ -27,7 +27,6 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "@/components/ui/tooltip"
-import { fetchPaginatedTokens } from "@/app/actions/dune-actions"
 import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
@@ -210,23 +209,26 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   }, [checklistFilters])
 
   const fetchData = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const newData = await fetchPaginatedTokens(
-        currentPage, 
-        itemsPerPage, 
-        sortField, 
+      const params = new URLSearchParams({
+        page: String(currentPage),
+        pageSize: String(itemsPerPage),
+        sortField,
         sortDirection,
-        searchTerm 
-      );
-      setTokenData(newData);
-      setFilteredTokens(newData.tokens || []);
+        searchTerm,
+      })
+      const res = await fetch(`/api/paginated-tokens?${params.toString()}`)
+      if (!res.ok) throw new Error('Failed to fetch')
+      const newData: PaginatedTokenResponse = await res.json()
+      setTokenData(newData)
+      setFilteredTokens(newData.tokens || [])
     } catch (error) {
-      console.error("Error fetching paginated tokens:", error);
+      console.error('Error fetching paginated tokens:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const fetchDexscreenerData = useCallback(async () => {
     if (!filteredTokens.length) return;
