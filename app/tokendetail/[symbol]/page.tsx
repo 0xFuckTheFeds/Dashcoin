@@ -643,29 +643,6 @@ export default function TokenResearchPage({
 
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
               <FoundersEdgeChecklist data={researchData} />
-              <div className="overflow-x-auto mt-8">
-                <table className="min-w-full text-sm">
-                  <thead>
-                    <tr className="text-slate-400">
-                      <th className="py-2 px-3 text-left">Metric</th>
-                      <th className="py-2 px-3 text-left">Score</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {canonicalChecklist.map(({ label, display }) => {
-                      const raw = researchData[label];
-                      const val = valueToScore(raw, (gradeMaps as any)[label]);
-                      const displayVal = val * 6;
-                      return (
-                        <tr key={label} className="border-t border-white/10">
-                          <td className="py-2 px-3 text-white">{display}</td>
-                          <td className="py-2 px-3 text-slate-300">+{displayVal}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
             </div>
           </section>
         )}
