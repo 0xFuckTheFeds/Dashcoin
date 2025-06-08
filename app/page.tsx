@@ -27,14 +27,11 @@ import {
   DollarSign,
   Activity,
   BarChart3,
-  PieChart,
   Zap,
   Search,
   Filter,
   ArrowUpRight,
-  Clock,
   Users,
-  Target,
   Sparkles,
   ChevronRight,
   ExternalLink,
@@ -42,8 +39,9 @@ import {
   AlertCircle,
   TrendingDown,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
 } from "lucide-react";
+import { MarketCapTrendCard, MarketCapDistributionCard } from "@/components/market-overview-charts";
 
 const MarketCapChartWrapper = async ({
   marketCapTimeDataPromise,
@@ -52,26 +50,7 @@ const MarketCapChartWrapper = async ({
 }) => {
   try {
     const marketCapTimeData = await marketCapTimeDataPromise;
-    return (
-      <div className="h-full">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-white">Market Cap Trend</h3>
-              <p className="text-sm text-slate-400">Last 30 days performance</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <Clock className="w-4 h-4" />
-            <span>Real-time</span>
-          </div>
-        </div>
-        <MarketCapChart data={marketCapTimeData || []} />
-      </div>
-    );
+    return <MarketCapTrendCard data={marketCapTimeData || []} />;
   } catch (error) {
     console.error("Error in MarketCapChartWrapper:", error);
     return (
@@ -93,26 +72,7 @@ const MarketCapPieWrapper = async ({
 }) => {
   try {
     const tokenMarketCaps = await tokenMarketCapsPromise;
-    return (
-      <div className="h-full">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
-              <PieChart className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-white">Market Distribution</h3>
-              <p className="text-sm text-slate-400">Top tokens by market cap</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <Target className="w-4 h-4" />
-            <span>Live data</span>
-          </div>
-        </div>
-        <MarketCapPie data={tokenMarketCaps || []} />
-      </div>
-    );
+    return <MarketCapDistributionCard data={tokenMarketCaps || []} />;
   } catch (error) {
     console.error("Error in MarketCapPieWrapper:", error);
     return (
@@ -408,33 +368,27 @@ export default async function Home() {
           </div>
 
           {/* Charts Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <Suspense
               fallback={
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96 flex items-center justify-center">
-                  <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-400"></div>
-                    <p className="text-slate-300">Loading market trends...</p>
-                  </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96">
+                  <div className="h-full w-full animate-pulse rounded-lg bg-slate-800" />
                 </div>
               }
             >
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full">
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full overflow-hidden">
                 <MarketCapChartWrapper marketCapTimeDataPromise={marketCapTimeDataPromise} />
               </div>
             </Suspense>
             
             <Suspense
               fallback={
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96 flex items-center justify-center">
-                  <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-400"></div>
-                    <p className="text-slate-300">Loading distribution data...</p>
-                  </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-96">
+                  <div className="h-full w-full animate-pulse rounded-lg bg-slate-800" />
                 </div>
               }
             >
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full">
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-all duration-300 h-full overflow-hidden">
                 <MarketCapPieWrapper tokenMarketCapsPromise={tokenMarketCapsPromise} />
               </div>
             </Suspense>
