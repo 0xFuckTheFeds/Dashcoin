@@ -1,6 +1,8 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import React from "react";
 import { gradeMaps, valueToScore, computeFounderScore } from "@/lib/score";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 
 export interface TraitInfo {
   /**
@@ -72,11 +74,9 @@ export const canonicalChecklist: TraitInfo[] = [
 
 interface ChecklistProps {
   data: Record<string, any>;
-  showLegend?: boolean;
 }
 
-
-export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistProps) {
+export function FoundersEdgeChecklist({ data }: ChecklistProps) {
   if (!data) return null;
   const sheetScore = Number(data["Score"] ?? (data as any).score);
   const score = !isNaN(sheetScore) && sheetScore > 0 ? sheetScore : computeFounderScore(data);
@@ -86,6 +86,19 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
     acc[trait.category].push(trait);
     return acc;
   }, {});
+
+  const badgeClasses = (raw: any, val: number) => {
+    const unknown = raw === undefined || raw === null || raw === "" || /^unknown$/i.test(String(raw));
+    if (unknown) return "bg-slate-600 text-white";
+    switch (val) {
+      case 2:
+        return "bg-emerald-600 text-white";
+      case 1:
+        return "bg-yellow-500 text-black";
+      default:
+        return "bg-red-600 text-white";
+    }
+  };
 
   return (
     <DashcoinCard className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-6">
@@ -101,37 +114,33 @@ export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistPro
         </div>
       </div>
 
-      <div className="space-y-8">
+      <Accordion type="multiple" defaultValue={Object.keys(groups)} className="space-y-6">
         {Object.entries(groups).map(([category, traits]) => (
-          <div key={category}>
-            <h4 className="text-sm font-semibold text-slate-400 uppercase mb-2">{category}</h4>
-            <ul className="divide-y divide-white/10">
-              {traits.map(({ label, display }) => {
-                const raw = data[label];
-                const val = valueToScore(raw, (gradeMaps as any)[label]);
-                const displayVal = val * 6;
-                return (
-                  <li key={label} className="flex items-center justify-between py-2">
-                    <span className="text-slate-300">{display}</span>
-                    <span className="flex items-center gap-2">
-                      <span className="text-white text-sm font-semibold">+{displayVal}</span>
-                      <span className="text-slate-400 text-sm">{raw || 'Unknown'}</span>
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          <AccordionItem key={category} value={category} className="border-b border-white/10 pt-6 first:pt-0">
+            <AccordionTrigger className="text-left py-3">
+              <span className="text-lg font-semibold text-white">{category}</span>
+            </AccordionTrigger>
+            <AccordionContent className="pt-0">
+              <ul className="divide-y divide-white/10">
+                {traits.map(({ label, display }) => {
+                  const raw = data[label];
+                  const val = valueToScore(raw, (gradeMaps as any)[label]);
+                  const displayVal = val * 6;
+                  return (
+                    <li key={label} className="flex items-center justify-between py-3 px-2 odd:bg-white/5">
+                      <span className="text-slate-300 pr-2">{display}</span>
+                      <span className="flex items-center gap-2">
+                        <Badge className={`px-2 py-0.5 text-xs font-semibold ${badgeClasses(raw, val)}`}>+{displayVal}</Badge>
+                        <span className="text-slate-400 text-xs whitespace-nowrap">{raw || 'Unknown'}</span>
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
         ))}
-      </div>
-
-      {showLegend && (
-        <div className="pt-4 flex items-center gap-4 text-xs text-slate-400">
-          <span className="flex items-center gap-1 font-semibold">+12&nbsp;Positive</span>
-          <span className="flex items-center gap-1 font-semibold">+6&nbsp;Negative</span>
-          <span className="flex items-center gap-1 font-semibold">0&nbsp;Unknown</span>
-        </div>
-      )}
+      </Accordion>
     </DashcoinCard>
   );
 }

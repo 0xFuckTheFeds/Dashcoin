@@ -462,7 +462,7 @@ export default function TokenResearchPage({
             </div>
             
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-              <FoundersEdgeChecklist data={researchData} showLegend />
+              <FoundersEdgeChecklist data={researchData} />
               <div className="overflow-x-auto mt-8">
                 <table className="min-w-full text-sm">
                   <thead>
