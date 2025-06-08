@@ -31,6 +31,14 @@ import {
   X
 } from "lucide-react";
 import { formatCurrency0 } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
+import { canonicalChecklist } from "@/components/founders-edge-checklist";
+import { gradeMaps, valueToScore } from "@/lib/score";
 import Link from "next/link";
 
 interface ResearchScoreData {
@@ -494,10 +502,31 @@ export default function TokenSearchList() {
                     </td>
                     <td className="py-4 px-6">
                       {token.score !== undefined && token.score !== null ? (
-                        <div className="flex items-center gap-1 px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg w-fit">
-                          <Star className="w-3 h-3" />
-                          <span className="font-bold">{token.score.toFixed(1)}</span>
-                        </div>
+                        <TooltipProvider delayDuration={100}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center gap-1 px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg w-fit cursor-pointer">
+                                <Star className="w-3 h-3" />
+                                <span className="font-bold">{token.score.toFixed(1)}</span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="text-left max-w-xs">
+                              <ul className="space-y-1">
+                                {canonicalChecklist.map(({ label, display }) => {
+                                  const raw = (token as any)[label]
+                                  const val = valueToScore(raw, (gradeMaps as any)[label])
+                                  const displayVal = val * 6
+                                  return (
+                                    <li key={label} className="flex justify-between gap-2">
+                                      <span>{display}</span>
+                                      <span className="font-semibold">+{displayVal}</span>
+                                    </li>
+                                  )
+                                })}
+                              </ul>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       ) : (
                         <span className="text-slate-500">-</span>
                       )}
