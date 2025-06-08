@@ -557,7 +557,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
 
                   return (
                     <tr
-                      key={index}
+                      key={tokenAddress || tokenSymbol || index}
                       className="border-b border-dashGreen-light odd:bg-neutral-800 even:bg-neutral-900 hover:bg-neutral-700 cursor-pointer"
                       onClick={(e) => handleRowClick(e, tokenSymbol)}
                     >
