@@ -34,7 +34,7 @@ const IS_PREVIEW =
 
 const DUNE_API_KEY = process.env.DUNE_API_KEY;
 
-async function fetchDuneQueryResults(queryId: number, limit = 1000) {
+async function fetchDuneQueryResults(queryId: number, limit = 2000) {
   if (!DUNE_API_KEY) {
     console.error("DUNE_API_KEY is not set");
     return { rows: [] };
