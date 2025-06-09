@@ -332,7 +332,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       symbols.forEach(sym => {
         const data = dataMap.get(sym);
         if (data) {
-          newCookieData[sym] = data;
+          newCookieData[sym.toUpperCase()] = data;
         }
       });
 
