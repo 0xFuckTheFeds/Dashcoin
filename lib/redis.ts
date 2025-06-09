@@ -18,12 +18,14 @@ export const CACHE_KEYS = {
   CREATOR_WALLETS: "dashcoin:creator_wallets",
   CREATOR_WALLETS_LAST_REFRESH: "dashcoin:creator_wallets_last_refresh",
   DEX_LOGO_PREFIX: "dexscreener:logo:",
+  COOKIE_METRICS_PREFIX: "cookie:metrics:",
 }
 
 export const CACHE_DURATION = 1 * 60 * 60 * 1000
 export const CACHE_DURATION_LONG = 1 * 60 * 60 * 1000
 export const WALLET_CACHE_DURATION = 5 * 60 * 1000
 export const DEX_LOGO_CACHE_DURATION = 60 * 60 * 1000
+export const COOKIE_CACHE_DURATION = 60 * 60 * 1000
 
 const isKvAvailable = typeof kv !== "undefined" && kv !== null
 
