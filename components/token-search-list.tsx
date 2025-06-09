@@ -9,6 +9,7 @@ import {
 } from "@/app/actions/googlesheet-action";
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions";
 import { batchFetchCookieMetrics, type CookieMetrics } from "@/app/actions/cookie-actions";
+import { getTokenSlug } from "@/data/token-slug-map";
 import { TokenCard } from "./token-card";
 import { 
   Loader2, 
@@ -101,13 +102,16 @@ export default function TokenSearchList() {
 
   const fetchCookieData = useCallback(async (tokenList: TokenData[]) => {
     const symbols = tokenList.map(t => t.symbol).filter(Boolean);
-    if (!symbols.length) return;
+    const slugs = symbols.map(sym => getTokenSlug(sym)).filter(Boolean) as string[];
+    if (!slugs.length) return;
     try {
-      const map = await batchFetchCookieMetrics(symbols);
+      const map = await batchFetchCookieMetrics(slugs);
       setCookieMetrics(prev => {
         const updated: Record<string, CookieMetrics> = { ...prev };
         symbols.forEach(sym => {
-          const data = map.get(sym);
+          const slug = getTokenSlug(sym);
+          if (!slug) return;
+          const data = map.get(slug);
           if (data) {
             updated[sym.toUpperCase()] = data;
           }
