@@ -8,6 +8,7 @@ import {
   fetchCreatorWalletLinks,
 } from "@/app/actions/googlesheet-action";
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions";
+import { batchFetchCookieMetrics, type CookieMetrics } from "@/app/actions/cookie-actions";
 import { TokenCard } from "./token-card";
 import { 
   Loader2, 
@@ -60,6 +61,7 @@ export default function TokenSearchList() {
   const [loading, setLoading] = useState(true);
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({});
+  const [cookieMetrics, setCookieMetrics] = useState<Record<string, CookieMetrics>>({});
   const [walletInfo, setWalletInfo] = useState<Record<string, { walletLink: string; twitter: string }>>({});
   const [viewMode, setViewMode] = useState<'card' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState("");
@@ -94,6 +96,26 @@ export default function TokenSearchList() {
       });
     } catch (err) {
       console.error("Error fetching Dexscreener", err);
+    }
+  }, []);
+
+  const fetchCookieData = useCallback(async (tokenList: TokenData[]) => {
+    const symbols = tokenList.map(t => t.symbol).filter(Boolean);
+    if (!symbols.length) return;
+    try {
+      const map = await batchFetchCookieMetrics(symbols);
+      setCookieMetrics(prev => {
+        const updated: Record<string, CookieMetrics> = { ...prev };
+        symbols.forEach(sym => {
+          const data = map.get(sym);
+          if (data) {
+            updated[sym.toUpperCase()] = data;
+          }
+        });
+        return updated;
+      });
+    } catch (err) {
+      console.error("Error fetching Cookie.fun data", err);
     }
   }, []);
 
@@ -150,16 +172,18 @@ export default function TokenSearchList() {
         researchScores.find(r => r.symbol.toUpperCase() === sym) || {};
       const dex = dexscreenerData[t.token] || {};
       const wallet = walletInfo[sym] || { walletLink: '', twitter: '' };
+      const cookie = cookieMetrics[sym] || {};
       return {
         ...t,
         ...dex,
         ...research,
         ...wallet,
+        ...cookie,
         marketCap: dex.marketCap ?? t.marketCap,
         logoUrl: dex.logoUrl,
       };
     });
-  }, [tokens, researchScores, dexscreenerData, walletInfo]);
+  }, [tokens, researchScores, dexscreenerData, walletInfo, cookieMetrics]);
 
   const filteredAndSortedTokens = useMemo(() => {
     let result = tokensWithData;
@@ -221,10 +245,24 @@ export default function TokenSearchList() {
     [paginatedTokens],
   );
 
+  const paginatedSymbolKey = useMemo(
+    () => paginatedTokens.map(t => t.symbol).join(','),
+    [paginatedTokens],
+  );
+
   useEffect(() => {
     fetchDexData(paginatedTokens);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginatedTokenKey, fetchDexData]);
+
+  useEffect(() => {
+    fetchCookieData(paginatedTokens);
+    const id = setInterval(() => {
+      fetchCookieData(paginatedTokens);
+    }, 60 * 60 * 1000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paginatedSymbolKey, fetchCookieData]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -460,6 +498,7 @@ export default function TokenSearchList() {
                       Research
                     </div>
                   </th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium">Mindshare</th>
                   <th className="text-left py-4 px-6 text-slate-300 font-medium">Links</th>
                 </tr>
               </thead>
@@ -487,6 +526,12 @@ export default function TokenSearchList() {
                             <div className="text-xs text-slate-400 truncate max-w-[150px]">{token.name}</div>
                           )}
                         </div>
+                        {token.mentions !== undefined && token.mentions > 0 && (
+                          <span title={`${token.mentions} mentions past 24h`} className="ml-1">📣</span>
+                        )}
+                        {token.smartEngagements !== undefined && token.smartEngagements > 0 && (
+                          <span title={`${token.smartEngagements} smart engagements past 24h`} className="ml-1">🧠</span>
+                        )}
                       </Link>
                     </td>
                     <td className="py-4 px-6">
@@ -531,6 +576,18 @@ export default function TokenSearchList() {
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
+                      ) : (
+                        <span className="text-slate-500">-</span>
+                      )}
+                    </td>
+                    <td className="py-4 px-6">
+                      {token.mindshare !== undefined ? (
+                        <span>
+                          {token.mindshare.toFixed(2)}
+                          {token.mindshareChange !== undefined && (
+                            <span className="opacity-70 ml-1">({token.mindshareChange.toFixed(1)}%)</span>
+                          )}
+                        </span>
                       ) : (
                         <span className="text-slate-500">-</span>
                       )}
