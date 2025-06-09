@@ -34,14 +34,15 @@ const IS_PREVIEW =
 
 const DUNE_API_KEY = process.env.DUNE_API_KEY;
 
-async function fetchDuneQueryResults(queryId: number, limit = 2000) {
+async function fetchDuneQueryResults(queryId: number, limit = 1000, offset = 0) {
   if (!DUNE_API_KEY) {
     console.error("DUNE_API_KEY is not set");
     return { rows: [] };
   }
 
   try {
-    const response = await fetch(`https://api.dune.com/api/v1/query/${queryId}/results?limit=${limit}`,
+    const response = await fetch(
+      `https://api.dune.com/api/v1/query/${queryId}/results?limit=${limit}&offset=${offset}`,
       {
         headers: {
           "X-Dune-API-Key": DUNE_API_KEY,
@@ -78,10 +79,15 @@ export async function fetchAllTokensFromDune(): Promise<TokenData[]> {
     }
 
     console.log("It's time to refresh fetching all tokens data from dune");
-    const result = await fetchDuneQueryResults(5140151);
-    
-    if (result && result.rows && result.rows.length > 0) {
-      const tokens = result.rows.map((row: any) => {
+    const firstBatch = await fetchDuneQueryResults(5140151, 1000, 0);
+    const secondBatch = await fetchDuneQueryResults(5140151, 1000, 1000);
+    const rows = [
+      ...(firstBatch.rows || []),
+      ...(secondBatch.rows || [])
+    ];
+
+    if (rows.length > 0) {
+      const tokens = rows.map((row: any) => {
         return {
           token: row.token || "",
           symbol: row.symbol || "",
