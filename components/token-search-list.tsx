@@ -29,7 +29,9 @@ import {
   DollarSign,
   Users,
   X,
-  Zap
+  Zap,
+  Brain,
+  Megaphone
 } from "lucide-react";
 import { formatCurrency0 } from "@/lib/utils";
 import {
@@ -40,6 +42,7 @@ import {
 } from "@/components/ui/tooltip";
 import { canonicalChecklist } from "@/components/founders-edge-checklist";
 import { gradeMaps, valueToScore } from "@/lib/score";
+import { tokenSlugMap } from "@/lib/cookie";
 import Link from "next/link";
 
 interface ResearchScoreData {
@@ -61,6 +64,7 @@ export default function TokenSearchList() {
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({});
   const [walletInfo, setWalletInfo] = useState<Record<string, { walletLink: string; twitter: string }>>({});
+  const [cookieMetrics, setCookieMetrics] = useState<Record<string, { mindshare: number | null; mentions: number | null; smartEngagements: number | null }>>({});
   const [viewMode, setViewMode] = useState<'card' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(12);
@@ -94,6 +98,28 @@ export default function TokenSearchList() {
       });
     } catch (err) {
       console.error("Error fetching Dexscreener", err);
+    }
+  }, []);
+
+  const fetchCookieData = useCallback(async (tokenList: TokenData[]) => {
+    const pairs = tokenList
+      .map(t => ({ symbol: (t.symbol || '').toUpperCase(), slug: tokenSlugMap[(t.symbol || '').toUpperCase()] }))
+      .filter(p => p.slug);
+    if (!pairs.length) return;
+
+    try {
+      const results = await Promise.all(
+        pairs.map(p => fetch(`/api/cookie/${p.slug}`).then(r => r.json()))
+      );
+      setCookieMetrics(prev => {
+        const updated: Record<string, any> = { ...prev };
+        pairs.forEach((p, idx) => {
+          updated[p.symbol] = results[idx] || { mindshare: null, mentions: null, smartEngagements: null };
+        });
+        return updated;
+      });
+    } catch (err) {
+      console.error('Error fetching Cookie.fun data', err);
     }
   }, []);
 
@@ -150,16 +176,18 @@ export default function TokenSearchList() {
         researchScores.find(r => r.symbol.toUpperCase() === sym) || {};
       const dex = dexscreenerData[t.token] || {};
       const wallet = walletInfo[sym] || { walletLink: '', twitter: '' };
+      const cookie = cookieMetrics[sym] || {};
       return {
         ...t,
         ...dex,
         ...research,
         ...wallet,
+        ...cookie,
         marketCap: dex.marketCap ?? t.marketCap,
         logoUrl: dex.logoUrl,
       };
     });
-  }, [tokens, researchScores, dexscreenerData, walletInfo]);
+  }, [tokens, researchScores, dexscreenerData, walletInfo, cookieMetrics]);
 
   const filteredAndSortedTokens = useMemo(() => {
     let result = tokensWithData;
@@ -225,6 +253,11 @@ export default function TokenSearchList() {
     fetchDexData(paginatedTokens);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginatedTokenKey, fetchDexData]);
+
+  useEffect(() => {
+    fetchCookieData(paginatedTokens);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paginatedTokenKey, fetchCookieData]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -460,6 +493,12 @@ export default function TokenSearchList() {
                       Research
                     </div>
                   </th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium">
+                    <div className="flex items-center gap-2">
+                      <Brain className="w-4 h-4" />
+                      Mindshare
+                    </div>
+                  </th>
                   <th className="text-left py-4 px-6 text-slate-300 font-medium">Links</th>
                 </tr>
               </thead>
@@ -536,6 +575,13 @@ export default function TokenSearchList() {
                       )}
                     </td>
                     <td className="py-4 px-6">
+                      {token.mindshare !== undefined && token.mindshare !== null ? (
+                        <span className="font-bold text-white">{token.mindshare.toFixed(1)}</span>
+                      ) : (
+                        <span className="text-slate-500">-</span>
+                      )}
+                    </td>
+                    <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
                         {token.token && (
                           <a
@@ -570,6 +616,34 @@ export default function TokenSearchList() {
                           >
                             <Twitter className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
                           </a>
+                        )}
+                        {token.mentions !== undefined && (
+                          <TooltipProvider delayDuration={100}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center gap-1 p-1 cursor-default">
+                                  <Megaphone className="w-4 h-4 text-slate-400" />
+                                  <span className="text-xs text-slate-400">{token.mentions}</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>{token.mentions} mentions in last 24h</TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                        {token.smartEngagements !== undefined && token.smartEngagements > 0 && (
+                          <TooltipProvider delayDuration={100}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="relative p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors cursor-default">
+                                  <Brain className="w-4 h-4 text-slate-400" />
+                                  <span className="absolute -top-1 -right-1 text-[10px] bg-teal-600 text-white rounded-full px-1">
+                                    {token.smartEngagements}
+                                  </span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>Smart engagements: {token.smartEngagements}</TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         )}
                       </div>
                     </td>
