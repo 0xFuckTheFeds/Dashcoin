@@ -19,6 +19,7 @@ export const CACHE_KEYS = {
   CREATOR_WALLETS_LAST_REFRESH: "dashcoin:creator_wallets_last_refresh",
   DEX_LOGO_PREFIX: "dexscreener:logo:",
   COOKIE_METRICS_PREFIX: "cookie:metrics:",
+  COOKIE_SLUG_PREFIX: "cookie:slug:",
 }
 
 export const CACHE_DURATION = 1 * 60 * 60 * 1000

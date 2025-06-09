@@ -32,8 +32,10 @@ import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
-import { batchFetchCookieMetrics, type CookieMetrics } from "@/app/actions/cookie-actions"
-import { getTokenSlug } from "@/data/token-slug-map"
+import {
+  batchFetchCookieMetricsForTokens,
+  type CookieMetrics,
+} from "@/app/actions/cookie-actions"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { gradeMaps, valueToScore } from "@/lib/score"
 import { researchFilterOptions } from "@/data/research-filter-options"
@@ -320,27 +322,14 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const fetchCookieData = useCallback(async () => {
     if (!filteredTokens.length) return;
 
-    const symbols = filteredTokens
-      .map(token => token.symbol)
-      .filter(sym => sym && typeof sym === "string");
-
-    const slugs = symbols.map(sym => getTokenSlug(sym)).filter(Boolean) as string[];
-
-    if (slugs.length === 0) return;
-
     try {
-      const dataMap = await batchFetchCookieMetrics(slugs);
+      const map = await batchFetchCookieMetricsForTokens(
+        filteredTokens.map(t => ({ symbol: t.symbol || "", token: (t as any).token }))
+      );
       const newCookieData: Record<string, CookieMetrics> = {};
-
-      symbols.forEach(sym => {
-        const slug = getTokenSlug(sym);
-        if (!slug) return;
-        const data = dataMap.get(slug);
-        if (data) {
-          newCookieData[sym.toUpperCase()] = data;
-        }
+      map.forEach((data, sym) => {
+        if (data) newCookieData[sym.toUpperCase()] = data;
       });
-
       setCookieMetrics(newCookieData);
     } catch (error) {
       console.error("Error fetching Cookie.fun data:", error);

@@ -8,8 +8,10 @@ import {
   fetchCreatorWalletLinks,
 } from "@/app/actions/googlesheet-action";
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions";
-import { batchFetchCookieMetrics, type CookieMetrics } from "@/app/actions/cookie-actions";
-import { getTokenSlug } from "@/data/token-slug-map";
+import {
+  batchFetchCookieMetricsForTokens,
+  type CookieMetrics,
+} from "@/app/actions/cookie-actions";
 import { TokenCard } from "./token-card";
 import { 
   Loader2, 
@@ -101,20 +103,14 @@ export default function TokenSearchList() {
   }, []);
 
   const fetchCookieData = useCallback(async (tokenList: TokenData[]) => {
-    const symbols = tokenList.map(t => t.symbol).filter(Boolean);
-    const slugs = symbols.map(sym => getTokenSlug(sym)).filter(Boolean) as string[];
-    if (!slugs.length) return;
     try {
-      const map = await batchFetchCookieMetrics(slugs);
+      const map = await batchFetchCookieMetricsForTokens(
+        tokenList.map(t => ({ symbol: t.symbol || "", token: t.token }))
+      );
       setCookieMetrics(prev => {
         const updated: Record<string, CookieMetrics> = { ...prev };
-        symbols.forEach(sym => {
-          const slug = getTokenSlug(sym);
-          if (!slug) return;
-          const data = map.get(slug);
-          if (data) {
-            updated[sym.toUpperCase()] = data;
-          }
+        map.forEach((data, sym) => {
+          if (data) updated[sym.toUpperCase()] = data;
         });
         return updated;
       });
