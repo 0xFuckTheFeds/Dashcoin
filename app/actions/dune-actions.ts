@@ -73,7 +73,7 @@ export async function fetchAllTokensFromDune(): Promise<TokenData[]> {
     if ((Date.now() - lastRefreshTime.getTime()) < CACHE_DURATION) {
       const cachedData = await getFromCache<TokenData[]>(CACHE_KEYS.ALL_TOKENS);
       if (cachedData && cachedData.length > 0) {
-        console.log("Last refresh time less than 1 hour, fetching all tokens data from cache");
+        console.log("Last refresh time less than 12 hours, fetching all tokens data from cache");
         return cachedData;
       }
     }
@@ -251,12 +251,12 @@ export async function fetchTokenMarketCaps(): Promise<TokenMarketCapData[]> {
     //     CACHE_KEYS.TOKEN_MARKET_CAPS
     //   );
     //   if (cachedData && cachedData.length > 0) {
-    //     console.log("Token market caps: Less than 1 hour since last refresh, using cache");
+    //     console.log("Token market caps: Less than 12 hours since last refresh, using cache");
     //     return cachedData;
     //   }
     // }
 
-    // console.log("Token market caps: More than 1 hour since last refresh, fetching from Dune");
+    // console.log("Token market caps: More than 12 hours since last refresh, fetching from Dune");
       const result = await fetchDuneQueryResults(5140151);
 
     if (result && result.rows && result.rows.length > 0) {
@@ -380,12 +380,12 @@ export async function fetchMarketStats(): Promise<MarketStats> {
     if ((Date.now() - lastRefreshTime.getTime()) < CACHE_DURATION) {
       const cachedData = await getFromCache<MarketStats>(CACHE_KEYS.MARKET_STATS);
       if (cachedData && cachedData.totalMarketCap !== undefined) {
-        console.log("Market stats: Less than 1 hour since last refresh, using cache");
+        console.log("Market stats: Less than 12 hours since last refresh, using cache");
         return cachedData;
       }
     }
 
-    console.log("Market stats: More than 1 hour since last refresh, fetching from Dune");
+    console.log("Market stats: More than 12 hours since last refresh, fetching from Dune");
     const result = await fetchDuneQueryResults(5140151);
 
     if (result && result.rows && result.rows.length > 0) {
