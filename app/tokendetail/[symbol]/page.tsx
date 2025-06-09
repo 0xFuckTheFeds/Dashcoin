@@ -53,7 +53,8 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 
 interface TokenResearchData {
   Symbol: string;
-  Score: number | string;
+  Score?: number | string;
+  score?: number | string;
   "Team Doxxed": number | string;
   "Twitter Activity Level": number | string;
   "Time Commitment": number | string;
@@ -216,7 +217,7 @@ export default function TokenResearchPage({
       try {
         const data = await fetchTokenResearchClient(symbol);
         setResearchData(data);
-        setHasScore(!!data && !!data["Score"]);
+        setHasScore(!!data && (!!data["Score"] || !!(data as any).score));
       } catch (error) {
         console.error(`Error fetching research data for ${symbol}:`, error);
       } finally {
@@ -353,8 +354,11 @@ export default function TokenResearchPage({
                   <Sparkles className="w-4 h-4" />
                   Token Analysis
                 </div>
-                {researchData && researchData.Score && (
-                  <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
+                {researchData && (researchData.Score || (researchData as any).score) && (
+                  <ResearchScoreBadge
+                    score={Number(researchData.Score ?? (researchData as any).score)}
+                    data={researchData}
+                  />
                 )}
               </div>
               
@@ -444,24 +448,6 @@ export default function TokenResearchPage({
           </div>
         </section>
 
-        {/* Research Analysis */}
-        {researchData && hasScore && (
-          <section className="mb-12">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-white">Founder's Edge Analysis</h2>
-                <p className="text-slate-400">Comprehensive research metrics and risk assessment</p>
-              </div>
-            </div>
-            
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-              <FoundersEdgeChecklist data={researchData} showLegend />
-            </div>
-          </section>
-        )}
 
         {/* Market Statistics */}
         <section className="mb-12">
@@ -635,9 +621,28 @@ export default function TokenResearchPage({
                 <p className="text-slate-400">Interactive trading view with technical analysis</p>
               </div>
             </div>
-            
+
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
               <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
+            </div>
+          </section>
+        )}
+
+        {/* Research Analysis */}
+        {researchData && hasScore && (
+          <section className="mb-12">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-white">Founder's Edge Analysis</h2>
+                <p className="text-slate-400">Comprehensive research metrics and risk assessment</p>
+              </div>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+              <FoundersEdgeChecklist data={researchData} />
             </div>
           </section>
         )}

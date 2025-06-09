@@ -1,7 +1,8 @@
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
-import { CheckCircle, XCircle, MinusCircle } from "lucide-react";
 import React from "react";
 import { gradeMaps, valueToScore, computeFounderScore } from "@/lib/score";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 
 export interface TraitInfo {
   /**
@@ -70,62 +71,95 @@ export const canonicalChecklist: TraitInfo[] = [
   },
 ];
 
-function getIcon(value: number) {
-  switch (value) {
-    case 2:
-      return <CheckCircle className="text-green-500 w-5 h-5" />;
-    case 1:
-      return <XCircle className="text-red-500 w-5 h-5" />;
-    default:
-      return <MinusCircle className="text-yellow-400 w-5 h-5" />;
-  }
-}
 
 interface ChecklistProps {
   data: Record<string, any>;
-  showLegend?: boolean;
 }
 
-export function FoundersEdgeChecklist({ data, showLegend = false }: ChecklistProps) {
+export function FoundersEdgeChecklist({ data }: ChecklistProps) {
   if (!data) return null;
-  const sheetScore = Number(data["Score"]);
+  const sheetScore = Number(data["Score"] ?? (data as any).score);
   const score = !isNaN(sheetScore) && sheetScore > 0 ? sheetScore : computeFounderScore(data);
+
+  const groups = canonicalChecklist.reduce<Record<string, TraitInfo[]>>((acc, trait) => {
+    acc[trait.category] = acc[trait.category] || [];
+    acc[trait.category].push(trait);
+    return acc;
+  }, {});
+
+  const badgeClasses = (raw: any, val: number) => {
+    const unknown = raw === undefined || raw === null || raw === "" || /^unknown$/i.test(String(raw));
+    if (unknown) return "bg-slate-600 text-white";
+    switch (val) {
+      case 2:
+        return "bg-emerald-600 text-white";
+      case 1:
+        return "bg-yellow-500 text-black";
+      default:
+        return "bg-red-600 text-white";
+    }
+  };
+
+  const categoryScores = Object.fromEntries(
+    Object.entries(groups).map(([category, traits]) => {
+      const total = traits.reduce((acc, { label }) => {
+        const val = valueToScore(data[label], (gradeMaps as any)[label]);
+        return acc + val * 6;
+      }, 0);
+      return [category, total];
+    })
+  );
+
+  const categoryColor = (score: number) => {
+    if (score === 0) return "bg-red-600 text-white";
+    if (score === 6) return "bg-yellow-500 text-black";
+    return "bg-emerald-600 text-white";
+  };
+
   return (
-    <DashcoinCard
-      className="token-card relative p-10 rounded-2xl shadow-lg"
-    >
-      <div className="flex justify-center items-center gap-6 mb-4">
-        <h2 className="text-2xl font-semibold text-dashYellow">Founder&apos;s Edge Checklist</h2>
-        <div className="bg-dashGreen text-white px-3 py-1 rounded-full text-sm font-semibold shadow flex items-center">
-          <span>
-            Founder Score: <span className="font-bold">{score}</span> / 100
-          </span>
-          {score >= 75 && <span className="ml-2 animate-bounce">🐸</span>}
+    <DashcoinCard className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-6">
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold text-white">Founder's Edge</h3>
+          <div className="text-sm text-white font-medium">
+            Score: <span className="font-bold">{score}</span>/100
+          </div>
+        </div>
+        <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-teal-500 to-green-500" style={{ width: `${score}%` }} />
         </div>
       </div>
-      <p className="text-base opacity-80 mb-6 text-center">Signal-based checklist of founder credibility and product traction.</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {canonicalChecklist.map(({ label, display }) => {
-          const raw = data[label];
-          const val = valueToScore(raw, (gradeMaps as any)[label]);
-          return (
-            <div
-              key={label}
-              className="flex items-center gap-2 bg-white text-black rounded-full px-4 py-3"
-            >
-              {getIcon(val)}
-              <span className="text-base">{display}</span>
-            </div>
-          );
-        })}
-      </div>
-      {showLegend && (
-        <div className="mt-4 flex items-center gap-4 text-sm">
-          <div className="flex items-center gap-1"><MinusCircle className="text-yellow-400 w-4 h-4" /> Unknown</div>
-          <div className="flex items-center gap-1"><XCircle className="text-red-500 w-4 h-4" /> No</div>
-          <div className="flex items-center gap-1"><CheckCircle className="text-green-500 w-4 h-4" /> Yes</div>
-        </div>
-      )}
+
+      <Accordion type="multiple" className="space-y-6">
+        {Object.entries(groups).map(([category, traits]) => (
+          <AccordionItem key={category} value={category} className="border-b border-white/10 pt-6 first:pt-0">
+            <AccordionTrigger className="text-left py-3">
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-semibold text-white">{category}</span>
+                <Badge className={`px-2 py-0.5 text-xs font-semibold ${categoryColor(categoryScores[category])}`}>+{categoryScores[category]}</Badge>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-0">
+              <ul className="divide-y divide-white/10">
+                {traits.map(({ label, display }) => {
+                  const raw = data[label];
+                  const val = valueToScore(raw, (gradeMaps as any)[label]);
+                  const displayVal = val * 6;
+                  return (
+                    <li key={label} className="flex items-center justify-between py-3 px-2 odd:bg-white/5">
+                      <span className="text-slate-300 pr-2">{display}</span>
+                      <span className="flex items-center gap-2">
+                        <Badge className={`px-2 py-0.5 text-xs font-semibold ${badgeClasses(raw, val)}`}>+{displayVal}</Badge>
+                        <span className="text-slate-400 text-xs whitespace-nowrap">{raw || 'Unknown'}</span>
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </DashcoinCard>
   );
 }
