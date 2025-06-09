@@ -35,8 +35,7 @@ async function postJson(path: string, body: any) {
 }
 
 export async function fetchCookieMetrics(symbol: string): Promise<CookieMetrics | null> {
-  const slug = slugMap[symbol.toUpperCase()];
-  if (!slug) return null;
+  const slug = slugMap[symbol.toUpperCase()] || symbol.toLowerCase();
 
   const cacheKey = `${CACHE_KEYS.COOKIE_METRICS_PREFIX}${slug}`;
   const cached = await getFromCache<CookieMetrics>(cacheKey);

@@ -22,6 +22,7 @@ import EnvSetup from "./env-setup";
 import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
 import { DashcStatsBar } from "@/components/dashc-stats-bar";
+import CookieMindshareTable from "@/components/cookie-mindshare-table";
 import {
   Twitter,
   TrendingUp,
@@ -383,6 +384,10 @@ export default async function Home() {
               changeType="positive"
             />
           </div>
+        </section>
+
+        <section className="mb-12">
+          <CookieMindshareTable />
         </section>
 
         {/* Trade Dashcoin Section */}
