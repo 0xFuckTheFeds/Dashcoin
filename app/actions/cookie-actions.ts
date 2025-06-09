@@ -87,17 +87,36 @@ export async function batchFetchCookieMetrics(projects: string[]): Promise<Map<s
 export async function fetchProjectSlug(symbol: string, address?: string): Promise<string | null> {
   const direct = getTokenSlug(symbol);
   if (direct) return direct;
-  if (!address) return null;
-  const key = `${CACHE_KEYS.COOKIE_SLUG_PREFIX}${address.toLowerCase()}`;
-  const cached = await getFromCache<string>(key);
-  if (cached) return cached;
 
-  const data = await postCookie("/v3/project/search", { contractAddress: address });
-  const slug = data?.slug || data?.project?.slug || data?.data?.slug;
+  const cacheKeyAddr = address ? `${CACHE_KEYS.COOKIE_SLUG_PREFIX}${address.toLowerCase()}` : null;
+  const cacheKeySym = `${CACHE_KEYS.COOKIE_SLUG_PREFIX}sym:${symbol.toUpperCase()}`;
+
+  if (cacheKeyAddr) {
+    const cached = await getFromCache<string>(cacheKeyAddr);
+    if (cached) return cached;
+  }
+
+  const cachedSym = await getFromCache<string>(cacheKeySym);
+  if (cachedSym) return cachedSym;
+
+  if (address) {
+    const data = await postCookie("/v3/project/search", { contractAddress: address });
+    const slug = data?.slug || data?.project?.slug || data?.data?.slug;
+    if (slug) {
+      if (cacheKeyAddr) await setInCache(cacheKeyAddr, slug, COOKIE_CACHE_DURATION);
+      await setInCache(cacheKeySym, slug, COOKIE_CACHE_DURATION);
+      return slug as string;
+    }
+  }
+
+  const dataBySymbol = await postCookie("/v3/project/search", { symbol });
+  const slug = dataBySymbol?.slug || dataBySymbol?.project?.slug || dataBySymbol?.data?.slug;
   if (slug) {
-    await setInCache(key, slug, COOKIE_CACHE_DURATION);
+    if (cacheKeyAddr) await setInCache(cacheKeyAddr, slug, COOKIE_CACHE_DURATION);
+    await setInCache(cacheKeySym, slug, COOKIE_CACHE_DURATION);
     return slug as string;
   }
+
   return null;
 }
 
@@ -107,12 +126,13 @@ export interface TokenIdentifier {
 }
 
 export async function batchFetchCookieMetricsForTokens(tokens: TokenIdentifier[]): Promise<Map<string, CookieMetrics | null>> {
-  const result = new Map<string, CookieMetrics | null>();
-  for (const t of tokens) {
-    const slug = await fetchProjectSlug(t.symbol, t.token);
-    if (!slug) continue;
-    const data = await fetchCookieMetrics(slug);
-    result.set(t.symbol.toUpperCase(), data);
-  }
-  return result;
+  const entries = await Promise.all(
+    tokens.map(async t => {
+      const slug = await fetchProjectSlug(t.symbol, t.token);
+      if (!slug) return [t.symbol.toUpperCase(), null] as const;
+      const data = await fetchCookieMetrics(slug);
+      return [t.symbol.toUpperCase(), data] as const;
+    })
+  );
+  return new Map(entries);
 }
