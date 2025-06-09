@@ -14,6 +14,10 @@ const COOKIE_API_KEY = process.env.COOKIE_API_KEY;
 const COOKIE_BASE_URL = "https://api.staging.cookie.fun";
 const COOKIE_CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
+function get24hAgoISO() {
+  return new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+}
+
 async function postCookie(path: string, body: any) {
   if (!COOKIE_API_KEY) {
     console.error("COOKIE_API_KEY not set");
@@ -49,20 +53,49 @@ export async function fetchCookieMetrics(project: string): Promise<CookieMetrics
   const cached = await getFromCache<CookieMetrics>(key);
   if (cached) return cached;
 
-  const [mindshareData, metricsData] = await Promise.all([
-    postCookie("/v3/project/mindshare-graph", { project }),
-    postCookie("/v3/metrics", { project }),
+  const [mindshareData, mentionsData, smartEngagementsData] = await Promise.all([
+    postCookie("/v3/project/mindshare-graph", {
+      projectSlug: project,
+      granulation: "_24Hours",
+      startDate: get24hAgoISO(),
+      endDate: new Date().toISOString(),
+    }),
+    postCookie("/v3/metrics", {
+      projectSlug: project,
+      metricType: "Mentions",
+      granulation: "_24Hours",
+      startDate: get24hAgoISO(),
+      endDate: new Date().toISOString(),
+    }),
+    postCookie("/v3/metrics", {
+      projectSlug: project,
+      metricType: "SmartEngagements",
+      granulation: "_24Hours",
+      startDate: get24hAgoISO(),
+      endDate: new Date().toISOString(),
+    }),
   ]);
 
-  if (!mindshareData || !metricsData) return null;
+  if (
+    !mindshareData?.success ||
+    !mentionsData?.success ||
+    !smartEngagementsData?.success
+  ) {
+    console.error(
+      "Cookie.fun API error:",
+      mindshareData?.error || mentionsData?.error || smartEngagementsData?.error
+    );
+    return null;
+  }
 
   const points = mindshareData?.points || mindshareData?.data?.points || [];
   const latest = points.length > 0 ? points[points.length - 1].value || 0 : 0;
   const prev = points.length > 1 ? points[points.length - 2].value || 0 : 0;
   const change = prev ? ((latest - prev) / prev) * 100 : 0;
 
-  const mentions = metricsData?.mentions24h ?? metricsData?.mentions ?? 0;
-  const smartEngagements = metricsData?.smartEngagements24h ?? metricsData?.smartEngagements ?? 0;
+  const mentions = mentionsData?.mentions24h ?? mentionsData?.mentions ?? 0;
+  const smartEngagements =
+    smartEngagementsData?.smartEngagements24h ?? smartEngagementsData?.smartEngagements ?? 0;
 
   const result: CookieMetrics = {
     mindshare: latest,
@@ -75,13 +108,13 @@ export async function fetchCookieMetrics(project: string): Promise<CookieMetrics
   return result;
 }
 
-export async function batchFetchCookieMetrics(projects: string[]): Promise<Map<string, CookieMetrics | null>> {
-  const result = new Map<string, CookieMetrics | null>();
-  for (const proj of projects) {
-    const data = await fetchCookieMetrics(proj);
-    result.set(proj, data);
-  }
-  return result;
+export async function batchFetchCookieMetrics(
+  projects: string[]
+): Promise<Map<string, CookieMetrics | null>> {
+  const entries = await Promise.all(
+    projects.map(async p => [p, await fetchCookieMetrics(p)] as const)
+  );
+  return new Map(entries);
 }
 
 export async function fetchProjectSlug(symbol: string, address?: string): Promise<string | null> {
