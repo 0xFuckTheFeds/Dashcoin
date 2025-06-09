@@ -32,6 +32,7 @@ import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
+import { batchFetchCookieMetrics } from "@/app/actions/cookie-fun-actions"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { gradeMaps, valueToScore } from "@/lib/score"
 import { researchFilterOptions } from "@/data/research-filter-options"
@@ -71,6 +72,8 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([])
   const [isLoadingResearch, setIsLoadingResearch] = useState(false)
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
+  const [cookieData, setCookieData] = useState<Record<string, any>>({})
+  const [cookieLastRefreshed, setCookieLastRefreshed] = useState<Date | null>(null)
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshCountdown, setRefreshCountdown] = useState(60)
   const searchParams = useSearchParams()
@@ -314,6 +317,35 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     }
   }, [filteredTokens]);
 
+  const fetchCookieMetricsData = useCallback(async () => {
+    if (!filteredTokens.length) return
+
+    const symbols = filteredTokens
+      .map(token => token.symbol)
+      .filter(sym => sym && typeof sym === 'string')
+    if (symbols.length === 0) return
+
+    if (
+      cookieLastRefreshed &&
+      Date.now() - cookieLastRefreshed.getTime() < 60 * 60 * 1000
+    ) {
+      return
+    }
+
+    try {
+      const res = await fetch('/api/cookie-metrics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symbols }),
+      })
+      const data = await res.json()
+      setCookieData(data || {})
+      setCookieLastRefreshed(new Date())
+    } catch (err) {
+      console.error('Error fetching Cookie metrics:', err)
+    }
+  }, [filteredTokens, cookieLastRefreshed])
+
   const getTokenProperty = (token: any, property: string, defaultValue: any = "N/A") => {
     return token && token[property] !== undefined && token[property] !== null ? token[property] : defaultValue
   }
@@ -332,11 +364,13 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       const tokenAddress = getTokenProperty(token, "token", "");
       const dexData = tokenAddress && dexscreenerData[tokenAddress] ? dexscreenerData[tokenAddress] : {};
       const research = researchScores.find(item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()) || {};
+      const cookie = cookieData[(token.symbol || '').toUpperCase()] || {};
 
       return {
         ...token,
         ...dexData,
         ...research,
+        ...cookie,
         marketCap: dexData.marketCap !== undefined ? dexData.marketCap : token.marketCap,
       };
     })
@@ -360,11 +394,19 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     return () => clearTimeout(timer);
   }, [refreshCountdown, fetchDexscreenerData]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchCookieMetricsData()
+    }, 60 * 60 * 1000)
+    return () => clearTimeout(timer)
+  }, [cookieLastRefreshed, fetchCookieMetricsData])
 
-  // Fetch fresh Dexscreener data whenever the set of tokens changes
+
+  // Fetch fresh Dexscreener and Cookie metrics whenever token set changes
   useEffect(() => {
     fetchDexscreenerData();
-  }, [filteredTokens, fetchDexscreenerData]);
+    fetchCookieMetricsData();
+  }, [filteredTokens, fetchDexscreenerData, fetchCookieMetricsData]);
 
   useEffect(() => {
     if (searchTerm !== "" && currentPage !== 1) {
@@ -477,6 +519,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                     {renderSortIndicator("researchScore")}
                   </div>
                 </th>
+                <th className="text-left py-3 px-4 text-dashYellow">Mindshare</th>
                 {canonicalChecklist.map(({ label, display, description }) => (
                   <th key={label} className="relative text-left py-3 px-4 text-dashYellow">
                     <TooltipProvider delayDuration={100}>
@@ -568,7 +611,21 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                           onClick={(e) => e.stopPropagation()}
                         >
                           <div>
-                            <p className="font-bold">{tokenSymbol}</p>
+                            <p className="font-bold flex items-center gap-1">
+                              {tokenSymbol}
+                              {typeof token.smartEngagements === 'number' && token.smartEngagements > 0 && (
+                                <TooltipProvider delayDuration={100}>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="cursor-pointer">🧠</span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      Smart engagements: {token.smartEngagements}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+                            </p>
                             {tokenAddress && (
                               <CopyAddress
                                 address={tokenAddress}
@@ -644,6 +701,25 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                         ) : (
                           <span className="text-dashYellow-light opacity-50">-</span>
                         )}
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-1">
+                          {typeof token.mindshare === 'number' ? (
+                            <span>🧠 {token.mindshare.toFixed(1)}</span>
+                          ) : (
+                            <span className="opacity-50">-</span>
+                          )}
+                          {typeof token.mentions === 'number' && (
+                            <TooltipProvider delayDuration={100}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="cursor-pointer">📣</span>
+                                </TooltipTrigger>
+                                <TooltipContent>{token.mentions} mentions</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </div>
                       </td>
                       {canonicalChecklist.map(trait => {
                         const label = trait.label
