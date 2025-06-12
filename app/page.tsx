@@ -326,50 +326,7 @@ export default async function Home() {
 
           </div>
 
-          {/* Quick Stats Grid - Improved Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-            <QuickStatsCard
-              icon={TrendingUp}
-              title="Total Market Cap"
-              value={formattedTotalMarketCap}
-              change="+12.5%"
-              changeType="positive"
-            />
-            <QuickStatsCard
-              icon={Activity}
-              title="Total Volume"
-              value={formattedVolume}
-              change="+8.2%"
-              changeType="positive"
-            />
-            <QuickStatsCard
-              icon={DollarSign}
-              title="Creator Fees"
-              value={formattedFeeEarnings0}
-              change="+15.7%"
-              changeType="positive"
-              subtitle="Estimated from total volume*"
-            />
-            <QuickStatsCard
-              icon={Users}
-              title="Indexed Tokens"
-              value={marketStats?.coinLaunches || "N/A"}
-              change="+3"
-              changeType="positive"
-            />
-          </div>
         </section>
-
-        {/* Trade Dashcoin Section */}
-        <section className="mb-12 flex justify-center">
-          <DashcStatsBar
-            tradeLink={dashcoinTradeLink}
-            marketCap={dashcMarketCap}
-            contractAddress={dashcoinCA}
-          />
-        </section>
-
-
         {/* Token Analysis Section */}
         <section id="token-directory" className="mb-12">
           <div className="flex items-center justify-between mb-8">
@@ -410,6 +367,49 @@ export default async function Home() {
             </div>
         </Suspense>
       </section>
+        {/* Quick Stats Grid - Improved Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+          <QuickStatsCard
+            icon={TrendingUp}
+            title="Total Market Cap"
+            value={formattedTotalMarketCap}
+            change="+12.5%"
+            changeType="positive"
+          />
+          <QuickStatsCard
+            icon={Activity}
+            title="Total Volume"
+            value={formattedVolume}
+            change="+8.2%"
+            changeType="positive"
+          />
+          <QuickStatsCard
+            icon={DollarSign}
+            title="Creator Fees"
+            value={formattedFeeEarnings0}
+            change="+15.7%"
+            changeType="positive"
+            subtitle="Estimated from total volume*"
+          />
+          <QuickStatsCard
+            icon={Users}
+            title="Indexed Tokens"
+            value={marketStats?.coinLaunches || "N/A"}
+            change="+3"
+            changeType="positive"
+          />
+        </div>
+
+        {/* Trade Dashcoin Section */}
+        <section className="mb-12 flex justify-center">
+          <DashcStatsBar
+            tradeLink={dashcoinTradeLink}
+            marketCap={dashcMarketCap}
+            contractAddress={dashcoinCA}
+          />
+        </section>
+
+
 
       {/* Market Overview Section */}
       <section id="product" className="mb-12">
