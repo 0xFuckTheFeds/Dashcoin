@@ -32,6 +32,10 @@ import type { TokenData, PaginatedTokenResponse } from "@/types/dune"
 import { CopyAddress } from "@/components/copy-address"
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions"
 import { fetchTokenResearch } from "@/app/actions/googlesheet-action"
+import {
+  batchFetchCookieMetricsForTokens,
+  type CookieMetrics,
+} from "@/app/actions/cookie-actions"
 import { canonicalChecklist } from "@/components/founders-edge-checklist"
 import { gradeMaps, valueToScore } from "@/lib/score"
 import { researchFilterOptions } from "@/data/research-filter-options"
@@ -71,6 +75,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([])
   const [isLoadingResearch, setIsLoadingResearch] = useState(false)
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({})
+  const [cookieMetrics, setCookieMetrics] = useState<Record<string, CookieMetrics>>({})
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshCountdown, setRefreshCountdown] = useState(60)
   const searchParams = useSearchParams()
@@ -314,6 +319,23 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
     }
   }, [filteredTokens]);
 
+  const fetchCookieData = useCallback(async () => {
+    if (!filteredTokens.length) return;
+
+    try {
+      const map = await batchFetchCookieMetricsForTokens(
+        filteredTokens.map(t => ({ symbol: t.symbol || "", token: (t as any).token }))
+      );
+      const newCookieData: Record<string, CookieMetrics> = {};
+      map.forEach((data, sym) => {
+        if (data) newCookieData[sym.toUpperCase()] = data;
+      });
+      setCookieMetrics(newCookieData);
+    } catch (error) {
+      console.error("Error fetching Cookie.fun data:", error);
+    }
+  }, [filteredTokens]);
+
   const getTokenProperty = (token: any, property: string, defaultValue: any = "N/A") => {
     return token && token[property] !== undefined && token[property] !== null ? token[property] : defaultValue
   }
@@ -332,11 +354,13 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
       const tokenAddress = getTokenProperty(token, "token", "");
       const dexData = tokenAddress && dexscreenerData[tokenAddress] ? dexscreenerData[tokenAddress] : {};
       const research = researchScores.find(item => item.symbol.toUpperCase() === (token.symbol || '').toUpperCase()) || {};
+      const cookie = cookieMetrics[(token.symbol || '').toUpperCase()] || {};
 
       return {
         ...token,
         ...dexData,
         ...research,
+        ...cookie,
         marketCap: dexData.marketCap !== undefined ? dexData.marketCap : token.marketCap,
       };
     })
@@ -365,6 +389,15 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
   useEffect(() => {
     fetchDexscreenerData();
   }, [filteredTokens, fetchDexscreenerData]);
+
+  // Fetch Cookie.fun data when tokens change and every hour
+  useEffect(() => {
+    fetchCookieData();
+    const interval = setInterval(() => {
+      fetchCookieData();
+    }, 60 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [filteredTokens, fetchCookieData]);
 
   useEffect(() => {
     if (searchTerm !== "" && currentPage !== 1) {
@@ -477,6 +510,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                     {renderSortIndicator("researchScore")}
                   </div>
                 </th>
+                <th className="text-left py-3 px-4 text-dashYellow">Mindshare</th>
                 {canonicalChecklist.map(({ label, display, description }) => (
                   <th key={label} className="relative text-left py-3 px-4 text-dashYellow">
                     <TooltipProvider delayDuration={100}>
@@ -542,7 +576,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={13} className="py-8 text-center">
+                  <td colSpan={14} className="py-8 text-center">
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin text-dashYellow" />
                       <span>Loading tokens...</span>
@@ -567,7 +601,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                           className="hover:text-dashYellow"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <div>
+                          <div className="flex items-center gap-1">
                             <p className="font-bold">{tokenSymbol}</p>
                             {tokenAddress && (
                               <CopyAddress
@@ -575,6 +609,12 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                                 showBackground={false}
                                 className="hidden md:inline text-xs opacity-70 hover:opacity-100"
                               />
+                            )}
+                            {token.mentions !== undefined && token.mentions > 0 && (
+                              <span title={`${token.mentions} mentions past 24h`} className="ml-1">📣</span>
+                            )}
+                            {token.smartEngagements !== undefined && token.smartEngagements > 0 && (
+                              <span title={`${token.smartEngagements} smart engagements past 24h`} className="ml-1">🧠</span>
                             )}
                           </div>
                         </Link>
@@ -645,6 +685,20 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                           <span className="text-dashYellow-light opacity-50">-</span>
                         )}
                       </td>
+                      <td className="py-3 px-4">
+                        {token.mindshare !== undefined ? (
+                          <span>
+                            {token.mindshare.toFixed(2)}
+                            {token.mindshareChange !== undefined && (
+                              <span className="opacity-70 ml-1">
+                                ({token.mindshareChange.toFixed(1)}%)
+                              </span>
+                            )}
+                          </span>
+                        ) : (
+                          <span className="text-dashYellow-light opacity-50">-</span>
+                        )}
+                      </td>
                       {canonicalChecklist.map(trait => {
                         const label = trait.label
                         const raw = (token as any)[label]
@@ -658,7 +712,7 @@ export default function TokenTable({ data }: { data: PaginatedTokenResponse | To
                 })
               ) : (
                 <tr>
-                  <td colSpan={13} className="py-8 text-center opacity-80">
+                  <td colSpan={14} className="py-8 text-center opacity-80">
                     {searchTerm
                       ? "No tokens found matching your search."
                       : "No token data available. Check your Dune query or API key."}
