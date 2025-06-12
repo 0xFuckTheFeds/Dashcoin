@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { fetchAllTokensFromDune } from '@/app/actions/dune-actions'
 
 const COOKIE_API_KEY = process.env.COOKIE_API_KEY || ''
 const API_BASE = 'https://api.staging.cookie.fun'
@@ -17,8 +18,7 @@ interface TokenResult {
   error?: string
 }
 
-const TOKENS = ['dupe', 'kled', 'yapper']
-const CACHE_TTL = 60 * 60 * 1000
+const CACHE_TTL = 4 * 60 * 60 * 1000
 
 const cache = new Map<string, { data: TokenResult; timestamp: number }>()
 
@@ -65,7 +65,13 @@ export async function GET(req: Request) {
   const results: TokenResult[] = []
   const now = Date.now()
 
-  for (const slug of TOKENS) {
+  const allTokens = await fetchAllTokensFromDune()
+  const topSlugs = allTokens
+    .slice(0, 30)
+    .map(t => t.symbol?.toLowerCase())
+    .filter(Boolean) as string[]
+
+  for (const slug of topSlugs) {
     const cached = cache.get(slug)
     if (cached && !force && now - cached.timestamp < CACHE_TTL) {
       results.push(cached.data)
