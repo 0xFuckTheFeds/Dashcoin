@@ -55,6 +55,13 @@ function formatCompactNumber(num: number): string {
   return num.toString();
 }
 
+function slugify(str: string): string {
+  return (str || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 export default function TokenSearchList() {
   const [tokens, setTokens] = useState<TokenData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -461,6 +468,7 @@ export default function TokenSearchList() {
                     </div>
                   </th>
                   <th className="text-left py-4 px-6 text-slate-300 font-medium">Links</th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium">Search on Cookie.fun</th>
                 </tr>
               </thead>
               <tbody>
@@ -572,6 +580,17 @@ export default function TokenSearchList() {
                           </a>
                         )}
                       </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <a
+                        href={`https://www.cookie.fun/tokens/${slugify(token.name || token.symbol)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group/btn"
+                        title="Search on Cookie.fun"
+                      >
+                        <ExternalLink className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
+                      </a>
                     </td>
                   </tr>
                 ))}
