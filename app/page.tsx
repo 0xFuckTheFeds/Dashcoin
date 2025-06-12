@@ -31,7 +31,6 @@ import {
   PieChart,
   Zap,
   Search,
-  Filter,
   ArrowUpRight,
   Clock,
   Users,
@@ -311,10 +310,6 @@ export default async function Home() {
         {/* Hero Section - Redesigned */}
         <section className="mb-12">
           <div className="text-center mb-16 mt-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/10 border border-teal-500/20 rounded-full text-teal-400 text-sm font-medium mb-6">
-              <Sparkles className="w-4 h-4" />
-              Real-time Market Intelligence
-            </div>
             
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-teal-400 via-teal-400 to-green-400 bg-clip-text text-transparent mb-6">
               Real-time market data at your fingertips
@@ -328,73 +323,9 @@ export default async function Home() {
               . Make informed decisions with comprehensive market data.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a
-                href="#token-directory"
-                className="relative group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              >
-                <span>Explore Dashboard</span>
-                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </a>
-              
-              <a
-                href={dashcoinXLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-2 px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300"
-              >
-                <Twitter className="w-5 h-5" />
-                <span>Follow Updates</span>
-                <ExternalLink className="w-4 h-4 opacity-60" />
-              </a>
-            </div>
           </div>
 
-          {/* Quick Stats Grid - Improved Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-            <QuickStatsCard
-              icon={TrendingUp}
-              title="Total Market Cap"
-              value={formattedTotalMarketCap}
-              change="+12.5%"
-              changeType="positive"
-            />
-            <QuickStatsCard
-              icon={Activity}
-              title="Total Volume"
-              value={formattedVolume}
-              change="+8.2%"
-              changeType="positive"
-            />
-            <QuickStatsCard
-              icon={DollarSign}
-              title="Creator Fees"
-              value={formattedFeeEarnings0}
-              change="+15.7%"
-              changeType="positive"
-              subtitle="Estimated from total volume*"
-            />
-            <QuickStatsCard
-              icon={Users}
-              title="Indexed Tokens"
-              value={marketStats?.coinLaunches || "N/A"}
-              change="+3"
-              changeType="positive"
-            />
-          </div>
         </section>
-
-        {/* Trade Dashcoin Section */}
-        <section className="mb-12 flex justify-center">
-          <DashcStatsBar
-            tradeLink={dashcoinTradeLink}
-            marketCap={dashcMarketCap}
-            contractAddress={dashcoinCA}
-          />
-        </section>
-
-
         {/* Token Analysis Section */}
         <section id="token-directory" className="mb-12">
           <div className="flex items-center justify-between mb-8">
@@ -406,17 +337,6 @@ export default async function Home() {
               </div>
             </div>
             
-            {/* Filter Controls */}
-            <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-lg transition-all duration-200">
-                <Filter className="w-4 h-4" />
-                <span>Filter</span>
-              </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-all duration-200">
-                <RefreshCw className="w-4 h-4" />
-                <span>Refresh</span>
-              </button>
-            </div>
           </div>
           
           <Suspense
@@ -435,6 +355,49 @@ export default async function Home() {
             </div>
         </Suspense>
       </section>
+        {/* Quick Stats Grid - Improved Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+          <QuickStatsCard
+            icon={TrendingUp}
+            title="Total Market Cap"
+            value={formattedTotalMarketCap}
+            change="+12.5%"
+            changeType="positive"
+          />
+          <QuickStatsCard
+            icon={Activity}
+            title="Total Volume"
+            value={formattedVolume}
+            change="+8.2%"
+            changeType="positive"
+          />
+          <QuickStatsCard
+            icon={DollarSign}
+            title="Creator Fees"
+            value={formattedFeeEarnings0}
+            change="+15.7%"
+            changeType="positive"
+            subtitle="Estimated from total volume*"
+          />
+          <QuickStatsCard
+            icon={Users}
+            title="Indexed Tokens"
+            value={marketStats?.coinLaunches || "N/A"}
+            change="+3"
+            changeType="positive"
+          />
+        </div>
+
+        {/* Trade Dashcoin Section */}
+        <section className="mb-12 flex justify-center">
+          <DashcStatsBar
+            tradeLink={dashcoinTradeLink}
+            marketCap={dashcMarketCap}
+            contractAddress={dashcoinCA}
+          />
+        </section>
+
+
 
       {/* Market Overview Section */}
       <section id="product" className="mb-12">
