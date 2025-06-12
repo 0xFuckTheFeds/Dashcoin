@@ -65,6 +65,7 @@ export default function TokenSearchList() {
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({});
   const [walletInfo, setWalletInfo] = useState<Record<string, { walletLink: string; twitter: string }>>({});
+  const [cookieMetrics, setCookieMetrics] = useState<Record<string, { mindshare: number | null; mentions: number | null; smartEngagements: number | null; updated: string | null }>>({});
   const [viewMode, setViewMode] = useState<'card' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(12);
@@ -147,6 +148,30 @@ export default function TokenSearchList() {
     loadWallets();
   }, []);
 
+  useEffect(() => {
+    const loadCookieMetrics = async () => {
+      try {
+        const res = await fetch('/api/cookie-data');
+        const json = await res.json();
+        const map: Record<string, { mindshare: number | null; mentions: number | null; smartEngagements: number | null; updated: string | null }> = {};
+        (json.data || []).forEach((row: any) => {
+          const key = (row.address || '').toLowerCase();
+          if (!key) return;
+          map[key] = {
+            mindshare: row.mindshare ?? null,
+            mentions: row.mentions ?? null,
+            smartEngagements: row.smartEngagements ?? null,
+            updated: row.updated ?? null,
+          };
+        });
+        setCookieMetrics(map);
+      } catch (err) {
+        console.error('Error fetching cookie metrics', err);
+      }
+    };
+    loadCookieMetrics();
+  }, []);
+
   const tokensWithData = useMemo(() => {
     return tokens.map(t => {
       const sym = (t.symbol || '').toUpperCase();
@@ -154,16 +179,18 @@ export default function TokenSearchList() {
         researchScores.find(r => r.symbol.toUpperCase() === sym) || {};
       const dex = dexscreenerData[t.token] || {};
       const wallet = walletInfo[sym] || { walletLink: '', twitter: '' };
+      const cookie = cookieMetrics[t.token.toLowerCase()] || {};
       return {
         ...t,
         ...dex,
         ...research,
         ...wallet,
+        ...cookie,
         marketCap: dex.marketCap ?? t.marketCap,
         logoUrl: dex.logoUrl,
       };
     });
-  }, [tokens, researchScores, dexscreenerData, walletInfo]);
+  }, [tokens, researchScores, dexscreenerData, walletInfo, cookieMetrics]);
 
   const filteredAndSortedTokens = useMemo(() => {
     let result = tokensWithData;
@@ -464,6 +491,9 @@ export default function TokenSearchList() {
                       Research
                     </div>
                   </th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium">Mindshare</th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium">Mentions</th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium">SmartEngagements</th>
                   <th className="text-left py-4 px-6 text-slate-300 font-medium">Links</th>
                 </tr>
               </thead>
@@ -539,6 +569,9 @@ export default function TokenSearchList() {
                         <span className="text-slate-500">-</span>
                       )}
                     </td>
+                    <td className="py-4 px-6">{token.mindshare ?? '—'}</td>
+                    <td className="py-4 px-6">{token.mentions ?? '—'}</td>
+                    <td className="py-4 px-6">{token.smartEngagements ?? '—'}</td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
                         {token.token && (
