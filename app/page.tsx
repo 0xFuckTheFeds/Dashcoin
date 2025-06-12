@@ -311,10 +311,6 @@ export default async function Home() {
         {/* Hero Section - Redesigned */}
         <section className="mb-12">
           <div className="text-center mb-16 mt-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/10 border border-teal-500/20 rounded-full text-teal-400 text-sm font-medium mb-6">
-              <Sparkles className="w-4 h-4" />
-              Real-time Market Intelligence
-            </div>
             
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-teal-400 via-teal-400 to-green-400 bg-clip-text text-transparent mb-6">
               Real-time market data at your fingertips
@@ -328,27 +324,6 @@ export default async function Home() {
               . Make informed decisions with comprehensive market data.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a
-                href="#token-directory"
-                className="relative group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              >
-                <span>Explore Dashboard</span>
-                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </a>
-              
-              <a
-                href={dashcoinXLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-2 px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300"
-              >
-                <Twitter className="w-5 h-5" />
-                <span>Follow Updates</span>
-                <ExternalLink className="w-4 h-4 opacity-60" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Stats Grid - Improved Layout */}
