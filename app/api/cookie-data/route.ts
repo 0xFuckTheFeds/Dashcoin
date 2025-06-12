@@ -11,6 +11,7 @@ interface MetricEntry {
 
 interface TokenResult {
   token: string
+  address: string
   mindshare: number | null
   mentions: number | null
   smartEngagements: number | null
@@ -66,13 +67,16 @@ export async function GET(req: Request) {
   const now = Date.now()
 
   const allTokens = await fetchAllTokensFromDune()
-  const topSlugs = allTokens
+  const topTokens = allTokens
     .slice(0, 30)
-    .map(t => t.symbol?.toLowerCase())
-    .filter(Boolean) as string[]
+    .map(t => ({
+      slug: t.symbol?.toLowerCase(),
+      address: t.token?.toLowerCase(),
+    }))
+    .filter(t => t.slug && t.address) as { slug: string; address: string }[]
 
-  for (const slug of topSlugs) {
-    const cached = cache.get(slug)
+  for (const { slug, address } of topTokens) {
+    const cached = cache.get(address)
     if (cached && !force && now - cached.timestamp < CACHE_TTL) {
       results.push(cached.data)
       continue
@@ -80,6 +84,7 @@ export async function GET(req: Request) {
 
     let tokenData: TokenResult = {
       token: slug.toUpperCase(),
+      address,
       mindshare: null,
       mentions: null,
       smartEngagements: null,
@@ -100,7 +105,7 @@ export async function GET(req: Request) {
       tokenData.error = err.message || 'API error'
     }
 
-    cache.set(slug, { data: tokenData, timestamp: now })
+    cache.set(address, { data: tokenData, timestamp: now })
     results.push(tokenData)
   }
 

@@ -5,6 +5,7 @@ import { DashcoinCard, DashcoinCardHeader, DashcoinCardTitle, DashcoinCardConten
 
 interface TokenRow {
   token: string
+  address: string
   mindshare: number | null
   mentions: number | null
   smartEngagements: number | null

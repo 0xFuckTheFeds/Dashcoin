@@ -151,7 +151,8 @@ export default function TokenSearchList() {
         const json = await res.json();
         const map: Record<string, { mindshare: number | null; mentions: number | null; smartEngagements: number | null; updated: string | null }> = {};
         (json.data || []).forEach((row: any) => {
-          const key = (row.token || '').toUpperCase();
+          const key = (row.address || '').toLowerCase();
+          if (!key) return;
           map[key] = {
             mindshare: row.mindshare ?? null,
             mentions: row.mentions ?? null,
@@ -174,7 +175,7 @@ export default function TokenSearchList() {
         researchScores.find(r => r.symbol.toUpperCase() === sym) || {};
       const dex = dexscreenerData[t.token] || {};
       const wallet = walletInfo[sym] || { walletLink: '', twitter: '' };
-      const cookie = cookieMetrics[sym] || {};
+      const cookie = cookieMetrics[t.token.toLowerCase()] || {};
       return {
         ...t,
         ...dex,
