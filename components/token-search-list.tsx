@@ -42,6 +42,9 @@ import { canonicalChecklist } from "@/components/founders-edge-checklist";
 import { gradeMaps, valueToScore } from "@/lib/score";
 import Link from "next/link";
 
+const toSlug = (name: string = "") =>
+  name.toLowerCase().replace(/\s+/g, "-");
+
 interface ResearchScoreData {
   symbol: string;
   score: number | null;
@@ -460,6 +463,12 @@ export default function TokenSearchList() {
                       Research
                     </div>
                   </th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <Search className="w-4 h-4" />
+                      Search on Cookie.fun
+                    </div>
+                  </th>
                   <th className="text-left py-4 px-6 text-slate-300 font-medium">Links</th>
                 </tr>
               </thead>
@@ -534,6 +543,17 @@ export default function TokenSearchList() {
                       ) : (
                         <span className="text-slate-500">-</span>
                       )}
+                    </td>
+                    <td className="py-4 px-6">
+                      <a
+                        href={`https://www.cookie.fun/tokens/${toSlug(token.name || token.symbol)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group/btn"
+                        title="Search on Cookie.fun"
+                      >
+                        <ExternalLink className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
+                      </a>
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
