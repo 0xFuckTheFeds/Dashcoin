@@ -634,7 +634,7 @@ export default function ComparePage() {
                     address={comparisonData.token1.address}
                   />
                 </div>
-                
+
                 <button
                   onClick={handleReverseCompare}
                   className="group p-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl transition-all duration-300"
@@ -642,7 +642,7 @@ export default function ComparePage() {
                 >
                   <ArrowLeftRight className="h-6 w-6 text-slate-400 group-hover:text-white transition-colors" />
                 </button>
-                
+
                 <div className="flex-1 max-w-md">
                   <TokenHeaderCard
                     name={comparisonData.token2.name}
@@ -653,6 +653,172 @@ export default function ComparePage() {
               </div>
             </section>
 
+
+            {/* Detailed Metrics Table */}
+            <section className="mb-12">
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
+                      <BarChart3 className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Detailed Comparison</h3>
+                      <p className="text-slate-400">Comprehensive metric breakdown</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={exportCsv}
+                      className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-lg transition-colors text-sm"
+                    >
+                      <Download className="w-4 h-4" />
+                      CSV
+                    </button>
+                    <button 
+                      onClick={exportPng}
+                      className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-lg transition-colors text-sm"
+                    >
+                      <Printer className="w-4 h-4" />
+                      Print
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="text-left py-2 px-3 font-semibold text-white">Metric</th>
+                        <th className="text-right py-2 px-3 font-semibold text-white">{comparisonData.token1.symbol}</th>
+                        <th className="text-right py-2 px-3 font-semibold text-white">{comparisonData.token2.symbol}</th>
+                        <th className="text-right py-2 px-3 font-semibold text-white">Difference</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-sm">
+                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
+                        <td className="py-2 px-3 text-slate-300">Market Cap</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.marketCap > comparisonData.token2.marketCap ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          ${comparisonData.token1.marketCap.toLocaleString()}
+                        </td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.marketCap > comparisonData.token1.marketCap ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          ${comparisonData.token2.marketCap.toLocaleString()}
+                        </td>
+                        {(() => {
+                          const v1 = comparisonData.token1.marketCap;
+                          const v2 = comparisonData.token2.marketCap;
+                          const multipleStr = calculateMultiple(v1, v2);
+                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
+                          return (
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
+                              {multipleStr}
+                            </td>
+                          );
+                        })()}
+                      </tr>
+                      
+                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
+                        <td className="py-2 px-3 text-slate-300">Holders</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.holders > comparisonData.token2.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          {comparisonData.token1.holders.toLocaleString()}
+                        </td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.holders > comparisonData.token1.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          {comparisonData.token2.holders.toLocaleString()}
+                        </td>
+                        {(() => {
+                          const v1 = comparisonData.token1.holders;
+                          const v2 = comparisonData.token2.holders;
+                          const multipleStr = calculateMultiple(v1, v2);
+                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
+                          return (
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
+                              {multipleStr}
+                            </td>
+                          );
+                        })()}
+                      </tr>
+                      
+                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
+                        <td className="py-2 px-3 text-slate-300">Total Volume</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.volume24h > comparisonData.token2.volume24h ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          ${comparisonData.token1.volume24h.toLocaleString()}
+                        </td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.volume24h > comparisonData.token1.volume24h ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          ${comparisonData.token2.volume24h.toLocaleString()}
+                        </td>
+                        {(() => {
+                          const v1 = comparisonData.token1.volume24h;
+                          const v2 = comparisonData.token2.volume24h;
+                          const multipleStr = calculateMultiple(v1, v2);
+                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
+                          return (
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
+                              {multipleStr}
+                            </td>
+                          );
+                        })()}
+                      </tr>
+                      
+                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
+                        <td className="py-2 px-3 text-slate-300">Launch Date</td>
+                        <td className="text-right py-2 px-3 text-white">
+                          {new Date(comparisonData.token1.launchDate).toLocaleDateString()}
+                        </td>
+                        <td className="text-right py-2 px-3 text-white">
+                          {new Date(comparisonData.token2.launchDate).toLocaleDateString()}
+                        </td>
+                        <td className="text-right py-2 px-3 text-slate-400">
+                          {Math.abs(Math.floor((new Date(comparisonData.token1.launchDate).getTime() - new Date(comparisonData.token2.launchDate).getTime()) / (1000 * 60 * 60 * 24)))} days
+                        </td>
+                      </tr>
+                      
+                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
+                        <td className="py-2 px-3 text-slate-300">MarketCap Growth/Day</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.marketcapgrowthperday > comparisonData.token2.marketcapgrowthperday ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          ${comparisonData.token1.marketcapgrowthperday.toLocaleString()}
+                        </td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.marketcapgrowthperday > comparisonData.token1.marketcapgrowthperday ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          ${comparisonData.token2.marketcapgrowthperday.toLocaleString()}
+                        </td>
+                        {(() => {
+                          const v1 = comparisonData.token1.marketcapgrowthperday;
+                          const v2 = comparisonData.token2.marketcapgrowthperday;
+                          const multipleStr = calculateMultiple(v1, v2);
+                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
+                          return (
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
+                              {multipleStr}
+                            </td>
+                          );
+                        })()}
+                      </tr>
+                      
+                      <tr className="hover:bg-white/5 transition-colors">
+                        <td className="py-2 px-3 text-slate-300">Market Cap per Holder</td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token1.marketCap/comparisonData.token1.holders > comparisonData.token2.marketCap/comparisonData.token2.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          ${(comparisonData.token1.marketCap/comparisonData.token1.holders).toLocaleString()}
+                        </td>
+                        <td className={`text-right py-2 px-3 ${comparisonData.token2.marketCap/comparisonData.token2.holders > comparisonData.token1.marketCap/comparisonData.token1.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
+                          ${(comparisonData.token2.marketCap/comparisonData.token2.holders).toLocaleString()}
+                        </td>
+                        {(() => {
+                          const v1 = comparisonData.token1.marketCap/comparisonData.token1.holders;
+                          const v2 = comparisonData.token2.marketCap/comparisonData.token2.holders;
+                          const multipleStr = calculateMultiple(v1, v2);
+                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
+                          return (
+                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
+                              {multipleStr}
+                            </td>
+                          );
+                        })()}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
             {/* Quick Stats Overview */}
             <section className="mb-12">
               <div className="flex items-center gap-4 mb-8">
@@ -828,171 +994,6 @@ export default function ComparePage() {
               </div>
             </section>
 
-            {/* Detailed Metrics Table */}
-            <section className="mb-12">
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
-                      <BarChart3 className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white">Detailed Comparison</h3>
-                      <p className="text-slate-400">Comprehensive metric breakdown</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={exportCsv}
-                      className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-lg transition-colors text-sm"
-                    >
-                      <Download className="w-4 h-4" />
-                      CSV
-                    </button>
-                    <button 
-                      onClick={exportPng}
-                      className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-lg transition-colors text-sm"
-                    >
-                      <Printer className="w-4 h-4" />
-                      Print
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-white/10">
-                        <th className="text-left py-2 px-3 font-semibold text-white">Metric</th>
-                        <th className="text-right py-2 px-3 font-semibold text-white">{comparisonData.token1.symbol}</th>
-                        <th className="text-right py-2 px-3 font-semibold text-white">{comparisonData.token2.symbol}</th>
-                        <th className="text-right py-2 px-3 font-semibold text-white">Difference</th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-sm">
-                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-2 px-3 text-slate-300">Market Cap</td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token1.marketCap > comparisonData.token2.marketCap ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          ${comparisonData.token1.marketCap.toLocaleString()}
-                        </td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token2.marketCap > comparisonData.token1.marketCap ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          ${comparisonData.token2.marketCap.toLocaleString()}
-                        </td>
-                        {(() => {
-                          const v1 = comparisonData.token1.marketCap;
-                          const v2 = comparisonData.token2.marketCap;
-                          const multipleStr = calculateMultiple(v1, v2);
-                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
-                          return (
-                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
-                              {multipleStr}
-                            </td>
-                          );
-                        })()}
-                      </tr>
-                      
-                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-2 px-3 text-slate-300">Holders</td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token1.holders > comparisonData.token2.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          {comparisonData.token1.holders.toLocaleString()}
-                        </td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token2.holders > comparisonData.token1.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          {comparisonData.token2.holders.toLocaleString()}
-                        </td>
-                        {(() => {
-                          const v1 = comparisonData.token1.holders;
-                          const v2 = comparisonData.token2.holders;
-                          const multipleStr = calculateMultiple(v1, v2);
-                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
-                          return (
-                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
-                              {multipleStr}
-                            </td>
-                          );
-                        })()}
-                      </tr>
-                      
-                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-2 px-3 text-slate-300">Total Volume</td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token1.volume24h > comparisonData.token2.volume24h ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          ${comparisonData.token1.volume24h.toLocaleString()}
-                        </td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token2.volume24h > comparisonData.token1.volume24h ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          ${comparisonData.token2.volume24h.toLocaleString()}
-                        </td>
-                        {(() => {
-                          const v1 = comparisonData.token1.volume24h;
-                          const v2 = comparisonData.token2.volume24h;
-                          const multipleStr = calculateMultiple(v1, v2);
-                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
-                          return (
-                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
-                              {multipleStr}
-                            </td>
-                          );
-                        })()}
-                      </tr>
-                      
-                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-2 px-3 text-slate-300">Launch Date</td>
-                        <td className="text-right py-2 px-3 text-white">
-                          {new Date(comparisonData.token1.launchDate).toLocaleDateString()}
-                        </td>
-                        <td className="text-right py-2 px-3 text-white">
-                          {new Date(comparisonData.token2.launchDate).toLocaleDateString()}
-                        </td>
-                        <td className="text-right py-2 px-3 text-slate-400">
-                          {Math.abs(Math.floor((new Date(comparisonData.token1.launchDate).getTime() - new Date(comparisonData.token2.launchDate).getTime()) / (1000 * 60 * 60 * 24)))} days
-                        </td>
-                      </tr>
-                      
-                      <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-2 px-3 text-slate-300">MarketCap Growth/Day</td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token1.marketcapgrowthperday > comparisonData.token2.marketcapgrowthperday ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          ${comparisonData.token1.marketcapgrowthperday.toLocaleString()}
-                        </td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token2.marketcapgrowthperday > comparisonData.token1.marketcapgrowthperday ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          ${comparisonData.token2.marketcapgrowthperday.toLocaleString()}
-                        </td>
-                        {(() => {
-                          const v1 = comparisonData.token1.marketcapgrowthperday;
-                          const v2 = comparisonData.token2.marketcapgrowthperday;
-                          const multipleStr = calculateMultiple(v1, v2);
-                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
-                          return (
-                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
-                              {multipleStr}
-                            </td>
-                          );
-                        })()}
-                      </tr>
-                      
-                      <tr className="hover:bg-white/5 transition-colors">
-                        <td className="py-2 px-3 text-slate-300">Market Cap per Holder</td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token1.marketCap/comparisonData.token1.holders > comparisonData.token2.marketCap/comparisonData.token2.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          ${(comparisonData.token1.marketCap/comparisonData.token1.holders).toLocaleString()}
-                        </td>
-                        <td className={`text-right py-2 px-3 ${comparisonData.token2.marketCap/comparisonData.token2.holders > comparisonData.token1.marketCap/comparisonData.token1.holders ? 'text-emerald-400 bg-emerald-500/10' : 'text-white'} rounded-lg`}>
-                          ${(comparisonData.token2.marketCap/comparisonData.token2.holders).toLocaleString()}
-                        </td>
-                        {(() => {
-                          const v1 = comparisonData.token1.marketCap/comparisonData.token1.holders;
-                          const v2 = comparisonData.token2.marketCap/comparisonData.token2.holders;
-                          const multipleStr = calculateMultiple(v1, v2);
-                          const colorClass = getDifferenceColorClass(v1, v2, multipleStr);
-                          return (
-                            <td className={`text-right py-2 px-3 font-medium ${colorClass}`}>
-                              {multipleStr}
-                            </td>
-                          );
-                        })()}
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </section>
 
             {/* Founder & Project Metadata */}
             <section className="mb-12">
