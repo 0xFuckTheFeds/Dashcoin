@@ -46,6 +46,15 @@ import Link from "next/link";
 const toSlug = (name: string = "") =>
   name.toLowerCase().replace(/\s+/g, "-");
 
+const cookieFunSlugOverrides: Record<string, string> = {
+  kled: "kled-ai",
+  "creatorbuddy": "creator-buddy",
+  "creator-buddy": "creator-buddy",
+  hyperswap: "hyperswap-ai",
+  "hyperswapai": "hyperswap-ai",
+  "hyperswap-ai": "hyperswap-ai",
+};
+
 interface ResearchScoreData {
   symbol: string;
   score: number | null;
@@ -576,7 +585,7 @@ export default function TokenSearchList() {
                           </a>
                         )}
                         <a
-                          href={`https://www.cookie.fun/tokens/${toSlug(token.name || token.symbol)}`}
+                          href={`https://www.cookie.fun/tokens/${cookieFunSlugOverrides[toSlug(token.name || token.symbol)] || toSlug(token.name || token.symbol)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group/btn"
