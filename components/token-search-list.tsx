@@ -44,7 +44,10 @@ import { gradeMaps, valueToScore } from "@/lib/score";
 import Link from "next/link";
 
 const toSlug = (name: string = "") =>
-  name.toLowerCase().replace(/\s+/g, "-");
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 const cookieFunSlugOverrides: Record<string, string> = {
   kled: "kled-ai",
