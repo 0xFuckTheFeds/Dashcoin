@@ -66,6 +66,7 @@ interface TokenResearchData {
   Comments: string;
   "Wallet Link": string;
   "Wallet Comments": string;
+  "Bull Case"?: string;
   Twitter?: string;
   [key: string]: any;
 }
@@ -459,6 +460,23 @@ export default function TokenResearchPage({
             
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
               <FoundersEdgeChecklist data={researchData} showLegend />
+            </div>
+          </section>
+        )}
+
+        {/* Bull Case */}
+        {researchData?.["Bull Case"] && (
+          <section className="mb-12">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                <ArrowUp className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-3xl font-bold text-white">Bull Case</h2>
+            </div>
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+              <p className="text-slate-300 whitespace-pre-line">
+                {researchData["Bull Case"]}
+              </p>
             </div>
           </section>
         )}
