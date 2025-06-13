@@ -89,6 +89,7 @@ interface WalletLinkData {
   walletLink: string
   walletActivity: string
   twitter: string
+  linkedin: string
 }
 
 export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
@@ -127,7 +128,8 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
         symbol: (entry['Project'] || '').toString().toUpperCase(),
         walletLink: entry['Wallet Link'] || '',
         walletActivity: entry['Wallet Comments'] || '',
-        twitter: entry['Twitter'] || ''
+        twitter: entry['Twitter'] || '',
+        linkedin: entry['LinkedIn'] || ''
       }
     })
     await setInCache(CACHE_KEYS.CREATOR_WALLETS, result, WALLET_CACHE_DURATION)
