@@ -22,6 +22,7 @@ import {
   Globe,
   Shield,
   Zap,
+  FlaskConical,
   AlertCircle,
   CheckCircle,
   Copy
@@ -52,8 +53,8 @@ import { gradeMaps, valueToScore } from "@/lib/score";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 interface TokenResearchData {
-  Symbol: string;
-  Score: number | string;
+  symbol: string;
+  score: number | string;
   "Team Doxxed": number | string;
   "Twitter Activity Level": number | string;
   "Time Commitment": number | string;
@@ -217,7 +218,7 @@ export default function TokenResearchPage({
       try {
         const data = await fetchTokenResearchClient(symbol);
         setResearchData(data);
-        setHasScore(!!data && !!data["Score"]);
+        setHasScore(!!data && data.score !== undefined && data.score !== "");
       } catch (error) {
         console.error(`Error fetching research data for ${symbol}:`, error);
       } finally {
@@ -354,8 +355,8 @@ export default function TokenResearchPage({
                   <Sparkles className="w-4 h-4" />
                   Token Analysis
                 </div>
-                {researchData && researchData.Score && (
-                  <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
+                {researchData && researchData.score && (
+                  <ResearchScoreBadge score={Number(researchData.score)} data={researchData} />
                 )}
               </div>
               
@@ -457,9 +458,35 @@ export default function TokenResearchPage({
                 <p className="text-slate-400">Comprehensive research metrics and risk assessment</p>
               </div>
             </div>
-            
+
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
               <FoundersEdgeChecklist data={researchData} showLegend />
+            </div>
+          </section>
+        )}
+
+        {/* Detailed Research Data */}
+        {researchData && (
+          <section className="mb-12">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-gradient-to-r from-teal-500 to-green-500 rounded-xl">
+                <FlaskConical className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-3xl font-bold text-white">Research Data</h2>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm border-collapse">
+                <tbody>
+                  {canonicalChecklist.map(({ label, display }) => (
+                    <tr key={label} className="border-b border-white/10">
+                      <td className="py-2 px-4 text-slate-400">{display}</td>
+                      <td className="py-2 px-4 text-white">
+                        {researchData[label] || '-'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </section>
         )}
