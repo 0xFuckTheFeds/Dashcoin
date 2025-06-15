@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import { DashcoinButton } from "@/components/ui/dashcoin-button";
 import { DashcoinLogo } from "@/components/dashcoin-logo";
+import { Navbar } from "@/components/navbar";
+import Image from "next/image";
 import {
   DashcoinCard,
   DashcoinCardHeader,
@@ -43,6 +45,7 @@ import {
   fetchDexscreenerTokenData,
   getTimeUntilNextDexscreenerRefresh,
 } from "@/app/actions/dexscreener-actions";
+import { fetchDexscreenerTokenLogo } from "@/app/actions/dexscreener-actions";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -185,6 +188,7 @@ export default function TokenResearchPage({
   const router = useRouter();
   const [researchData, setResearchData] = useState<TokenResearchData | null>(null);
   const [hasScore, setHasScore] = useState(false);
+  const [tokenLogo, setTokenLogo] = useState<string | null>(null);
 
   const formattedDuneLastRefresh = duneLastRefresh
     ? duneLastRefresh.toLocaleString(undefined, {
@@ -306,6 +310,22 @@ export default function TokenResearchPage({
     ? new Date(tokenData.created_time).toLocaleDateString()
     : "Unknown";
 
+  useEffect(() => {
+    async function loadLogo() {
+      if (!tokenAddress) return;
+      try {
+        const img = await fetchDexscreenerTokenLogo(tokenAddress);
+        if (img) {
+          setTokenLogo(img);
+        }
+      } catch (err) {
+        console.error("Error fetching token logo:", err);
+      }
+    }
+
+    loadLogo();
+  }, [tokenAddress]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-grey-950 to-slate-900 relative">
       {/* Background Elements */}
@@ -316,23 +336,9 @@ export default function TokenResearchPage({
       </div>
 
       {/* Navigation */}
-      <header className="relative z-50 border-b border-white/10 bg-white/5 backdrop-blur-xl">
-        <div className="container mx-auto py-4 px-4 max-w-7xl">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                <DashcoinLogo size={240} />
-              </div>
-            </Link>
-            
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span>Live Data</span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <div className="relative z-50">
+        <Navbar />
+      </div>
 
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl mt-16">
         {/* Back Navigation */}
@@ -344,33 +350,31 @@ export default function TokenResearchPage({
           Back to Dashboard
         </Link>
 
+        <div className="flex justify-center mb-8">
+          <h1 className="flex items-center gap-2 text-4xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent">
+            {tokenLogo && (
+              <Image src={tokenLogo} alt={`${tokenSymbol} logo`} width={40} height={40} className="w-10 h-10 rounded-full" />
+            )}
+            {tokenSymbol}
+          </h1>
+        </div>
+
         {/* Hero Section */}
         <section className="mb-12">
           <div className="flex flex-col lg:flex-row gap-8 items-start">
             {/* Token Header */}
             <div className="flex-1">
               <div className="flex items-center gap-4 mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/10 border border-teal-500/20 rounded-full text-teal-400 text-sm font-medium">
-                  <Sparkles className="w-4 h-4" />
-                  Token Analysis
-                </div>
                 {researchData && researchData.Score && (
                   <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
                 )}
               </div>
               
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent mb-4">
-                {tokenSymbol}
-              </h1>
               
               <div className="flex items-center gap-4 text-slate-400 mb-6">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   <span>Created: {createdTime}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4" />
-                  <span>Active Trading</span>
                 </div>
               </div>
 
