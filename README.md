@@ -6,7 +6,7 @@ This project demonstrates how to use Upstash Redis with Next.js for efficient ca
 
 - **Redis Caching**: Efficiently cache API responses to minimize Dune API usage
 - **Cache Administration**: Monitor and manage cache status through a dedicated admin interface
-- **Automatic Cache Invalidation**: Cache entries automatically expire after 2.5 hours
+- **Automatic Cache Invalidation**: Cache entries automatically expire after 12 hours
 - **Environment-aware**: Only makes real API calls in production when explicitly enabled
 - **Fallback Mechanism**: Falls back to cached data or mock data when API calls fail
 
@@ -54,7 +54,7 @@ The following cache keys are used:
 
 ## Cache Duration
 
-All cache entries expire after 2.5 hours (9,000 seconds) to ensure data freshness while minimizing API calls.
+All cache entries expire after 12 hours (43,200 seconds) to ensure data freshness while minimizing API calls.
 
 ## Troubleshooting
 

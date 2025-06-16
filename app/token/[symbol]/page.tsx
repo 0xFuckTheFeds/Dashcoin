@@ -84,7 +84,7 @@ export default function TokenPage({ params }: { params: { symbol: string } }) {
 
         setDuneLastRefresh(duneCache.lastRefreshTime);
         setDuneNextRefresh(
-          new Date(duneCache.lastRefreshTime.getTime() + 1 * 60 * 60 * 1000),
+          new Date(duneCache.lastRefreshTime.getTime() + 12 * 60 * 60 * 1000),
         );
         setDuneTimeRemaining(duneCache.timeRemaining);
 
