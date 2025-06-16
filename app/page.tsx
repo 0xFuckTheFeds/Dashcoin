@@ -258,13 +258,13 @@ export default async function Home() {
     console.error("Error getting refresh time info:", error);
   }
 
-  const nextRefreshTime = new Date(lastRefreshTime.getTime() + 1 * 60 * 60 * 1000);
+  const nextRefreshTime = new Date(lastRefreshTime.getTime() + 12 * 60 * 60 * 1000);
   const formattedLastRefresh = lastRefreshTime.toLocaleString(undefined, {
     dateStyle: "short",
     timeStyle: "medium",
   });
   const formattedNextRefresh = nextRefreshTime.toLocaleString();
-  const hoursUntilRefresh = Math.floor(timeRemaining / (2 * 60 * 60 * 1000));
+  const hoursUntilRefresh = Math.floor(timeRemaining / (12 * 60 * 60 * 1000));
   const minutesUntilRefresh = Math.floor((timeRemaining % (60 * 60 * 1000)) / (60 * 1000));
 
   const totalMarketCapValue =
