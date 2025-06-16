@@ -50,7 +50,7 @@ import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
-import { FoundersEdgeChecklist, canonicalChecklist } from "@/components/founders-edge-checklist";
+import { canonicalChecklist } from "@/components/founders-edge-checklist";
 import { ResearchDataTable } from "@/components/research-data-table";
 import { gradeMaps, valueToScore } from "@/lib/score";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -471,8 +471,7 @@ export default function TokenResearchPage({
               </div>
             </div>
             
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 space-y-6">
-              <FoundersEdgeChecklist data={researchData} showLegend />
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
               <ResearchDataTable data={researchData} />
             </div>
           </section>
