@@ -24,7 +24,7 @@ import {
   Star,
   ExternalLink,
   Twitter,
-  Cookie,
+  Linkedin,
   Wallet,
   Activity,
   DollarSign,
@@ -42,9 +42,6 @@ import {
 import { canonicalChecklist } from "@/components/founders-edge-checklist";
 import { gradeMaps, valueToScore } from "@/lib/score";
 import Link from "next/link";
-
-const toSlug = (name: string = "") =>
-  name.toLowerCase().replace(/\s+/g, "-");
 
 interface ResearchScoreData {
   symbol: string;
@@ -64,7 +61,7 @@ export default function TokenSearchList() {
   const [loading, setLoading] = useState(true);
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({});
-  const [walletInfo, setWalletInfo] = useState<Record<string, { walletLink: string; twitter: string }>>({});
+  const [walletInfo, setWalletInfo] = useState<Record<string, { walletLink: string; twitter: string; linkedin: string }>>({});
   const [viewMode, setViewMode] = useState<'card' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(12);
@@ -132,11 +129,12 @@ export default function TokenSearchList() {
     const loadWallets = async () => {
       try {
         const data = await fetchCreatorWalletLinks();
-        const map: Record<string, { walletLink: string; twitter: string }> = {};
+        const map: Record<string, { walletLink: string; twitter: string; linkedin: string }> = {};
         data.forEach(d => {
           map[d.symbol.toUpperCase()] = {
             walletLink: d.walletLink,
             twitter: d.twitter,
+            linkedin: d.linkedin,
           };
         });
         setWalletInfo(map);
@@ -153,7 +151,7 @@ export default function TokenSearchList() {
       const research =
         researchScores.find(r => r.symbol.toUpperCase() === sym) || {};
       const dex = dexscreenerData[t.token] || {};
-      const wallet = walletInfo[sym] || { walletLink: '', twitter: '' };
+      const wallet = walletInfo[sym] || { walletLink: '', twitter: '', linkedin: '' };
       return {
         ...t,
         ...dex,
@@ -575,15 +573,17 @@ export default function TokenSearchList() {
                             <Twitter className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
                           </a>
                         )}
-                        <a
-                          href={`https://www.cookie.fun/tokens/${toSlug(token.name || token.symbol)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group/btn"
-                          title="View on Cookie.fun"
-                        >
-                          <Cookie className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
-                        </a>
+                        {token.linkedin && (
+                          <a
+                            href={token.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group/btn"
+                            title="LinkedIn"
+                          >
+                            <Linkedin className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
+                          </a>
+                        )}
                       </div>
                     </td>
                   </tr>
