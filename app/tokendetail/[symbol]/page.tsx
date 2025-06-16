@@ -46,7 +46,7 @@ import {
   getTimeUntilNextDexscreenerRefresh,
 } from "@/app/actions/dexscreener-actions";
 import { fetchDexscreenerTokenLogo } from "@/app/actions/dexscreener-actions";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatCurrency0 } from "@/lib/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
@@ -328,6 +328,8 @@ export default function TokenResearchPage({
   const price = dexscreenerData?.priceUsd
     ? Number.parseFloat(dexscreenerData.priceUsd)
     : (tokenData && tokenData.price) || 0;
+  const marketCap =
+    dexscreenerData?.fdv || (tokenData && tokenData.marketCap) || 0;
   const change24h =
     dexscreenerData?.priceChange?.h24 ||
     (tokenData && tokenData.change24h) ||
@@ -519,8 +521,8 @@ export default function TokenResearchPage({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
                 <StatsCard
                   icon={DollarSign}
-                  title="Current Price"
-                  value={`$${price.toFixed(6)}`}
+                  title="Current Marketcap"
+                  value={formatCurrency0(marketCap)}
                   change={`${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%`}
                   changeType={change24h >= 0 ? 'positive' : 'negative'}
                   subtitle="24h change"
@@ -530,7 +532,7 @@ export default function TokenResearchPage({
                 <StatsCard
                   icon={Activity}
                   title="24h Volume"
-                  value={formatCurrency(volume24h)}
+                  value={formatCurrency0(volume24h)}
                   change={`${change1h >= 0 ? '+' : ''}${change1h.toFixed(2)}%`}
                   changeType={change1h >= 0 ? 'positive' : 'negative'}
                   subtitle="1h change"
@@ -540,7 +542,7 @@ export default function TokenResearchPage({
                 <StatsCard
                   icon={Users}
                   title="Liquidity"
-                  value={formatCurrency(liquidity)}
+                  value={formatCurrency0(liquidity)}
                   subtitle="Available liquidity"
                   gradient="bg-gradient-to-r from-green-500/20 to-teal-500/20"
                 />
@@ -638,23 +640,7 @@ export default function TokenResearchPage({
                         <span className="text-sm text-white font-medium">{createdTime}</span>
                       </div>
 
-                      {dexscreenerData?.dexId && (
-                        <div className="flex justify-between">
-                          <span className="text-sm text-slate-400">DEX</span>
-                          <span className="text-sm text-white font-medium">{dexscreenerData.dexId}</span>
-                        </div>
-                      )}
 
-                      {dexscreenerData?.pairAddress && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-slate-400">Pair Address</span>
-                          <CopyAddress
-                            address={dexscreenerData.pairAddress}
-                            showBackground={true}
-                            className="text-teal-400 hover:text-teal-300"
-                          />
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
