@@ -59,9 +59,9 @@ function formatCompactNumber(num: number): string {
   return num.toString();
 }
 
-export default function TokenSearchList() {
-  const [tokens, setTokens] = useState<TokenData[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function TokenSearchList({ initialTokens }: { initialTokens?: TokenData[] }) {
+  const [tokens, setTokens] = useState<TokenData[]>(initialTokens || []);
+  const [loading, setLoading] = useState(!initialTokens);
   const [researchScores, setResearchScores] = useState<ResearchScoreData[]>([]);
   const [dexscreenerData, setDexscreenerData] = useState<Record<string, any>>({});
   const [walletInfo, setWalletInfo] = useState<Record<string, { walletLink: string; twitter: string }>>({});
@@ -102,6 +102,12 @@ export default function TokenSearchList() {
   }, []);
 
   useEffect(() => {
+    if (initialTokens && initialTokens.length > 0) {
+      setTokens(initialTokens);
+      setLoading(false);
+      return;
+    }
+
     async function loadTokens() {
       try {
         const res = await fetch("/api/tokens");
@@ -114,7 +120,7 @@ export default function TokenSearchList() {
       }
     }
     loadTokens();
-  }, []);
+  }, [initialTokens]);
 
   useEffect(() => {
     const loadResearch = async () => {
