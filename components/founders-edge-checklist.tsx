@@ -19,52 +19,52 @@ export interface TraitInfo {
 export const canonicalChecklist: TraitInfo[] = [
   {
     label: "Team Doxxed",
-    display: "Team Doxxed",
+    display: "Is the team publicly doxxed and verifiable?",
     category: "Team",
     description:
       "This team has disclosed legal names. This boosts trust in volatile markets.",
   },
   {
     label: "Twitter Activity Level",
-    display: "Twitter Activity Level",
+    display: "How active and consistent is the team on Twitter?",
     category: "Community",
     description: "How frequently the team engages on Twitter and shares updates.",
   },
   {
     label: "Time Commitment",
-    display: "Time Commitment",
+    display: "Is the team working on this full-time or part-time?",
     category: "Team",
     description:
       "Indicates if the founders are working full time or part time on the project.",
   },
   {
     label: "Prior Founder Experience",
-    display: "Prior Founder Experience",
+    display: "Do the founders have prior experience building or scaling projects?",
     category: "Team",
     description: "Number of past startups founded by the team members.",
   },
   {
     label: "Product Maturity",
-    display: "Product Maturity",
+    display: "How far along is the product in terms of development and user adoption?",
     category: "Product",
     description:
       "Stage of the product: prototype, MVP, or revenue generating.",
   },
   {
     label: "Funding Status",
-    display: "Funding Status",
+    display: "Has the project raised any funding?",
     category: "Funding",
     description: "Whether the project is venture backed, angel funded or bootstrapped.",
   },
   {
     label: "Token-Product Integration Depth",
-    display: "Token-Product Integration Depth",
+    display: "How deeply is the token integrated into the core functionality of the product?",
     category: "Product",
     description: "How integrated the token is within the live product.",
   },
   {
     label: "Social Reach & Engagement Index",
-    display: "Social Reach",
+    display: "How large is the project's social following?",
     category: "Community",
     description: "Overall social following and engagement of the project.",
   },

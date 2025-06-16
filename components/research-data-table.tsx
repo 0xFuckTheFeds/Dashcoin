@@ -10,7 +10,7 @@ export function ResearchDataTable({ data }: ResearchDataTableProps) {
       <table className="min-w-full text-sm">
         <thead className="text-slate-400">
           <tr>
-            <th className="px-3 py-2 text-left font-normal">Metric</th>
+            <th className="px-3 py-2 text-left font-normal">Question</th>
             <th className="px-3 py-2 text-left font-normal">Value</th>
           </tr>
         </thead>
