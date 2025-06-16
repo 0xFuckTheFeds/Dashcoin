@@ -108,3 +108,13 @@ export function hexToRgba(hex: string, alpha: number): string {
   const b = bigint & 255
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
+
+export function linkify(text: string): string {
+  if (!text) return ''
+  const markdownLink = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g
+  const url = /(https?:\/\/[^\s]+)/g
+  return text
+    .replace(markdownLink, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(url, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/\n/g, '<br />')
+}
