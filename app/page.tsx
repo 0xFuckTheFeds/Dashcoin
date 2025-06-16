@@ -328,16 +328,6 @@ export default async function Home() {
         </section>
         {/* Token Analysis Section */}
         <section id="token-directory" className="mb-12">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-
-              <div>
-                <h2 className="text-3xl font-bold text-white">Token Analysis</h2>
-                <p className="text-slate-400">Comprehensive token data and rankings</p>
-              </div>
-            </div>
-            
-          </div>
           
           <Suspense
             fallback={
