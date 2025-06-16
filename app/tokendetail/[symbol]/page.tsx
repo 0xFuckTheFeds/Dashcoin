@@ -51,12 +51,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
 import { FoundersEdgeChecklist, canonicalChecklist } from "@/components/founders-edge-checklist";
+import { ResearchDataTable } from "@/components/research-data-table";
 import { gradeMaps, valueToScore } from "@/lib/score";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 interface TokenResearchData {
-  Symbol: string;
-  Score: number | string;
+  symbol: string;
+  score: number | string;
   "Team Doxxed": number | string;
   "Twitter Activity Level": number | string;
   "Time Commitment": number | string;
@@ -65,12 +66,10 @@ interface TokenResearchData {
   "Funding Status": number | string;
   "Token-Product Integration Depth": number | string;
   "Social Reach & Engagement Index": number | string;
-  "Relevant Links": string;
-  Comments: string;
-  "Wallet Link": string;
-  "Wallet Comments": string;
   "Bull Case"?: string;
-  Twitter?: string;
+  twitter?: string;
+  walletLink?: string;
+  walletActivity?: string;
   [key: string]: any;
 }
 
@@ -81,7 +80,14 @@ async function fetchTokenResearchClient(
     const res = await fetch(`/api/research/${tokenSymbol}`);
     if (!res.ok) return null;
     const data = await res.json();
-    return data;
+    return {
+      ...data,
+      // normalize to expected casing
+      Score: data.Score ?? data.score,
+      Twitter: data.Twitter ?? data.twitter,
+      "Wallet Link": data["Wallet Link"] ?? data.walletLink,
+      "Wallet Comments": data["Wallet Comments"] ?? data.walletActivity,
+    } as TokenResearchData;
   } catch (err) {
     console.error("Error fetching research data:", err);
     return null;
@@ -221,7 +227,7 @@ export default function TokenResearchPage({
       try {
         const data = await fetchTokenResearchClient(symbol);
         setResearchData(data);
-        setHasScore(!!data && !!data["Score"]);
+        setHasScore(!!data && (data.score ?? data.Score));
       } catch (error) {
         console.error(`Error fetching research data for ${symbol}:`, error);
       } finally {
@@ -365,8 +371,11 @@ export default function TokenResearchPage({
             {/* Token Header */}
             <div className="flex-1">
               <div className="flex items-center gap-4 mb-6">
-                {researchData && researchData.Score && (
-                  <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
+                {researchData && (researchData.score ?? researchData.Score) && (
+                  <ResearchScoreBadge
+                    score={Number(researchData.score ?? researchData.Score)}
+                    data={researchData}
+                  />
                 )}
               </div>
               
@@ -462,8 +471,9 @@ export default function TokenResearchPage({
               </div>
             </div>
             
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 space-y-6">
               <FoundersEdgeChecklist data={researchData} showLegend />
+              <ResearchDataTable data={researchData} />
             </div>
           </section>
         )}
