@@ -19,7 +19,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
   const SHEET_NAME = 'Dashcoin Scoring';
   const RANGE = `${SHEET_NAME}!A1:T200`;
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}&valueRenderOption=FORMULA`;
 
   try {
     const response = await fetch(url);
@@ -98,7 +98,7 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0'
   const SHEET_NAME = 'Dashcoin Scoring'
   const RANGE = `${SHEET_NAME}!A1:T200`
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}&valueRenderOption=FORMULA`
 
   const cached = await getFromCache<WalletLinkData[]>(CACHE_KEYS.CREATOR_WALLETS)
   if (cached && cached.length > 0) {

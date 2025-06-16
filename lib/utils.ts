@@ -111,9 +111,11 @@ export function hexToRgba(hex: string, alpha: number): string {
 
 export function linkify(text: string): string {
   if (!text) return ''
+  const formula = /=HYPERLINK\("(https?:\/\/[^\"]+)"\s*,\s*"([^)]+)"\)/gi
   const markdownLink = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g
   const url = /(https?:\/\/[^\s]+)/g
   return text
+    .replace(formula, '<a href="$1" target="_blank" rel="noopener noreferrer">$2</a>')
     .replace(markdownLink, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     .replace(url, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
     .replace(/\n/g, '<br />')
