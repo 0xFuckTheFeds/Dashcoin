@@ -46,7 +46,7 @@ import {
   getTimeUntilNextDexscreenerRefresh,
 } from "@/app/actions/dexscreener-actions";
 import { fetchDexscreenerTokenLogo } from "@/app/actions/dexscreener-actions";
-import { formatCurrency, linkify } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyAddress } from "@/components/copy-address";
@@ -481,7 +481,7 @@ export default function TokenResearchPage({
               <p
                 className="text-slate-300 whitespace-pre-line"
                 dangerouslySetInnerHTML={{
-                  __html: linkify(researchData["Bull Case"] as string),
+                  __html: researchData["Bull Case"] as string,
                 }}
               />
             </div>

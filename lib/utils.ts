@@ -120,3 +120,63 @@ export function linkify(text: string): string {
     .replace(url, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
     .replace(/\n/g, '<br />')
 }
+
+interface RichCell {
+  formattedValue?: string
+  hyperlink?: string
+  textFormatRuns?: {
+    startIndex?: number
+    format?: {
+      link?: {
+        uri?: string
+      }
+    }
+  }[]
+}
+
+export function richTextToHtml(cell: RichCell | undefined): string {
+  const text = cell?.formattedValue || ''
+  if (!cell) return linkify(text)
+  if (cell.hyperlink && (!cell.textFormatRuns || cell.textFormatRuns.length === 0)) {
+    return `<a href="${cell.hyperlink}" target="_blank" rel="noopener noreferrer">${text}</a>`
+  }
+  const runs = cell.textFormatRuns
+  if (!runs || runs.length === 0) {
+    return linkify(text)
+  }
+  let result = ''
+  let idx = 0
+  for (let i = 0; i < runs.length; i++) {
+    const start = runs[i].startIndex ?? 0
+    if (idx < start) {
+      result += linkify(text.slice(idx, start))
+    }
+    const end = i + 1 < runs.length ? runs[i + 1].startIndex ?? text.length : text.length
+    const segment = text.slice(start, end)
+    const uri = runs[i].format?.link?.uri
+    if (uri) {
+      result += `<a href="${uri}" target="_blank" rel="noopener noreferrer">${segment}</a>`
+    } else {
+      result += linkify(segment)
+    }
+    idx = end
+  }
+  if (idx < text.length) {
+    result += linkify(text.slice(idx))
+  }
+  return result.replace(/\n/g, '<br />')
+}
+
+export function extractHyperlink(cell: RichCell | undefined): string {
+  if (!cell) return ''
+  if (cell.hyperlink) return cell.hyperlink
+  if (cell.textFormatRuns) {
+    for (const run of cell.textFormatRuns) {
+      const uri = run.format?.link?.uri
+      if (uri) return uri
+    }
+  }
+  const text = cell.formattedValue || ''
+  const m = text.match(/https?:\/\/\S+/)
+  return m ? m[0] : ''
+}

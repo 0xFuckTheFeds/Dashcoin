@@ -6,6 +6,7 @@ import {
   WALLET_CACHE_DURATION,
   setQueryLastRefreshTime,
 } from '@/lib/redis'
+import { richTextToHtml, extractHyperlink } from '@/lib/utils'
 
 interface ResearchScoreData {
   symbol: string
@@ -19,18 +20,20 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
   const SHEET_NAME = 'Dashcoin Scoring';
   const RANGE = `${SHEET_NAME}!A1:T200`;
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}&valueRenderOption=FORMULA`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?key=${API_KEY}&ranges=${RANGE}&includeGridData=true&fields=sheets.data.rowData.values(formattedValue,hyperlink,textFormatRuns)`;
 
   try {
     const response = await fetch(url);
     const data = await response.json();
-    
-    if (!data.values || data.values.length < 2) {
+
+    const rows = data.sheets?.[0]?.data?.[0]?.rowData || [];
+    if (rows.length < 2) {
       console.warn('No data found in Google Sheet');
       return [];
     }
 
-    const [header, ...rows] = data.values;
+    const header = (rows[0].values || []).map((c: any) => c.formattedValue || '');
+    const body = rows.slice(1);
     
     const canonicalMap: Record<string, string> = {
       'Startup Experience': 'Prior Founder Experience',
@@ -38,12 +41,18 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
         'Social Reach & Engagement Index',
     };
 
-    const structured = rows.map((row: any) => {
+    const structured = body.map((row: any) => {
       const entry: Record<string, any> = {};
+      const cells = row.values || [];
       header.forEach((key: string, i: number) => {
         const trimmed = key.trim();
         const canonical = canonicalMap[trimmed] || trimmed;
-        entry[canonical] = row[i] || '';
+        const cell = cells[i] || {};
+        if (canonical === 'Bull Case') {
+          entry[canonical] = richTextToHtml(cell);
+        } else {
+          entry[canonical] = cell.formattedValue || '';
+        }
       });
       return entry;
     });
@@ -98,7 +107,7 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0'
   const SHEET_NAME = 'Dashcoin Scoring'
   const RANGE = `${SHEET_NAME}!A1:T200`
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}&valueRenderOption=FORMULA`
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?key=${API_KEY}&ranges=${RANGE}&includeGridData=true&fields=sheets.data.rowData.values(formattedValue,hyperlink,textFormatRuns)`
 
   const cached = await getFromCache<WalletLinkData[]>(CACHE_KEYS.CREATOR_WALLETS)
   if (cached && cached.length > 0) {
@@ -109,17 +118,27 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
     const response = await fetch(url)
     const data = await response.json()
 
-    if (!data.values || data.values.length < 2) {
+    const rows = data.sheets?.[0]?.data?.[0]?.rowData || []
+    if (rows.length < 2) {
       console.warn('No data found in Google Sheet')
       return []
     }
 
-    const [header, ...rows] = data.values
+    const header = (rows[0].values || []).map((c: any) => c.formattedValue || '')
+    const body = rows.slice(1)
 
-    const structured = rows.map((row: any) => {
+    const structured = body.map((row: any) => {
       const entry: Record<string, any> = {}
+      const cells = row.values || []
       header.forEach((key: string, i: number) => {
-        entry[key.trim()] = row[i] || ''
+        const cell = cells[i] || {}
+        entry[key.trim()] = cell.formattedValue || ''
+        if (key.trim() === 'Wallet Link') {
+          entry[key.trim()] = extractHyperlink(cell)
+        }
+        if (key.trim() === 'Twitter') {
+          entry[key.trim()] = extractHyperlink(cell)
+        }
       })
       return entry
     })
