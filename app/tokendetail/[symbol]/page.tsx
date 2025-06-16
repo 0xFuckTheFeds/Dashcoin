@@ -673,9 +673,12 @@ export default function TokenResearchPage({
               <h2 className="text-3xl font-bold text-white">Bull Case</h2>
             </div>
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-              <p className="text-slate-300 whitespace-pre-line">
-                {researchData["Bull Case"]}
-              </p>
+              <p
+                className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
+                dangerouslySetInnerHTML={{
+                  __html: researchData["Bull Case"] as string,
+                }}
+              />
             </div>
           </section>
         )}

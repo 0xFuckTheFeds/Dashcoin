@@ -11,7 +11,7 @@ export function parseRow(row: any[]): Project {
 }
 
 export async function fetchSheetData(sheetId: string, apiKey: string): Promise<Project[]> {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}&valueRenderOption=FORMULA`;
   const res = await fetch(url);
   const data = await res.json();
   const rows: any[][] = data.values || [];
