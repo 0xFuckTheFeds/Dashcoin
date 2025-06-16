@@ -15,6 +15,7 @@ import {
   fetchTokenMarketCaps,
   fetchTotalMarketCap,
   getTimeUntilNextDuneRefresh,
+  fetchAllTokensFromDune,
 } from "./actions/dune-actions";
 import { fetchDexscreenerTokenData } from "./actions/dexscreener-actions";
 import { formatCurrency, formatCurrency0 } from "@/lib/utils";
@@ -129,8 +130,12 @@ const MarketCapPieWrapper = async ({
 
 const TokenSearchListWrapper = async () => {
   try {
-    const TokenSearchList = (await import("@/components/token-search-list")).default;
-    return <TokenSearchList />;
+    const [module, tokens] = await Promise.all([
+      import("@/components/token-search-list"),
+      fetchAllTokensFromDune(),
+    ]);
+    const TokenSearchList = module.default;
+    return <TokenSearchList initialTokens={tokens} />;
   } catch (error) {
     console.error("Error loading TokenSearchList:", error);
     return (
