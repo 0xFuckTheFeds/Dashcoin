@@ -100,6 +100,7 @@ interface WalletLinkData {
   walletLink: string
   walletActivity: string
   twitter: string
+  linkedin: string
 }
 
 export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
@@ -110,7 +111,7 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?key=${API_KEY}&ranges=${RANGE}&includeGridData=true&fields=sheets.data.rowData.values(formattedValue,hyperlink,textFormatRuns)`
 
   const cached = await getFromCache<WalletLinkData[]>(CACHE_KEYS.CREATOR_WALLETS)
-  if (cached && cached.length > 0) {
+  if (cached && cached.length > 0 && Object.prototype.hasOwnProperty.call(cached[0], 'linkedin')) {
     return cached
   }
 
@@ -144,11 +145,13 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
     })
 
     const result = structured.map((entry: any) => {
+      const linkedinKey = Object.keys(entry).find(key => key.trim().toLowerCase() === 'linkedin')
       return {
         symbol: (entry['Project'] || '').toString().toUpperCase(),
         walletLink: entry['Wallet Link'] || '',
         walletActivity: entry['Wallet Comments'] || '',
-        twitter: entry['Twitter'] || ''
+        twitter: entry['Twitter'] || '',
+        linkedin: linkedinKey ? entry[linkedinKey] || '' : ''
       }
     })
     await setInCache(CACHE_KEYS.CREATOR_WALLETS, result, WALLET_CACHE_DURATION)
