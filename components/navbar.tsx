@@ -37,7 +37,6 @@ export function Navbar() {
     { href: "/compare", label: "Compare", icon: GitCompare },
     { href: "/creator-wallets", label: "Wallets", icon: Wallet },
     { href: "/founder-interviews", label: "Interviews", icon: MessageCircle },
-    { href: "https://dashcoin-research.gitbook.io/dashcoin-research", label: "Guide", icon: BookOpen, external: true },
     { href: "https://dashcoin-research-tg-gated.vercel.app/", label: "Dashcoin Holder Alpha Group", icon: Users, external: true, highlight: true }
   ];
 
