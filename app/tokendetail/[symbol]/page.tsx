@@ -380,7 +380,7 @@ export default function TokenResearchPage({
         <Navbar />
       </div>
 
-      <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl mt-16">
+      <main className="relative z-10 container mx-auto px-6 py-8 max-w-screen-2xl mt-16">
         {/* Back Navigation */}
         <Link
           href="/"
@@ -516,7 +516,7 @@ export default function TokenResearchPage({
                   <p className="text-slate-400">Real-time trading metrics and price data</p>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
                 <StatsCard
                   icon={DollarSign}
                   title="Current Price"
