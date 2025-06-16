@@ -24,6 +24,7 @@ import {
   Star,
   ExternalLink,
   Twitter,
+  Linkedin,
   Cookie,
   Wallet,
   Activity,
@@ -573,6 +574,17 @@ export default function TokenSearchList() {
                             title="Twitter"
                           >
                             <Twitter className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
+                          </a>
+                        )}
+                        {token.linkedin && (
+                          <a
+                            href={token.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group/btn"
+                            title="LinkedIn"
+                          >
+                            <Linkedin className="w-4 h-4 text-slate-400 group-hover/btn:text-teal-400" />
                           </a>
                         )}
                         <a
