@@ -1,18 +1,18 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import { Navbar } from '@/components/navbar'
 import InterviewCard from '@/components/interview-card'
 import { interviews } from '@/data/interviews'
 import { 
-  MessageCircle, 
-  Users, 
-  Mic, 
-  Play, 
+  MessageCircle,
+  Users,
+  Mic,
   Calendar,
   ArrowRight,
   Sparkles,
   TrendingUp,
-  Building,
   Globe,
-  Clock,
   Star
 } from "lucide-react";
 
@@ -24,6 +24,17 @@ export default function FounderInterviewsPage() {
   const requestInterviewLink = "https://x.com/nic_wenzel_1";
   const communityLink =
     "https://x.com/i/communities/1923256037240603012";
+  const [sortOption, setSortOption] = useState<'recent' | 'popular'>('recent');
+
+  const sortedInterviews = useMemo(() => {
+    if (sortOption === 'popular') {
+      return [...interviews].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+    }
+    return [...interviews].sort(
+      (a, b) =>
+        new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
+    );
+  }, [sortOption]);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
       {/* Enhanced Background Elements */}
@@ -96,11 +107,25 @@ export default function FounderInterviewsPage() {
               <Star className="w-4 h-4" />
               <span className="text-sm">Featured</span>
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors">
+            <button
+              onClick={() => setSortOption('recent')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
+                sortOption === 'recent'
+                  ? 'bg-teal-600 text-white shadow-lg'
+                  : 'text-slate-400 hover:text-white hover:bg-white/10'
+              }`}
+            >
               <Calendar className="w-4 h-4" />
               <span className="text-sm">Recent</span>
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors">
+            <button
+              onClick={() => setSortOption('popular')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
+                sortOption === 'popular'
+                  ? 'bg-teal-600 text-white shadow-lg'
+                  : 'text-slate-400 hover:text-white hover:bg-white/10'
+              }`}
+            >
               <TrendingUp className="w-4 h-4" />
               <span className="text-sm">Popular</span>
             </button>
@@ -108,9 +133,9 @@ export default function FounderInterviewsPage() {
         </div>
 
         {/* Enhanced Interview Grid */}
-        {interviews && interviews.length > 0 ? (
+        {sortedInterviews && sortedInterviews.length > 0 ? (
           <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {interviews.map((interview, index) => (
+            {sortedInterviews.map((interview, index) => (
               <div key={interview.id} className="group relative">
                 {/* Glow effect on hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-teal-500/10 to-green-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:scale-110"></div>
