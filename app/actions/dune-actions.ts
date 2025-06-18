@@ -73,18 +73,14 @@ export async function fetchAllTokensFromDune(): Promise<TokenData[]> {
     if ((Date.now() - lastRefreshTime.getTime()) < CACHE_DURATION) {
       const cachedData = await getFromCache<TokenData[]>(CACHE_KEYS.ALL_TOKENS);
       if (cachedData && cachedData.length > 0) {
-        console.log("Last refresh time less than 1 hour, fetching all tokens data from cache");
+        console.log("Last refresh time less than 12 hours, fetching all tokens data from cache");
         return cachedData;
       }
     }
 
     console.log("It's time to refresh fetching all tokens data from dune");
-    const firstBatch = await fetchDuneQueryResults(5140151, 1000, 0);
-    const secondBatch = await fetchDuneQueryResults(5140151, 1000, 1000);
-    const rows = [
-      ...(firstBatch.rows || []),
-      ...(secondBatch.rows || [])
-    ];
+    const result = await fetchDuneQueryResults(5289011, 2000, 0);
+    const rows = result.rows || [];
 
     if (rows.length > 0) {
       const tokens = rows.map((row: any) => {
@@ -251,13 +247,13 @@ export async function fetchTokenMarketCaps(): Promise<TokenMarketCapData[]> {
     //     CACHE_KEYS.TOKEN_MARKET_CAPS
     //   );
     //   if (cachedData && cachedData.length > 0) {
-    //     console.log("Token market caps: Less than 1 hour since last refresh, using cache");
+    //     console.log("Token market caps: Less than 12 hours since last refresh, using cache");
     //     return cachedData;
     //   }
     // }
 
-    // console.log("Token market caps: More than 1 hour since last refresh, fetching from Dune");
-      const result = await fetchDuneQueryResults(5140151);
+    // console.log("Token market caps: More than 12 hours since last refresh, fetching from Dune");
+      const result = await fetchDuneQueryResults(5289011, 2000);
 
     if (result && result.rows && result.rows.length > 0) {
       const currentDate = new Date().toISOString().split("T")[0];
@@ -297,7 +293,7 @@ export async function fetchTotalMarketCap(): Promise<TotalMarketCapData> {
       return cachedData;
     }
 
-    const result = await fetchDuneQueryResults(5140151);
+    const result = await fetchDuneQueryResults(5289011, 2000);
 
     if (result && result.rows && result.rows.length > 0) {
       const totalMarketCap = result.rows.reduce((sum: number, row: any) => {
@@ -338,7 +334,7 @@ export async function fetchNewTokens(limit = 10): Promise<NewTokenData[]> {
       return cachedData.slice(0, limit);
     }
 
-    const result = await fetchDuneQueryResults(5140151);
+    const result = await fetchDuneQueryResults(5289011, 2000);
 
     if (result && result.rows && result.rows.length > 0) {
       const sortedRows = [...result.rows].sort((a, b) => {
@@ -380,13 +376,13 @@ export async function fetchMarketStats(): Promise<MarketStats> {
     if ((Date.now() - lastRefreshTime.getTime()) < CACHE_DURATION) {
       const cachedData = await getFromCache<MarketStats>(CACHE_KEYS.MARKET_STATS);
       if (cachedData && cachedData.totalMarketCap !== undefined) {
-        console.log("Market stats: Less than 1 hour since last refresh, using cache");
+        console.log("Market stats: Less than 12 hours since last refresh, using cache");
         return cachedData;
       }
     }
 
-    console.log("Market stats: More than 1 hour since last refresh, fetching from Dune");
-    const result = await fetchDuneQueryResults(5140151);
+    console.log("Market stats: More than 12 hours since last refresh, fetching from Dune");
+    const result = await fetchDuneQueryResults(5289011, 2000);
 
     if (result && result.rows && result.rows.length > 0) {
       const totalMarketCap = result.rows.reduce((sum: number, row: any) => {

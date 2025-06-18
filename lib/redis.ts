@@ -20,8 +20,8 @@ export const CACHE_KEYS = {
   DEX_LOGO_PREFIX: "dexscreener:logo:",
 }
 
-export const CACHE_DURATION = 1 * 60 * 60 * 1000
-export const CACHE_DURATION_LONG = 1 * 60 * 60 * 1000
+export const CACHE_DURATION = 12 * 60 * 60 * 1000
+export const CACHE_DURATION_LONG = 12 * 60 * 60 * 1000
 export const WALLET_CACHE_DURATION = 5 * 60 * 1000
 export const DEX_LOGO_CACHE_DURATION = 60 * 60 * 1000
 
