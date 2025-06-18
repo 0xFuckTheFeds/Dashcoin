@@ -72,6 +72,8 @@ export default function TokenSearchList() {
   const [sortOption, setSortOption] = useState("mc-desc");
   const [showFilter, setShowFilter] = useState(false);
   const [marketCapFilter, setMarketCapFilter] = useState("all");
+  const [customMinCap, setCustomMinCap] = useState("");
+  const [customMaxCap, setCustomMaxCap] = useState("");
 
   const fetchDexData = useCallback(async (tokenList: TokenData[]) => {
     const addresses = tokenList.map(t => t.token).filter(Boolean);
@@ -193,6 +195,10 @@ export default function TokenSearchList() {
           return cap >= 500_000 && cap < 1_000_000;
         case "100kto500k":
           return cap >= 100_000 && cap < 500_000;
+        case "custom":
+          const min = customMinCap ? Number(customMinCap) : 0;
+          const max = customMaxCap ? Number(customMaxCap) : Infinity;
+          return cap >= min && cap <= max;
         default:
           return true;
       }
@@ -210,7 +216,7 @@ export default function TokenSearchList() {
     }
 
     return result;
-  }, [tokensWithData, searchTerm, sortOption, marketCapFilter]);
+  }, [tokensWithData, searchTerm, sortOption, marketCapFilter, customMinCap, customMaxCap]);
 
   const totalPages = Math.max(1, Math.ceil(filteredAndSortedTokens.length / pageSize));
 
@@ -397,6 +403,37 @@ export default function TokenSearchList() {
                     </span>
                   </label>
                 ))}
+
+                <div className="pt-3 mt-1 border-t border-white/10 space-y-2">
+                  <label className="text-slate-300 text-sm">Custom Range ($)</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      placeholder="Min"
+                      value={customMinCap}
+                      onChange={e => setCustomMinCap(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    />
+                    <span className="text-slate-300">-</span>
+                    <input
+                      type="number"
+                      placeholder="Max"
+                      value={customMaxCap}
+                      onChange={e => setCustomMaxCap(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      setMarketCapFilter('custom');
+                      setCurrentPage(1);
+                      setShowFilter(false);
+                    }}
+                    className="w-full py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-md text-sm"
+                  >
+                    Apply
+                  </button>
+                </div>
               </div>
             )}
           </div>
