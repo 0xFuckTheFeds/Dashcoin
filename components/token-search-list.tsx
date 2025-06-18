@@ -407,21 +407,39 @@ export default function TokenSearchList() {
                 <div className="pt-3 mt-1 border-t border-white/10 space-y-2">
                   <label className="text-slate-300 text-sm">Custom Range ($)</label>
                   <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      placeholder="Min"
+                    <select
                       value={customMinCap}
                       onChange={e => setCustomMinCap(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500"
-                    />
+                      className="w-full bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    >
+                      <option value="" className="bg-slate-800">Min</option>
+                      <option value="50000" className="bg-slate-800">50K</option>
+                      <option value="100000" className="bg-slate-800">100K</option>
+                      <option value="250000" className="bg-slate-800">250K</option>
+                      <option value="500000" className="bg-slate-800">500K</option>
+                      <option value="1000000" className="bg-slate-800">1M</option>
+                      <option value="3000000" className="bg-slate-800">3M</option>
+                      <option value="5000000" className="bg-slate-800">5M</option>
+                      <option value="10000000" className="bg-slate-800">10M</option>
+                      <option value="25000000" className="bg-slate-800">25M</option>
+                    </select>
                     <span className="text-slate-300">-</span>
-                    <input
-                      type="number"
-                      placeholder="Max"
+                    <select
                       value={customMaxCap}
                       onChange={e => setCustomMaxCap(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500"
-                    />
+                      className="w-full bg-white/5 border border-white/10 rounded-md px-2 py-1 text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    >
+                      <option value="" className="bg-slate-800">Max</option>
+                      <option value="50000" className="bg-slate-800">50K</option>
+                      <option value="100000" className="bg-slate-800">100K</option>
+                      <option value="250000" className="bg-slate-800">250K</option>
+                      <option value="500000" className="bg-slate-800">500K</option>
+                      <option value="1000000" className="bg-slate-800">1M</option>
+                      <option value="3000000" className="bg-slate-800">3M</option>
+                      <option value="5000000" className="bg-slate-800">5M</option>
+                      <option value="10000000" className="bg-slate-800">10M</option>
+                      <option value="25000000" className="bg-slate-800">25M</option>
+                    </select>
                   </div>
                   <button
                     onClick={() => {
