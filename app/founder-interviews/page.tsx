@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from 'react'
 import { Navbar } from '@/components/navbar'
 import InterviewCard from '@/components/interview-card'
 import { interviews } from '@/data/interviews'
@@ -24,6 +27,22 @@ export default function FounderInterviewsPage() {
   const requestInterviewLink = "https://x.com/nic_wenzel_1";
   const communityLink =
     "https://x.com/i/communities/1923256037240603012";
+  const [sortOption, setSortOption] = useState<
+    'featured' | 'recent' | 'popular'
+  >('featured');
+
+  const sortedInterviews = [...interviews].sort((a, b) => {
+    if (sortOption === 'recent') {
+      return (
+        new Date(b.publishedDate).getTime() -
+        new Date(a.publishedDate).getTime()
+      );
+    }
+    if (sortOption === 'popular') {
+      return (b.viewCount ?? 0) - (a.viewCount ?? 0);
+    }
+    return 0;
+  });
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
       {/* Enhanced Background Elements */}
@@ -92,15 +111,36 @@ export default function FounderInterviewsPage() {
           
           {/* Sort/Filter controls */}
           <div className="hidden md:flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors">
+            <button
+              onClick={() => setSortOption('featured')}
+              className={`flex items-center gap-2 px-4 py-2 transition-colors ${
+                sortOption === 'featured'
+                  ? 'text-white'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
               <Star className="w-4 h-4" />
               <span className="text-sm">Featured</span>
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors">
+            <button
+              onClick={() => setSortOption('recent')}
+              className={`flex items-center gap-2 px-4 py-2 transition-colors ${
+                sortOption === 'recent'
+                  ? 'text-white'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
               <Calendar className="w-4 h-4" />
               <span className="text-sm">Recent</span>
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors">
+            <button
+              onClick={() => setSortOption('popular')}
+              className={`flex items-center gap-2 px-4 py-2 transition-colors ${
+                sortOption === 'popular'
+                  ? 'text-white'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
               <TrendingUp className="w-4 h-4" />
               <span className="text-sm">Popular</span>
             </button>
@@ -108,9 +148,9 @@ export default function FounderInterviewsPage() {
         </div>
 
         {/* Enhanced Interview Grid */}
-        {interviews && interviews.length > 0 ? (
+        {sortedInterviews && sortedInterviews.length > 0 ? (
           <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {interviews.map((interview, index) => (
+            {sortedInterviews.map((interview, index) => (
               <div key={interview.id} className="group relative">
                 {/* Glow effect on hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-teal-500/10 to-green-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:scale-110"></div>
