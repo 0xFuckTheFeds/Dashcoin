@@ -113,8 +113,8 @@ export default function FounderInterviewsPage() {
             {interviews.map((interview, index) => (
               <div key={interview.id} className="group relative">
                 {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-teal-500/10 to-green-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl transform group-hover:scale-110"></div>
-                
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-teal-500/10 to-green-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:scale-110"></div>
+
                 {/* Enhanced Interview Card Container */}
                 <div className="relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-3xl overflow-hidden hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-green-500/10">
                   <InterviewCard interview={interview} />
