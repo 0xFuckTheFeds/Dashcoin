@@ -106,7 +106,7 @@ export default function TokenSearchList() {
   useEffect(() => {
     async function loadTokens() {
       try {
-        const res = await fetch("/api/tokens");
+        const res = await fetch("/api/tokens?limit=50");
         const data = await res.json();
         setTokens(data || []);
       } catch (err) {
