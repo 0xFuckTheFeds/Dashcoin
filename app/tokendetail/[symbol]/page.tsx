@@ -393,67 +393,56 @@ export default function TokenResearchPage({
           Back to Dashboard
         </Link>
 
-        <div className="flex justify-center mb-8">
-          <h1 className="flex items-center gap-2 text-4xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent">
+        <div className="flex flex-col items-center mb-8">
+          <div className="flex items-center gap-4">
             {tokenLogo && (
               <Image src={tokenLogo} alt={`${tokenSymbol} logo`} width={40} height={40} className="w-10 h-10 rounded-full" />
             )}
-            {tokenSymbol}
-          </h1>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent">
+              {tokenSymbol}
+            </h1>
+            {researchData && researchData.Score && (
+              <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
+            )}
+          </div>
+          <div className="flex items-center gap-2 text-slate-400 mt-2">
+            <Calendar className="w-4 h-4" />
+            <span>Created: {createdTime}</span>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-4">
+            <a
+              href={
+                tokenAddress
+                  ? `https://axiom.trade/t/${tokenAddress}/dashc`
+                  : "#"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <TrendingUp className="w-5 h-5" />
+              <span>Trade Now</span>
+              <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </a>
+
+            {researchData?.Twitter && (
+              <a
+                href={`${researchData.Twitter.replace("@", "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300"
+              >
+                <Twitter className="w-5 h-5" />
+                <span>Follow</span>
+                <ExternalLink className="w-4 h-4 opacity-60" />
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Hero Section */}
         <section className="mb-12">
           <div className="flex flex-col lg:flex-row gap-8 items-start">
-            {/* Token Header */}
-            <div className="flex-1">
-              <div className="flex items-center gap-4 mb-6">
-                {researchData && researchData.Score && (
-                  <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
-                )}
-              </div>
-              
-              
-              <div className="flex items-center gap-4 text-slate-400 mb-6">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <span>Created: {createdTime}</span>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4">
-                <a
-                  href={
-                    tokenAddress
-                      ? `https://axiom.trade/t/${tokenAddress}/dashc`
-                      : "#"
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
-                >
-                  <TrendingUp className="w-5 h-5" />
-                  <span>Trade Now</span>
-                  <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </a>
-                
-                {researchData?.Twitter && (
-                  <a
-                    href={`${researchData.Twitter.replace("@", "")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300"
-                  >
-                    <Twitter className="w-5 h-5" />
-                    <span>Follow</span>
-                    <ExternalLink className="w-4 h-4 opacity-60" />
-                  </a>
-                )}
-                
-              </div>
-            </div>
-
             {/* Creator Wallet Card */}
             {researchData?.["Wallet Comments"] && (
               <div className="lg:max-w-md w-full">
@@ -681,8 +670,6 @@ export default function TokenResearchPage({
           </section>
         )}
 
-
-        {/* Price Chart */}
         {chartAddress && (
           <section className="mb-12">
             <div className="flex items-center gap-4 mb-8">
@@ -694,12 +681,15 @@ export default function TokenResearchPage({
                 <p className="text-slate-400">Interactive trading view with technical analysis</p>
               </div>
             </div>
-            
+
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
               <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
             </div>
           </section>
         )}
+
+
+
 
 
         {/* Loading States */}
