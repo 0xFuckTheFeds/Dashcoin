@@ -20,6 +20,9 @@ export default function InterviewCard({ interview }: InterviewCardProps) {
       />
       <div className="p-4 text-center">
         <h3 className="text-lg font-semibold text-white">{interview.project}</h3>
+        <p className="text-sm text-slate-400 mt-1">
+          {new Date(interview.publishDate).toLocaleDateString()} • {interview.views.toLocaleString()} views
+        </p>
         <Link
           href={`https://www.youtube.com/watch?v=${interview.youtubeId}`}
           target="_blank"
