@@ -1,19 +1,12 @@
 import { Navbar } from '@/components/navbar'
-import InterviewCard from '@/components/interview-card'
+import InterviewSearchGrid from '@/components/interview-search-grid'
 import { interviews } from '@/data/interviews'
 import { 
-  MessageCircle, 
-  Users, 
-  Mic, 
-  Play, 
-  Calendar,
+  MessageCircle,
+  Users,
+  Mic,
   ArrowRight,
-  Sparkles,
-  TrendingUp,
-  Building,
-  Globe,
-  Clock,
-  Star
+  Sparkles
 } from "lucide-react";
 
 export const metadata = {
@@ -78,63 +71,7 @@ export default function FounderInterviewsPage() {
 
       {/* Enhanced Main Content */}
       <main className="relative z-10 container mx-auto px-6 pb-16 max-w-7xl">
-        {/* Section Header */}
-        <div className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-green-500 via-green-600 to-teal-600 rounded-2xl shadow-lg">
-              <MessageCircle className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Latest Interviews</h2>
-              <p className="text-slate-400">In-depth conversations with industry leaders</p>
-            </div>
-          </div>
-          
-          {/* Sort/Filter controls */}
-          <div className="hidden md:flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors">
-              <Star className="w-4 h-4" />
-              <span className="text-sm">Featured</span>
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors">
-              <Calendar className="w-4 h-4" />
-              <span className="text-sm">Recent</span>
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors">
-              <TrendingUp className="w-4 h-4" />
-              <span className="text-sm">Popular</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Enhanced Interview Grid */}
-        {interviews && interviews.length > 0 ? (
-          <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {interviews.map((interview, index) => (
-              <div key={interview.id} className="group relative">
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-teal-500/10 to-green-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:scale-110"></div>
-
-                {/* Enhanced Interview Card Container */}
-                <div className="relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-3xl overflow-hidden hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-green-500/10">
-                  <InterviewCard interview={interview} />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Mic className="w-10 h-10 text-green-400" />
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-3">No interviews available</h3>
-            <p className="text-slate-400 mb-8 max-w-md mx-auto">We're working on bringing you exclusive conversations with top founders. Check back soon for new content.</p>
-            <button className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
-              <Globe className="w-4 h-4" />
-              Follow for Updates
-            </button>
-          </div>
-        )}
+        <InterviewSearchGrid interviews={interviews} />
 
         {/* Enhanced Call-to-Action Section */}
         <section className="mt-20">
