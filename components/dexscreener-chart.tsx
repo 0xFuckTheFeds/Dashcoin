@@ -82,7 +82,7 @@ export function DexscreenerChart({ tokenAddress = "", title = "Price Chart", onD
         `}</style>
         <div id="dexscreener-embed">
           <iframe
-            src={`https://dexscreener.com/solana/${safeTokenAddress}?embed=1&loadChartSettings=0&chartLeftToolbar=0&chartTheme=dark&theme=dark&chartStyle=0&chartType=usd&interval=15`}
+            src={`https://dexscreener.com/solana/${safeTokenAddress}?embed=1&loadChartSettings=0&chartLeftToolbar=0&chartTheme=dark&theme=dark&chartStyle=1&chartType=usd&interval=1d`}
             title="DEX Screener Chart"
           />
         </div>
