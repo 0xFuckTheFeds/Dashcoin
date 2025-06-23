@@ -312,15 +312,11 @@ export default async function Home() {
           <div className="text-center mb-16 mt-6">
             
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-teal-400 via-teal-400 to-green-400 bg-clip-text text-transparent mb-6">
-              Real-time market data at your fingertips
+              The Research Hub for Believe Coins
             </h1>
-            
+
             <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
-              Advanced analytics and real-time insights for the{" "}
-              <span className="text-transparent bg-gradient-to-r from-teal-400 to-green-400 bg-clip-text font-semibold">
-                Believe coin ecosystem
-              </span>
-              . Make informed decisions with comprehensive market data.
+              Understand every Believe token before everyone else.
             </p>
 
           </div>
