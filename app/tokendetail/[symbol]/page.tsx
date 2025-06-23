@@ -229,6 +229,7 @@ export default function TokenResearchPage({
   const [researchData, setResearchData] = useState<TokenResearchData | null>(null);
   const [hasScore, setHasScore] = useState(false);
   const [tokenLogo, setTokenLogo] = useState<string | null>(null);
+  const [bullExpanded, setBullExpanded] = useState(false);
 
   const formattedDuneLastRefresh = duneLastRefresh
     ? duneLastRefresh.toLocaleString(undefined, {
@@ -659,12 +660,23 @@ export default function TokenResearchPage({
               <h2 className="text-3xl font-bold text-white">Bull Case</h2>
             </div>
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-              <p
-                className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
-                dangerouslySetInnerHTML={{
-                  __html: researchData["Bull Case"] as string,
-                }}
-              />
+              <div className={!bullExpanded ? "max-h-40 overflow-hidden relative" : undefined}>
+                <p
+                  className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
+                  dangerouslySetInnerHTML={{
+                    __html: researchData["Bull Case"] as string,
+                  }}
+                />
+                {!bullExpanded && (
+                  <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent pointer-events-none" />
+                )}
+              </div>
+              <button
+                onClick={() => setBullExpanded(!bullExpanded)}
+                className="mt-4 text-teal-400 hover:text-teal-300 text-sm font-medium"
+              >
+                {bullExpanded ? "Show Less" : "Read More"}
+              </button>
             </div>
           </section>
         )}
