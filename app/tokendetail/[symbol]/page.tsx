@@ -393,67 +393,56 @@ export default function TokenResearchPage({
           Back to Dashboard
         </Link>
 
-        <div className="flex justify-center mb-8">
-          <h1 className="flex items-center gap-2 text-4xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent">
+        <div className="flex flex-col items-center mb-8">
+          <div className="flex items-center gap-4">
             {tokenLogo && (
               <Image src={tokenLogo} alt={`${tokenSymbol} logo`} width={40} height={40} className="w-10 h-10 rounded-full" />
             )}
-            {tokenSymbol}
-          </h1>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-teal-200 to-green-200 bg-clip-text text-transparent">
+              {tokenSymbol}
+            </h1>
+            {researchData && researchData.Score && (
+              <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
+            )}
+          </div>
+          <div className="flex items-center gap-2 text-slate-400 mt-2">
+            <Calendar className="w-4 h-4" />
+            <span>Created: {createdTime}</span>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-4">
+            <a
+              href={
+                tokenAddress
+                  ? `https://axiom.trade/t/${tokenAddress}/dashc`
+                  : "#"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <TrendingUp className="w-5 h-5" />
+              <span>Trade Now</span>
+              <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </a>
+
+            {researchData?.Twitter && (
+              <a
+                href={`${researchData.Twitter.replace("@", "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300"
+              >
+                <Twitter className="w-5 h-5" />
+                <span>Follow</span>
+                <ExternalLink className="w-4 h-4 opacity-60" />
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Hero Section */}
         <section className="mb-12">
           <div className="flex flex-col lg:flex-row gap-8 items-start">
-            {/* Token Header */}
-            <div className="flex-1">
-              <div className="flex items-center gap-4 mb-6">
-                {researchData && researchData.Score && (
-                  <ResearchScoreBadge score={Number(researchData.Score)} data={researchData} />
-                )}
-              </div>
-              
-              
-              <div className="flex items-center gap-4 text-slate-400 mb-6">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <span>Created: {createdTime}</span>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4">
-                <a
-                  href={
-                    tokenAddress
-                      ? `https://axiom.trade/t/${tokenAddress}/dashc`
-                      : "#"
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-green-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
-                >
-                  <TrendingUp className="w-5 h-5" />
-                  <span>Trade Now</span>
-                  <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </a>
-                
-                {researchData?.Twitter && (
-                  <a
-                    href={`${researchData.Twitter.replace("@", "")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl transition-all duration-300"
-                  >
-                    <Twitter className="w-5 h-5" />
-                    <span>Follow</span>
-                    <ExternalLink className="w-4 h-4 opacity-60" />
-                  </a>
-                )}
-                
-              </div>
-            </div>
-
             {/* Creator Wallet Card */}
             {researchData?.["Wallet Comments"] && (
               <div className="lg:max-w-md w-full">
@@ -510,142 +499,23 @@ export default function TokenResearchPage({
               </div>
             </div>
             <div>
-              <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
-                  <BarChart3 className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-bold text-white">Market Performance</h2>
-                  <p className="text-slate-400">Real-time trading metrics and price data</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                <StatsCard
-                  icon={DollarSign}
-                  title="Current Marketcap"
-                  value={formatCurrency0(marketCap)}
-                  change={`${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%`}
-                  changeType={change24h >= 0 ? 'positive' : 'negative'}
-                  subtitle="24h change"
-                  gradient="bg-gradient-to-r from-emerald-500/20 to-teal-500/20"
-                />
-
-                <StatsCard
-                  icon={Activity}
-                  title="24h Volume"
-                  value={formatCurrency0(volume24h)}
-                  change={`${change1h >= 0 ? '+' : ''}${change1h.toFixed(2)}%`}
-                  changeType={change1h >= 0 ? 'positive' : 'negative'}
-                  subtitle="1h change"
-                  gradient="bg-gradient-to-r from-teal-500/20 to-green-500/20"
-                />
-
-                <StatsCard
-                  icon={Users}
-                  title="Liquidity"
-                  value={formatCurrency0(liquidity)}
-                  subtitle="Available liquidity"
-                  gradient="bg-gradient-to-r from-green-500/20 to-teal-500/20"
-                />
-
-                <StatsCard
-                  icon={Zap}
-                  title="24h Transactions"
-                  value={txs.toLocaleString()}
-                  subtitle={`${buys} buys, ${sells} sells`}
-                  gradient="bg-gradient-to-r from-orange-500/20 to-red-500/20"
-                />
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl opacity-30 blur-xl"></div>
-                  <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 h-full">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                        <Activity className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white">Trading Activity</h3>
-                        <p className="text-slate-400">24-hour transaction breakdown</p>
-                      </div>
+              {chartAddress && (
+                <>
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
+                      <TrendingUp className="w-6 h-6 text-white" />
                     </div>
-
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <p className="text-sm text-slate-400 mb-2">Buy Orders</p>
-                        <div className="flex items-center gap-3">
-                          <p className="text-3xl font-bold text-emerald-400">{buys.toLocaleString()}</p>
-                          <div className="flex items-center gap-1 text-emerald-400 text-sm">
-                            <ArrowUp className="w-4 h-4" />
-                            <span>Active</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-sm text-slate-400 mb-2">Sell Orders</p>
-                        <div className="flex items-center gap-3">
-                          <p className="text-3xl font-bold text-red-400">{sells.toLocaleString()}</p>
-                          <div className="flex items-center gap-1 text-red-400 text-sm">
-                            <ArrowDown className="w-4 h-4" />
-                            <span>Active</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-6 pt-6 border-t border-white/10">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-400">Buy/Sell Ratio</span>
-                        <span className="text-white font-medium">
-                          {sells > 0 ? (buys / sells).toFixed(2) : '∞'}:1
-                        </span>
-                      </div>
+                    <div>
+                      <h2 className="text-3xl font-bold text-white">Price Chart</h2>
+                      <p className="text-slate-400">Interactive trading view with technical analysis</p>
                     </div>
                   </div>
-                </div>
 
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-green-500/20 rounded-2xl opacity-30 blur-xl"></div>
-                  <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
-                        <Globe className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white">Token Details</h3>
-                        <p className="text-slate-400">Contract and trading information</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-slate-400">Contract Address</span>
-                        {tokenAddress ? (
-                          <CopyAddress
-                            address={tokenAddress}
-                            showBackground={true}
-                            className="text-teal-400 hover:text-teal-300"
-                          />
-                        ) : (
-                          <span className="text-sm text-slate-500">Not available</span>
-                        )}
-                      </div>
-
-                      <div className="flex justify-between">
-                        <span className="text-sm text-slate-400">Symbol</span>
-                        <span className="text-sm text-white font-medium">{tokenSymbol}</span>
-                      </div>
-
-                      <div className="flex justify-between">
-                        <span className="text-sm text-slate-400">Created</span>
-                        <span className="text-sm text-white font-medium">{createdTime}</span>
-                      </div>
-
-
-                    </div>
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
+                    <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
                   </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </section>
         )}
@@ -681,25 +551,149 @@ export default function TokenResearchPage({
           </section>
         )}
 
-
-        {/* Price Chart */}
-        {chartAddress && (
+        {researchData && hasScore && (
           <section className="mb-12">
             <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
-                <TrendingUp className="w-6 h-6 text-white" />
+              <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
+                <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-white">Price Chart</h2>
-                <p className="text-slate-400">Interactive trading view with technical analysis</p>
+                <h2 className="text-3xl font-bold text-white">Market Performance</h2>
+                <p className="text-slate-400">Real-time trading metrics and price data</p>
               </div>
             </div>
-            
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
-              <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+              <StatsCard
+                icon={DollarSign}
+                title="Current Marketcap"
+                value={formatCurrency0(marketCap)}
+                change={`${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%`}
+                changeType={change24h >= 0 ? 'positive' : 'negative'}
+                subtitle="24h change"
+                gradient="bg-gradient-to-r from-emerald-500/20 to-teal-500/20"
+              />
+
+              <StatsCard
+                icon={Activity}
+                title="24h Volume"
+                value={formatCurrency0(volume24h)}
+                change={`${change1h >= 0 ? '+' : ''}${change1h.toFixed(2)}%`}
+                changeType={change1h >= 0 ? 'positive' : 'negative'}
+                subtitle="1h change"
+                gradient="bg-gradient-to-r from-teal-500/20 to-green-500/20"
+              />
+
+              <StatsCard
+                icon={Users}
+                title="Liquidity"
+                value={formatCurrency0(liquidity)}
+                subtitle="Available liquidity"
+                gradient="bg-gradient-to-r from-green-500/20 to-teal-500/20"
+              />
+
+              <StatsCard
+                icon={Zap}
+                title="24h Transactions"
+                value={txs.toLocaleString()}
+                subtitle={`${buys} buys, ${sells} sells`}
+                gradient="bg-gradient-to-r from-orange-500/20 to-red-500/20"
+              />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl opacity-30 blur-xl"></div>
+                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 h-full">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                      <Activity className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Trading Activity</h3>
+                      <p className="text-slate-400">24-hour transaction breakdown</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <p className="text-sm text-slate-400 mb-2">Buy Orders</p>
+                      <div className="flex items-center gap-3">
+                        <p className="text-3xl font-bold text-emerald-400">{buys.toLocaleString()}</p>
+                        <div className="flex items-center gap-1 text-emerald-400 text-sm">
+                          <ArrowUp className="w-4 h-4" />
+                          <span>Active</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm text-slate-400 mb-2">Sell Orders</p>
+                      <div className="flex items-center gap-3">
+                        <p className="text-3xl font-bold text-red-400">{sells.toLocaleString()}</p>
+                        <div className="flex items-center gap-1 text-red-400 text-sm">
+                          <ArrowDown className="w-4 h-4" />
+                          <span>Active</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-white/10">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-400">Buy/Sell Ratio</span>
+                      <span className="text-white font-medium">
+                        {sells > 0 ? (buys / sells).toFixed(2) : '∞'}:1
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-green-500/20 rounded-2xl opacity-30 blur-xl"></div>
+                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
+                      <Globe className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Token Details</h3>
+                      <p className="text-slate-400">Contract and trading information</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-400">Contract Address</span>
+                      {tokenAddress ? (
+                        <CopyAddress
+                          address={tokenAddress}
+                          showBackground={true}
+                          className="text-teal-400 hover:text-teal-300"
+                        />
+                      ) : (
+                        <span className="text-sm text-slate-500">Not available</span>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-sm text-slate-400">Symbol</span>
+                      <span className="text-sm text-white font-medium">{tokenSymbol}</span>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-sm text-slate-400">Created</span>
+                      <span className="text-sm text-white font-medium">{createdTime}</span>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
         )}
+
+
+
 
 
         {/* Loading States */}
