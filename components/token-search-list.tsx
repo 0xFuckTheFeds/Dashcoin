@@ -67,7 +67,7 @@ export default function TokenSearchList() {
   const [walletInfo, setWalletInfo] = useState<Record<string, { walletLink: string; twitter: string }>>({});
   const [viewMode, setViewMode] = useState<'card' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState("");
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState("mc-desc");
   const [showFilter, setShowFilter] = useState(false);
@@ -465,9 +465,9 @@ export default function TokenSearchList() {
             }}
             className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-8 text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
-            <option value={12} className="bg-slate-800">12 per page</option>
-            <option value={24} className="bg-slate-800">24 per page</option>
-            <option value={48} className="bg-slate-800">48 per page</option>
+            <option value={10} className="bg-slate-800">10 per page</option>
+            <option value={20} className="bg-slate-800">20 per page</option>
+            <option value={50} className="bg-slate-800">50 per page</option>
           </select>
         </div>
       </div>
