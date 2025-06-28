@@ -70,7 +70,13 @@ interface TokenResearchData {
   Comments: string;
   "Wallet Link": string;
   "Wallet Comments": string;
-  "Bull Case"?: string;
+  "User Growth & Traction Token Demand"?: string;
+  "User Growth & Traction"?: string;
+  "Notable Supporters of the Project"?: string;
+  "Product Description"?: string;
+  "Founder History"?: string;
+  "Twitter Activity"?: string;
+  Summary?: string;
   Twitter?: string;
   [key: string]: any;
 }
@@ -97,7 +103,13 @@ async function fetchTokenResearchClient(
       'Comments',
       'Wallet Link',
       'Wallet Comments',
-      'Bull Case',
+      'User Growth & Traction Token Demand',
+      'User Growth & Traction',
+      'Notable Supporters of the Project',
+      'Product Description',
+      'Founder History',
+      'Twitter Activity',
+      'Summary',
       'Twitter',
     ];
     const canonicalMap: Record<string, string> = {};
@@ -229,7 +241,20 @@ export default function TokenResearchPage({
   const [researchData, setResearchData] = useState<TokenResearchData | null>(null);
   const [hasScore, setHasScore] = useState(false);
   const [tokenLogo, setTokenLogo] = useState<string | null>(null);
-  const [bullExpanded, setBullExpanded] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+
+  const toggleSection = (key: string) =>
+    setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const sectionConfig = [
+    { key: 'User Growth & Traction Token Demand', icon: Users },
+    { key: 'User Growth & Traction', icon: ArrowUp },
+    { key: 'Notable Supporters of the Project', icon: Sparkles },
+    { key: 'Product Description', icon: Globe },
+    { key: 'Founder History', icon: Calendar },
+    { key: 'Twitter Activity', icon: Twitter },
+    { key: 'Summary', icon: CheckCircle },
+  ];
 
   const formattedDuneLastRefresh = duneLastRefresh
     ? duneLastRefresh.toLocaleString(undefined, {
@@ -639,35 +664,36 @@ export default function TokenResearchPage({
           </section>
         )}
 
-        {/* Bull Case */}
-        {researchData?.["Bull Case"] && (
-          <section className="mb-12">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                <ArrowUp className="w-6 h-6 text-white" />
+        {sectionConfig.map(({ key, icon: Icon }) =>
+          researchData?.[key] ? (
+            <section key={key} className="mb-12">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-white">{key}</h2>
               </div>
-              <h2 className="text-3xl font-bold text-white">Bull Case</h2>
-            </div>
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-              <div className={!bullExpanded ? "max-h-40 overflow-hidden relative" : undefined}>
-                <p
-                  className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
-                  dangerouslySetInnerHTML={{
-                    __html: researchData["Bull Case"] as string,
-                  }}
-                />
-                {!bullExpanded && (
-                  <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent pointer-events-none" />
-                )}
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+                <div
+                  className={!expandedSections[key] ? 'max-h-40 overflow-hidden relative' : undefined}
+                >
+                  <p
+                    className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
+                    dangerouslySetInnerHTML={{ __html: researchData[key] as string }}
+                  />
+                  {!expandedSections[key] && (
+                    <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent pointer-events-none" />
+                  )}
+                </div>
+                <button
+                  onClick={() => toggleSection(key)}
+                  className="mt-4 text-teal-400 hover:text-teal-300 text-sm font-medium"
+                >
+                  {expandedSections[key] ? 'Show Less' : 'Read More'}
+                </button>
               </div>
-              <button
-                onClick={() => setBullExpanded(!bullExpanded)}
-                className="mt-4 text-teal-400 hover:text-teal-300 text-sm font-medium"
-              >
-                {bullExpanded ? "Show Less" : "Read More"}
-              </button>
-            </div>
-          </section>
+            </section>
+          ) : null,
         )}
 
         {chartAddress && (

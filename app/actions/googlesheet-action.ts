@@ -11,7 +11,13 @@ import { richTextToHtml, extractHyperlink } from '@/lib/utils'
 interface ResearchScoreData {
   symbol: string
   score: number | null
-  "Bull Case"?: string
+  "User Growth & Traction Token Demand"?: string
+  "User Growth & Traction"?: string
+  "Notable Supporters of the Project"?: string
+  "Product Description"?: string
+  "Founder History"?: string
+  "Twitter Activity"?: string
+  Summary?: string
   [key: string]: any
 }
 
@@ -48,7 +54,17 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
         const trimmed = key.trim();
         const canonical = canonicalMap[trimmed] || trimmed;
         const cell = cells[i] || {};
-        if (canonical === 'Bull Case') {
+        if (
+          [
+            'User Growth & Traction Token Demand',
+            'User Growth & Traction',
+            'Notable Supporters of the Project',
+            'Product Description',
+            'Founder History',
+            'Twitter Activity',
+            'Summary',
+          ].includes(canonical)
+        ) {
           entry[canonical] = richTextToHtml(cell);
         } else {
           entry[canonical] = cell.formattedValue || '';
@@ -83,7 +99,13 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
         'Funding Status',
         'Token-Product Integration Depth',
         'Social Reach & Engagement Index',
-        'Bull Case',
+        'User Growth & Traction Token Demand',
+        'User Growth & Traction',
+        'Notable Supporters of the Project',
+        'Product Description',
+        'Founder History',
+        'Twitter Activity',
+        'Summary',
       ].forEach(label => {
         result[label] = entry[label] ?? '';
       });
