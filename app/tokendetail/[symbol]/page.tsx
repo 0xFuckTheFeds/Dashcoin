@@ -71,7 +71,7 @@ interface TokenResearchData {
   Comments: string;
   "Wallet Link": string;
   "Wallet Comments": string;
-  "User Growth & Traction Token Demand"?: string;
+  "Token Demand"?: string;
   "User Growth & Traction"?: string;
   "Notable Supporters of the Project"?: string;
   "Product Description"?: string;
@@ -104,7 +104,7 @@ async function fetchTokenResearchClient(
       'Comments',
       'Wallet Link',
       'Wallet Comments',
-      'User Growth & Traction Token Demand',
+      'Token Demand',
       'User Growth & Traction',
       'Notable Supporters of the Project',
       'Product Description',
@@ -242,14 +242,8 @@ export default function TokenResearchPage({
   const [researchData, setResearchData] = useState<TokenResearchData | null>(null);
   const [hasScore, setHasScore] = useState(false);
   const [tokenLogo, setTokenLogo] = useState<string | null>(null);
-  const [expandedSections, setExpandedSections] =
-    useState<Record<string, boolean>>({});
-
-  const toggleSection = (key: string) =>
-    setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));
-
   const sectionConfig = [
-    { key: 'User Growth & Traction Token Demand', icon: Users },
+    { key: 'Token Demand', icon: Users },
     { key: 'User Growth & Traction', icon: ArrowUp },
     { key: 'Notable Supporters of the Project', icon: Sparkles },
     { key: 'Product Description', icon: Globe },
@@ -257,16 +251,6 @@ export default function TokenResearchPage({
     { key: 'Twitter Activity', icon: Twitter },
     { key: 'Summary', icon: CheckCircle },
   ];
-
-  // Expand all available sections by default once data loads
-  useEffect(() => {
-    if (!researchData) return;
-    const defaults: Record<string, boolean> = {};
-    sectionConfig.forEach(({ key }) => {
-      if (researchData[key]) defaults[key] = true;
-    });
-    setExpandedSections(defaults);
-  }, [researchData]);
 
   const formattedDuneLastRefresh = duneLastRefresh
     ? duneLastRefresh.toLocaleString(undefined, {
@@ -705,23 +689,10 @@ export default function TokenResearchPage({
                     <h2 className="text-3xl font-bold text-white">{key}</h2>
                   </div>
                   <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 flex flex-col flex-1">
-                    <div
-                      className={!expandedSections[key] ? 'max-h-40 overflow-hidden relative' : undefined}
-                    >
-                      <p
-                        className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
-                        dangerouslySetInnerHTML={{ __html: researchData![key] as string }}
-                      />
-                      {!expandedSections[key] && (
-                        <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent pointer-events-none" />
-                      )}
-                    </div>
-                    <button
-                      onClick={() => toggleSection(key)}
-                      className="mt-4 text-teal-400 hover:text-teal-300 text-sm font-medium self-start"
-                    >
-                      {expandedSections[key] ? 'Collapse' : 'Expand'}
-                    </button>
+                    <p
+                      className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
+                      dangerouslySetInnerHTML={{ __html: researchData![key] as string }}
+                    />
                   </div>
                 </section>
               ))}

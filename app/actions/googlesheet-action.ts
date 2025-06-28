@@ -11,7 +11,7 @@ import { richTextToHtml, extractHyperlink } from '@/lib/utils'
 interface ResearchScoreData {
   symbol: string
   score: number | null
-  "User Growth & Traction Token Demand"?: string
+  "Token Demand"?: string
   "User Growth & Traction"?: string
   "Notable Supporters of the Project"?: string
   "Product Description"?: string
@@ -56,7 +56,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
         const cell = cells[i] || {};
         if (
           [
-            'User Growth & Traction Token Demand',
+            'Token Demand',
             'User Growth & Traction',
             'Notable Supporters of the Project',
             'Product Description',
@@ -99,7 +99,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
         'Funding Status',
         'Token-Product Integration Depth',
         'Social Reach & Engagement Index',
-        'User Growth & Traction Token Demand',
+        'Token Demand',
         'User Growth & Traction',
         'Notable Supporters of the Project',
         'Product Description',
