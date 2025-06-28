@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 
 import { ThemeProvider } from "@/components/theme-provider"
+import { Analytics } from "@vercel/analytics/react"
 import "./globals.css"
 
 
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className="font-sans bg-white text-black min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
