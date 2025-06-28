@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { 
   Loader2, 
@@ -241,7 +242,8 @@ export default function TokenResearchPage({
   const [researchData, setResearchData] = useState<TokenResearchData | null>(null);
   const [hasScore, setHasScore] = useState(false);
   const [tokenLogo, setTokenLogo] = useState<string | null>(null);
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [expandedSections, setExpandedSections] =
+    useState<Record<string, boolean>>({});
 
   const toggleSection = (key: string) =>
     setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -255,6 +257,16 @@ export default function TokenResearchPage({
     { key: 'Twitter Activity', icon: Twitter },
     { key: 'Summary', icon: CheckCircle },
   ];
+
+  // Expand all available sections by default once data loads
+  useEffect(() => {
+    if (!researchData) return;
+    const defaults: Record<string, boolean> = {};
+    sectionConfig.forEach(({ key }) => {
+      if (researchData[key]) defaults[key] = true;
+    });
+    setExpandedSections(defaults);
+  }, [researchData]);
 
   const formattedDuneLastRefresh = duneLastRefresh
     ? duneLastRefresh.toLocaleString(undefined, {
@@ -664,37 +676,58 @@ export default function TokenResearchPage({
           </section>
         )}
 
-        {sectionConfig.map(({ key, icon: Icon }) =>
-          researchData?.[key] ? (
-            <section key={key} className="mb-12">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
-                <h2 className="text-3xl font-bold text-white">{key}</h2>
-              </div>
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-                <div
-                  className={!expandedSections[key] ? 'max-h-40 overflow-hidden relative' : undefined}
-                >
-                  <p
-                    className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
-                    dangerouslySetInnerHTML={{ __html: researchData[key] as string }}
-                  />
-                  {!expandedSections[key] && (
-                    <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent pointer-events-none" />
-                  )}
-                </div>
-                <button
-                  onClick={() => toggleSection(key)}
-                  className="mt-4 text-teal-400 hover:text-teal-300 text-sm font-medium"
-                >
-                  {expandedSections[key] ? 'Show Less' : 'Read More'}
-                </button>
-              </div>
-            </section>
-          ) : null,
-        )}
+        {(() => {
+          const availableSections = sectionConfig.filter(
+            ({ key }) => researchData?.[key],
+          );
+          const rows: typeof availableSections[][] = [];
+          for (let i = 0; i < availableSections.length; i += 3) {
+            rows.push(availableSections.slice(i, i + 3));
+          }
+          return rows.map((row, rowIndex) => (
+            <div
+              key={`row-${rowIndex}`}
+              className={clsx(
+                'grid gap-8 mb-12',
+                row.length === 1
+                  ? 'grid-cols-1'
+                  : row.length === 2
+                  ? 'grid-cols-1 md:grid-cols-2'
+                  : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+              )}
+            >
+              {row.map(({ key, icon: Icon }) => (
+                <section key={key} className="flex flex-col">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-3xl font-bold text-white">{key}</h2>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 flex flex-col flex-1">
+                    <div
+                      className={!expandedSections[key] ? 'max-h-40 overflow-hidden relative' : undefined}
+                    >
+                      <p
+                        className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
+                        dangerouslySetInnerHTML={{ __html: researchData![key] as string }}
+                      />
+                      {!expandedSections[key] && (
+                        <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent pointer-events-none" />
+                      )}
+                    </div>
+                    <button
+                      onClick={() => toggleSection(key)}
+                      className="mt-4 text-teal-400 hover:text-teal-300 text-sm font-medium self-start"
+                    >
+                      {expandedSections[key] ? 'Collapse' : 'Expand'}
+                    </button>
+                  </div>
+                </section>
+              ))}
+            </div>
+          ));
+        })()}
 
         {chartAddress && (
           <section className="mb-12">
