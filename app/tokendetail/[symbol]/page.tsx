@@ -502,23 +502,49 @@ export default function TokenResearchPage({
           </div>
         </section>
 
+        {(() => {
+          const availableSections = sectionConfig.filter(
+            ({ key }) => researchData?.[key],
+          );
+          const rows: typeof availableSections[][] = [];
+          for (let i = 0; i < availableSections.length; i += 3) {
+            rows.push(availableSections.slice(i, i + 3));
+          }
+          return rows.map((row, rowIndex) => (
+            <div
+              key={`row-${rowIndex}`}
+              className={clsx(
+                'grid gap-8 mb-12',
+                row.length === 1
+                  ? 'grid-cols-1'
+                  : row.length === 2
+                  ? 'grid-cols-1 md:grid-cols-2'
+                  : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+              )}
+            >
+              {row.map(({ key, icon: Icon }) => (
+                <section key={key} className="flex flex-col">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-3xl font-bold text-white">{key}</h2>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 flex flex-col flex-1">
+                    <p
+                      className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
+                      dangerouslySetInnerHTML={{ __html: researchData![key] as string }}
+                    />
+                  </div>
+                </section>
+              ))}
+            </div>
+          ));
+        })()}
+
         {/* Research & Market */}
         {researchData && hasScore && (
-          <section className="mb-12 grid lg:grid-cols-2 gap-8">
-            <div>
-              <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                  <Shield className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-bold text-white">Founder's Edge Analysis</h2>
-                  <p className="text-slate-400">Comprehensive research metrics and risk assessment</p>
-                </div>
-              </div>
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-                <ResearchDataTable data={researchData} />
-              </div>
-            </div>
+          <section className="mb-12">
             <div>
               <div className="flex items-center gap-4 mb-8">
                 <div className="p-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-xl">
@@ -660,45 +686,6 @@ export default function TokenResearchPage({
           </section>
         )}
 
-        {(() => {
-          const availableSections = sectionConfig.filter(
-            ({ key }) => researchData?.[key],
-          );
-          const rows: typeof availableSections[][] = [];
-          for (let i = 0; i < availableSections.length; i += 3) {
-            rows.push(availableSections.slice(i, i + 3));
-          }
-          return rows.map((row, rowIndex) => (
-            <div
-              key={`row-${rowIndex}`}
-              className={clsx(
-                'grid gap-8 mb-12',
-                row.length === 1
-                  ? 'grid-cols-1'
-                  : row.length === 2
-                  ? 'grid-cols-1 md:grid-cols-2'
-                  : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-              )}
-            >
-              {row.map(({ key, icon: Icon }) => (
-                <section key={key} className="flex flex-col">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h2 className="text-3xl font-bold text-white">{key}</h2>
-                  </div>
-                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 flex flex-col flex-1">
-                    <p
-                      className="text-slate-300 whitespace-pre-line [&_a]:text-white [&_a]:underline"
-                      dangerouslySetInnerHTML={{ __html: researchData![key] as string }}
-                    />
-                  </div>
-                </section>
-              ))}
-            </div>
-          ));
-        })()}
 
         {chartAddress && (
           <section className="mb-12">
