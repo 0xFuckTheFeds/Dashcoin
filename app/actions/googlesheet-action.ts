@@ -11,7 +11,13 @@ import { richTextToHtml, extractHyperlink } from '@/lib/utils'
 interface ResearchScoreData {
   symbol: string
   score: number | null
-  "Bull Case"?: string
+  "Token Demand"?: string
+  "User Growth & Traction"?: string
+  "Notable Supporters of the Project"?: string
+  "Product Description"?: string
+  "Founder History"?: string
+  "Twitter Activity"?: string
+  Summary?: string
   [key: string]: any
 }
 
@@ -19,7 +25,7 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
   const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk';
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0';
   const SHEET_NAME = 'Dashcoin Scoring';
-  const RANGE = `${SHEET_NAME}!A1:T200`;
+  const RANGE = `${SHEET_NAME}!A1:W200`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?key=${API_KEY}&ranges=${RANGE}&includeGridData=true&fields=sheets.data.rowData.values(formattedValue,hyperlink,textFormatRuns)`;
 
   try {
@@ -48,7 +54,17 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
         const trimmed = key.trim();
         const canonical = canonicalMap[trimmed] || trimmed;
         const cell = cells[i] || {};
-        if (canonical === 'Bull Case') {
+        if (
+          [
+            'Token Demand',
+            'User Growth & Traction',
+            'Notable Supporters of the Project',
+            'Product Description',
+            'Founder History',
+            'Twitter Activity',
+            'Summary',
+          ].includes(canonical)
+        ) {
           entry[canonical] = richTextToHtml(cell);
         } else {
           entry[canonical] = cell.formattedValue || '';
@@ -83,7 +99,13 @@ export async function fetchTokenResearch(): Promise<ResearchScoreData[]> {
         'Funding Status',
         'Token-Product Integration Depth',
         'Social Reach & Engagement Index',
-        'Bull Case',
+        'Token Demand',
+        'User Growth & Traction',
+        'Notable Supporters of the Project',
+        'Product Description',
+        'Founder History',
+        'Twitter Activity',
+        'Summary',
       ].forEach(label => {
         result[label] = entry[label] ?? '';
       });
@@ -106,7 +128,7 @@ export async function fetchCreatorWalletLinks(): Promise<WalletLinkData[]> {
   const API_KEY = 'AIzaSyC8QxJez_UTHUJS7vFj1J3Sje0CWS9tXyk'
   const SHEET_ID = '1Nra5QH-JFAsDaTYSyu-KocjbkZ0MATzJ4R-rUt-gLe0'
   const SHEET_NAME = 'Dashcoin Scoring'
-  const RANGE = `${SHEET_NAME}!A1:T200`
+  const RANGE = `${SHEET_NAME}!A1:W200`
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?key=${API_KEY}&ranges=${RANGE}&includeGridData=true&fields=sheets.data.rowData.values(formattedValue,hyperlink,textFormatRuns)`
 
   const cached = await getFromCache<WalletLinkData[]>(CACHE_KEYS.CREATOR_WALLETS)
