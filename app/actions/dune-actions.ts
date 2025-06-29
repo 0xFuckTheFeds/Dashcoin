@@ -34,6 +34,32 @@ const IS_PREVIEW =
 
 const DUNE_API_KEY = process.env.DUNE_API_KEY;
 
+// Tokens that are not returned by the Dune query but should be
+// displayed in the token directory. These are merged with the
+// fetched token list if they are not already present.
+const ADDITIONAL_TOKENS: TokenData[] = [
+  {
+    token: "Ey59PH7Z4BFU4HjyKnyMdWt5GGN76KazTAwQihoUXRnk",
+    symbol: "EY59",
+    name: "Custom Token",
+    vol_usd: 0,
+    txs: 0,
+    created_time: new Date().toISOString(),
+    description: "Custom token",
+    price: 0,
+    marketCap: 0,
+    num_holders: 0,
+    change24h: 0,
+    change1h: 0,
+    liquidity: 0,
+    buys: 0,
+    sells: 0,
+    volume24h: 0,
+    token_url: "",
+    first_trade_time: "",
+  },
+];
+
 async function fetchDuneQueryResults(queryId: number, limit = 1000, offset = 0) {
   if (!DUNE_API_KEY) {
     console.error("DUNE_API_KEY is not set");
@@ -110,7 +136,14 @@ export async function fetchAllTokensFromDune(): Promise<TokenData[]> {
         };
       });
 
-      const sortedTokens = tokens.sort(
+      const combinedTokens = [...tokens];
+      for (const extra of ADDITIONAL_TOKENS) {
+        if (!combinedTokens.some((t) => t.token === extra.token)) {
+          combinedTokens.push(extra);
+        }
+      }
+
+      const sortedTokens = combinedTokens.sort(
         (a: any, b: any) => (b.marketCap || 0) - (a.marketCap || 0)
       );
 
