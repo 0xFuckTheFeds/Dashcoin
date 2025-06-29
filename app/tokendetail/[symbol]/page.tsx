@@ -542,6 +542,24 @@ export default function TokenResearchPage({
           ));
         })()}
 
+        {chartAddress && (
+          <section className="mb-12">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-white">Price Chart</h2>
+                <p className="text-slate-400">Interactive trading view with technical analysis</p>
+              </div>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
+              <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
+            </div>
+          </section>
+        )}
+
         {/* Research & Market */}
         {researchData && hasScore && (
           <section className="mb-12">
@@ -687,23 +705,6 @@ export default function TokenResearchPage({
         )}
 
 
-        {chartAddress && (
-          <section className="mb-12">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-white">Price Chart</h2>
-                <p className="text-slate-400">Interactive trading view with technical analysis</p>
-              </div>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
-              <DexscreenerChart tokenAddress={chartAddress} title="Price Chart" />
-            </div>
-          </section>
-        )}
 
 
 
