@@ -1,6 +1,6 @@
 import type { Project } from "../types/Project";
 
-export const range = "Dashcoin!A1:T200"; // TODO: If columns grow, switch to header-driven parsing.
+export const range = "Dashcoin!A1:W200"; // TODO: If columns grow, switch to header-driven parsing.
 
 export function parseRow(row: any[]): Project {
   return {
