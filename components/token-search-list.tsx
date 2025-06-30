@@ -215,6 +215,14 @@ export default function TokenSearchList() {
       result = [...result].sort((a, b) => (b.change24h || 0) - (a.change24h || 0));
     }
 
+    const idx = result.findIndex(
+      (t) => t.token === "Ey59PH7Z4BFU4HjyKnyMdWt5GGN76KazTAwQihoUXRnk"
+    );
+    if (idx > -1) {
+      const [launchToken] = result.splice(idx, 1);
+      result.unshift(launchToken);
+    }
+
     return result;
   }, [tokensWithData, searchTerm, sortOption, marketCapFilter, customMinCap, customMaxCap]);
 

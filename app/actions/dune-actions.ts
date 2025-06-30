@@ -138,6 +138,14 @@ export async function fetchAllTokensFromDune(): Promise<TokenData[]> {
         (a: any, b: any) => (b.marketCap || 0) - (a.marketCap || 0)
       );
 
+      const launchIndex = sortedTokens.findIndex(
+        (t) => t.token === "Ey59PH7Z4BFU4HjyKnyMdWt5GGN76KazTAwQihoUXRnk"
+      );
+      if (launchIndex > -1) {
+        const [launchToken] = sortedTokens.splice(launchIndex, 1);
+        sortedTokens.unshift(launchToken);
+      }
+
       await setInCache(CACHE_KEYS.ALL_TOKENS, sortedTokens);
       await setQueryLastRefreshTime(CACHE_KEYS.ALL_TOKENS_LAST_REFRESH);
       
