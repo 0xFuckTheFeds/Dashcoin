@@ -509,6 +509,8 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
         buys: tokenData.buys || 0,
         sells: tokenData.sells || 0,
         volume24h: tokenData.vol_usd || 0,
+        vol_usd: tokenData.vol_usd || 0,
+        txs: tokenData.txs || 0,
       };
     }
 
@@ -524,6 +526,10 @@ export async function enrichTokenDataWithDexscreener(tokenData: any) {
       buys: pair.txns?.h24?.buys || 0,
       sells: pair.txns?.h24?.sells || 0,
       volume24h: pair.volume?.h24 || tokenData.vol_usd,
+      vol_usd: pair.volume?.h24 || tokenData.vol_usd || 0,
+      txs:
+        (pair.txns?.h24?.buys || 0) +
+        (pair.txns?.h24?.sells || 0),
       pairAddress: pair.pairAddress,
       dexId: pair.dexId,
       dexUrl: pair.url,
