@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { DashcoinCard } from "@/components/ui/dashcoin-card";
 import { fetchDexscreenerTokenLogo } from "@/app/actions/dexscreener-actions";
+import { getCachedItem, setCachedItem } from "@/lib/browser-cache";
 
 interface TokenHeaderCardProps {
   name: string;
@@ -23,9 +24,16 @@ export function TokenHeaderCard({ name, symbol, address, logoUrl }: TokenHeaderC
       if (!address) return;
 
       try {
+        const cached = getCachedItem<string>(`logo:${address}`, 24 * 60 * 60 * 1000);
+        if (cached) {
+          setLogo(cached);
+          return;
+        }
+
         const img = await fetchDexscreenerTokenLogo(address);
         if (img) {
           setLogo(img as string);
+          setCachedItem(`logo:${address}`, img);
         }
       } catch (err) {
         console.error("Error fetching token logo", err);

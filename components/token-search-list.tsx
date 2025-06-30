@@ -8,6 +8,7 @@ import {
   fetchCreatorWalletLinks,
 } from "@/app/actions/googlesheet-action";
 import { batchFetchTokensData } from "@/app/actions/dexscreener-actions";
+import { getCachedItem, setCachedItem } from "@/lib/browser-cache";
 import { TokenCard } from "./token-card";
 import { 
   Loader2, 
@@ -75,18 +76,38 @@ export default function TokenSearchList() {
   const [customMinCap, setCustomMinCap] = useState("");
   const [customMaxCap, setCustomMaxCap] = useState("");
 
+  const CACHE_TTL = 60 * 1000;
   const fetchDexData = useCallback(async (tokenList: TokenData[]) => {
     const addresses = tokenList.map(t => t.token).filter(Boolean);
     if (!addresses.length) return;
+
+    const cached: Record<string, any> = {};
+    const toFetch: string[] = [];
+
+    addresses.forEach(addr => {
+      const data = getCachedItem<any>(`dex:${addr}`, CACHE_TTL);
+      if (data) {
+        cached[addr] = data;
+      } else {
+        toFetch.push(addr);
+      }
+    });
+
+    if (Object.keys(cached).length > 0) {
+      setDexscreenerData(prev => ({ ...prev, ...cached }));
+    }
+
+    if (!toFetch.length) return;
+
     try {
-      const map = await batchFetchTokensData(addresses);
+      const map = await batchFetchTokensData(toFetch);
       setDexscreenerData(prev => {
         const updated: Record<string, any> = { ...prev };
-        addresses.forEach(addr => {
+        toFetch.forEach(addr => {
           const d = map.get(addr);
           if (d && d.pairs && d.pairs.length > 0) {
             const p = d.pairs[0] as any;
-            updated[addr] = {
+            const entry = {
               volume24h: p.volume?.h24 || 0,
               change24h: p.priceChange?.h24 || 0,
               marketCap: p.fdv || 0,
@@ -94,6 +115,8 @@ export default function TokenSearchList() {
               logoUrl:
                 p.baseToken?.imageUrl || p.info?.imageUrl || p.baseToken?.logoURI,
             };
+            updated[addr] = entry;
+            setCachedItem(`dex:${addr}`, entry);
           }
         });
         return updated;
