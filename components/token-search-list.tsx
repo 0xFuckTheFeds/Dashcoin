@@ -76,23 +76,65 @@ export default function TokenSearchList() {
   const [customMaxCap, setCustomMaxCap] = useState("");
 
   const fetchDexData = useCallback(async (tokenList: TokenData[]) => {
-    const addresses = tokenList.map(t => t.token).filter(Boolean);
+    const addresses = tokenList.map((t) => t.token).filter(Boolean);
     if (!addresses.length) return;
+
+    const cachedLogos: Record<string, string> = {};
+    const toFetch: string[] = [];
+
+    addresses.forEach((addr) => {
+      try {
+        const stored = window.localStorage.getItem(`token-logo-${addr}`);
+        if (stored) {
+          cachedLogos[addr] = stored;
+        } else {
+          toFetch.push(addr);
+        }
+      } catch {
+        toFetch.push(addr);
+      }
+    });
+
+    if (Object.keys(cachedLogos).length > 0) {
+      setDexscreenerData((prev) => {
+        const updated = { ...prev };
+        Object.entries(cachedLogos).forEach(([addr, logo]) => {
+          if (!updated[addr]) updated[addr] = {};
+          updated[addr].logoUrl = logo;
+        });
+        return updated;
+      });
+    }
+
+    if (!toFetch.length) return;
+
     try {
-      const map = await batchFetchTokensData(addresses);
-      setDexscreenerData(prev => {
+      const map = await batchFetchTokensData(toFetch);
+      setDexscreenerData((prev) => {
         const updated: Record<string, any> = { ...prev };
-        addresses.forEach(addr => {
+        toFetch.forEach((addr) => {
           const d = map.get(addr);
           if (d && d.pairs && d.pairs.length > 0) {
             const p = d.pairs[0] as any;
+            const logoUrl =
+              p.baseToken?.imageUrl ||
+              p.info?.imageUrl ||
+              p.baseToken?.logoURI;
+
+            if (logoUrl) {
+              try {
+                window.localStorage.setItem(`token-logo-${addr}`, logoUrl);
+              } catch {
+                /* ignore */
+              }
+            }
+
             updated[addr] = {
               volume24h: p.volume?.h24 || 0,
               change24h: p.priceChange?.h24 || 0,
               marketCap: p.fdv || 0,
               liquidity: p.liquidity?.usd || 0,
-              logoUrl:
-                p.baseToken?.imageUrl || p.info?.imageUrl || p.baseToken?.logoURI,
+              logoUrl,
             };
           }
         });
