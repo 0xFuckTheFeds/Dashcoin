@@ -518,6 +518,12 @@ export default function TokenSearchList() {
                   <th className="text-left py-4 px-6 text-slate-300 font-medium">
                     <div className="flex items-center gap-2">
                       <Activity className="w-4 h-4" />
+                      Vol/MC%
+                    </div>
+                  </th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium">
+                    <div className="flex items-center gap-2">
+                      <Activity className="w-4 h-4" />
                       24h Change
                     </div>
                   </th>
@@ -562,8 +568,15 @@ export default function TokenSearchList() {
                       </div>
                     </td>
                     <td className="py-4 px-6">
+                      <div className="font-bold text-white">
+                        {token.marketCap
+                          ? (((token.volume24h || 0) / token.marketCap) * 100).toFixed(2) + '%'
+                          : '-'}
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
                       <div className={`flex items-center gap-1 font-bold ${
-                        (token.change24h || 0) > 0 ? 'text-emerald-400' : 
+                        (token.change24h || 0) > 0 ? 'text-emerald-400' :
                         (token.change24h || 0) < 0 ? 'text-red-400' : 'text-slate-400'
                       }`}>
                         {(token.change24h || 0) > 0 ? <TrendingUp className="w-3 h-3" /> : 
