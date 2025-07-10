@@ -87,6 +87,7 @@ export default function TokenSearchList() {
           if (d && d.pairs && d.pairs.length > 0) {
             const p = d.pairs[0] as any;
             updated[addr] = {
+              price: p.priceUsd ? Number.parseFloat(p.priceUsd) : 0,
               volume24h: p.volume?.h24 || 0,
               change24h: p.priceChange?.h24 || 0,
               marketCap: p.fdv || 0,
@@ -161,6 +162,7 @@ export default function TokenSearchList() {
         ...dex,
         ...research,
         ...wallet,
+        price: dex.price ?? t.price,
         marketCap: dex.marketCap ?? t.marketCap,
         logoUrl: dex.logoUrl,
       };
@@ -512,6 +514,18 @@ export default function TokenSearchList() {
                   <th className="text-left py-4 px-6 text-slate-300 font-medium">
                     <div className="flex items-center gap-2">
                       <DollarSign className="w-4 h-4" />
+                      Price
+                    </div>
+                  </th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium">
+                    <div className="flex items-center gap-2">
+                      <Activity className="w-4 h-4" />
+                      24h Volume
+                    </div>
+                  </th>
+                  <th className="text-left py-4 px-6 text-slate-300 font-medium">
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="w-4 h-4" />
                       Market Cap
                     </div>
                   </th>
@@ -555,6 +569,18 @@ export default function TokenSearchList() {
                           )}
                         </div>
                       </Link>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="font-bold text-white">
+                        ${token.price
+                          ? `$${token.price.toFixed(token.price < 0.01 ? 8 : 6)}`
+                          : '$0.00'}
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="font-bold text-white">
+                        ${formatCompactNumber(token.volume24h || 0)}
+                      </div>
                     </td>
                     <td className="py-4 px-6">
                       <div className="font-bold text-white">
